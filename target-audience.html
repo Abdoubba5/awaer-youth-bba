@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="الفئة المستهدفة لمنصة وعي الشباب BBA - برنامج التوعية بمخاطر المخدرات وتعزيز الصحة النفسية">
+  <meta name="theme-color" content="#06090e">
+  <title>الفئة المستهدفة | منصة وعي الشباب BBA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23D4AF37'/%3E%3Ctext y='68' x='50' text-anchor='middle' font-size='50' fill='%2306090e' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="وعي BBA">
+  <style>
+    :root{--bg:#06090e;--surface:rgba(11,16,27,0.75);--surface-solid:#0b101b;--gold:#D4AF37;--gold-hover:#B3922E;--gold-light:rgba(212,175,55,0.12);--success:#10b981;--text:#ffffff;--text-secondary:#e2e8f0;--muted:#94a3b8;--border:rgba(212,175,55,0.15);--border-light:rgba(255,255,255,0.06);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--font:'Cairo',sans-serif;--transition:all 0.35s cubic-bezier(0.4,0,0.2,1);--container:1100px}
+    *,:before,:after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:80px}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;direction:rtl;min-height:100vh;-webkit-font-smoothing:antialiased}
+    h1,h2,h3,h4{font-weight:700;line-height:1.4}
+    h1{font-size:clamp(1.75rem,4vw,2.5rem)}h2{font-size:clamp(1.35rem,2.5vw,1.75rem)}h3{font-size:clamp(1.1rem,1.8vw,1.3rem)}
+    p{color:var(--muted);font-size:clamp(0.9rem,1.1vw,1rem)}
+    a{color:var(--gold);text-decoration:none;transition:var(--transition)}
+    a:hover{color:var(--gold-hover)}
+    .container{max-width:var(--container);margin:0 auto;padding:0 clamp(1rem,3vw,2rem);width:100%}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.6rem 1.25rem;border-radius:var(--radius-sm);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition);border:none}
+    .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-hover));color:var(--bg)}
+    .btn-secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+    .btn-secondary:hover{background:var(--gold-light);transform:translateY(-2px)}
+
+    .header{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:1rem 0;position:sticky;top:0;z-index:100}
+    .header-inner{max-width:var(--container);margin:0 auto;padding:0 1rem;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;align-items:center;gap:0.5rem;font-size:1rem;font-weight:700;color:var(--gold)}
+    .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold-hover));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--bg)}
+    .nav-links{display:flex;align-items:center;gap:0.25rem}
+    .nav-links a{color:var(--muted);padding:0.4rem 0.75rem;border-radius:var(--radius-sm);font-size:0.85rem;font-weight:500;transition:var(--transition)}
+    .nav-links a:hover,.nav-links a.active{color:var(--gold);background:var(--gold-light)}
+
+    .hero{text-align:center;padding:4rem 0 3rem;position:relative;overflow:hidden}
+    .hero:before{content:'';position:absolute;top:-30%;right:-20%;width:600px;height:600px;background:radial-gradient(circle,rgba(212,175,55,0.06) 0%,transparent 70%);border-radius:50%;z-index:-1}
+    .hero-icon{font-size:4rem;margin-bottom:1rem}
+    .hero h1{background:linear-gradient(135deg,var(--text) 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem}
+    .hero p{max-width:600px;margin:0 auto;font-size:1.05rem}
+
+    .section{padding:clamp(3rem,6vw,5rem) 0}
+    .section-header{text-align:center;margin-bottom:clamp(2rem,4vw,3rem)}
+    .section-header h2{margin-bottom:0.5rem}
+    .gold-accent{display:inline-block;width:60px;height:3px;background:var(--gold);border-radius:2px;margin-top:0.5rem}
+
+    .audience-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:1.5rem}
+    .audience-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.5rem,3vw,2rem);transition:var(--transition);position:relative;overflow:hidden}
+    .audience-card:hover{transform:translateY(-4px);border-color:rgba(212,175,55,0.3);box-shadow:0 8px 32px rgba(212,175,55,0.12)}
+    .audience-card:before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),transparent);border-radius:0 0 2px 2px}
+    .audience-card-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+    .audience-icon{width:56px;height:56px;border-radius:var(--radius-md);background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:1.75rem;flex-shrink:0}
+    .audience-title{font-size:1.1rem;font-weight:700;color:var(--gold)}
+    .audience-subtitle{font-size:0.8rem;color:var(--muted)}
+    .audience-body p{font-size:0.88rem;color:var(--text-secondary);line-height:1.8;margin-bottom:0.75rem}
+    .audience-body p:last-child{margin-bottom:0}
+    .audience-badge{display:inline-block;padding:0.2rem 0.6rem;background:var(--gold-light);border-radius:100px;font-size:0.7rem;color:var(--gold);font-weight:600}
+
+    .story-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.5rem,4vw,2.5rem);margin-bottom:2rem;transition:var(--transition)}
+    .story-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
+    .story-card-icon{font-size:2.5rem;margin-bottom:1rem}
+    .story-card h3{color:var(--gold);margin-bottom:0.75rem}
+    .story-card p{line-height:1.9;margin-bottom:0.75rem}
+    .story-card ul{list-style:none;padding:0}
+    .story-card ul li{padding:0.5rem 0;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;color:var(--text-secondary)}
+    .story-card ul li:last-child{border-bottom:none}
+    .story-card ul li:before{content:'✦';color:var(--gold);font-size:0.6rem;flex-shrink:0}
+
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:2rem}
+    .stat-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;text-align:center;transition:var(--transition)}
+    .stat-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
+    .stat-value{font-size:1.5rem;font-weight:700;color:var(--gold)}
+    .stat-label{font-size:0.78rem;color:var(--muted);margin-top:0.25rem}
+
+    .quote-card{background:linear-gradient(135deg,rgba(212,175,55,0.06),transparent);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;text-align:center;margin:2rem 0;position:relative}
+    .quote-card:before{content:'\201C';position:absolute;top:-0.5rem;right:1.5rem;font-size:5rem;color:var(--gold);opacity:0.15;font-weight:700;line-height:1}
+    .quote-text{font-size:1.05rem;color:var(--text-secondary);font-style:italic;line-height:1.9;margin-bottom:1rem}
+    .quote-author{color:var(--gold);font-weight:600;font-size:0.9rem}
+
+    .badge-sponsor{display:inline-flex;align-items:center;gap:0.35rem;padding:0.25rem 0.75rem;background:var(--gold-light);border:1px solid var(--border);border-radius:100px;font-size:0.75rem;color:var(--gold);font-weight:600}
+
+    .footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border)}
+    .footer p{font-size:0.8rem}
+    .footer-gold{color:var(--gold);font-weight:600}
+
+    @media(max-width:768px){.nav-links{display:none}.audience-grid{grid-template-columns:1fr}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in-up{animation:fadeInUp 0.6s ease forwards}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">وعي</span>
+        <span>منصة وعي الشباب BBA</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">الرئيسية</a>
+        <a href="about.html">عن المشروع</a>
+        <a href="target-audience.html" class="active">الفئة المستهدفة</a>
+        <a href="index.html#awareness">التوعية</a>
+        <a href="index.html#consultation">الاستشارات</a>
+        <a href="index.html#contact">تواصل</a>
+      </nav>
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <span class="badge-sponsor">🏛️ برنامج Dz Young Leaders</span>
+        <div id="audThemeSwitcher"></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-icon">🎯</div>
+        <h1>الفئة المستهدفة</h1>
+        <p>نستهدف من خلال منصة وعي الشباب BBA فئات متنوعة من الشباب في ولاية برج بوعريريج، كل منها يحتاج إلى مقاربة خاصة ومحتوى مخصص</p>
+        <div style="margin-top:1.5rem"><span class="badge-sponsor" style="font-size:0.85rem;padding:0.4rem 1rem">🏛️ تحت إشراف برنامج Dz Young Leaders</span></div>
+      </div>
+    </section>
+
+    <!-- Target Audience Cards -->
+    <section class="section" style="background:var(--surface-solid)">
+      <div class="container">
+        <div class="section-header">
+          <h2>الفئات التي نستهدفها</h2>
+          <p>صممنا برامجنا ومحتوى المنصة ليلبي احتياجات كل فئة بشكل مخصص وفعال</p>
+          <div class="gold-accent"></div>
+        </div>
+        <div class="audience-grid">
+          <!-- 1. Students -->
+          <div class="audience-card fade-in-up">
+            <div class="audience-card-header">
+              <div class="audience-icon">🎒</div>
+              <div>
+                <div class="audience-title">تلاميذ المؤسسات التربوية</div>
+                <div class="audience-subtitle">الطور المتوسط والثانوي</div>
+              </div>
+            </div>
+            <div class="audience-body">
+              <p>تشكل الفئة العمرية من 13 إلى 18 سنة ركيزة أساسية في برامجنا التوعوية، حيث أن هذه المرحلة العمرية تعتبر الأكثر عرضة للتجربة والانجراف نحو السلوكيات المحفوفة بالمخاطر.</p>
+              <p><strong style="color:var(--gold)">التحديات:</strong> ضغط الأقران، الفضول المعرفي، غياب التوعية الكافية في المحيط المدرسي، سهولة الوصول إلى المعلومات المضللة عبر الإنترنت.</p>
+              <p><strong style="color:var(--gold)">أهداف التوعية:</strong> بناء الوعي المبكر بمخاطر المخدرات، تطوير مهارات الرفض واتخاذ القرار، تعزيز الثقة بالنفس، توفير معلومات علمية دقيقة ومناسبة للمرحلة العمرية.</p>
+              <p><strong style="color:var(--gold)">الأثر المتوقع:</strong> تقليل حالات التجربة الأولى للمخدرات بنسبة 40% بين المترددين على المؤسسات التربوية المستهدفة.</p>
+              <span class="audience-badge">🧑‍🎓 13 - 18 سنة</span>
+            </div>
+          </div>
+
+          <!-- 2. University Students -->
+          <div class="audience-card fade-in-up" style="animation-delay:0.1s">
+            <div class="audience-card-header">
+              <div class="audience-icon">🎓</div>
+              <div>
+                <div class="audience-title">طلبة الجامعات</div>
+                <div class="audience-subtitle">التعليم العالي والتكوين المهني</div>
+              </div>
+            </div>
+            <div class="audience-body">
+              <p>يمثل طلبة الجامعات والمعاهد فئة محورية في برامجنا، حيث يعيشون مرحلة انتقالية حساسة تتسم بالاستقلالية الجديدة والضغوط الأكاديمية والنفسية.</p>
+              <p><strong style="color:var(--gold)">التحديات:</strong> الضغط الدراسي، القلق من المستقبل المهني، البعد عن الأسرة، سهولة الوصول إلى المواد الممنوعة في الوسط الجامعي، انتشار ثقافة الترويح الخاطئ.</p>
+              <p><strong style="color:var(--gold)">أهداف التوعية:</strong> تعزيز الصحة النفسية وإدارة الضغوط، تنمية روح المبادرة والتطوع، توفير بدائل صحية للترفيه، تقديم استشارات نفسية مخصصة.</p>
+              <p><strong style="color:var(--gold)">الأثر المتوقع:</strong> تكوين نواة تطوعية جامعية فاعلة، وتحسين مؤشرات الصحة النفسية بين الطلبة المستفيدين من خدمات المنصة.</p>
+              <span class="audience-badge">👨‍🎓 18 - 25 سنة</span>
+            </div>
+          </div>
+
+          <!-- 3. Neighborhood Youth -->
+          <div class="audience-card fade-in-up" style="animation-delay:0.2s">
+            <div class="audience-card-header">
+              <div class="audience-icon">🏘️</div>
+              <div>
+                <div class="audience-title">شباب الأحياء</div>
+                <div class="audience-subtitle">المناطق الحضرية وشبه الحضرية</div>
+              </div>
+            </div>
+            <div class="audience-body">
+              <p>تشكل الفئة الأوسع انتشاراً والأكثر تعرضاً للمخاطر نظراً للعوامل الاجتماعية والاقتصادية المحيطة. هؤلاء الشباب غالباً ما يكونون خارج النظام التعليمي أو يعانون من البطالة.</p>
+              <p><strong style="color:var(--gold)">التحديات:</strong> الفراغ، البطالة، غياب الأنشطة البديلة، انتشار نقاط بيع المؤثرات العقلية، ضعف الرقابة الأسرية، سهولة التأثر بنماذج سلبية في المحيط.</p>
+              <p><strong style="color:var(--gold)">أهداف التوعية:</strong> توفير أنشطة بديلة وجاذبة، خلق فرص للمشاركة المجتمعية، بناء شبكة دعم اجتماعي، تقديم استشارات نفسية ومهنية، تمكين الشباب اقتصادياً عبر التدريب والتوجيه.</p>
+              <p><strong style="color:var(--gold)">الأثر المتوقع:</strong> خفض معدلات تعاطي المخدرات في الأحياء المستهدفة، وخلق قنوات تواصل إيجابية بين الشباب والمؤسسات المحلية.</p>
+              <span class="audience-badge">👥 15 - 35 سنة</span>
+            </div>
+          </div>
+
+          <!-- 4. Young Prisoners & Ex-prisoners -->
+          <div class="audience-card fade-in-up" style="animation-delay:0.3s">
+            <div class="audience-card-header">
+              <div class="audience-icon">🔗</div>
+              <div>
+                <div class="audience-title">السجناء الشباب وخريجو السجون</div>
+                <div class="audience-subtitle">برنامج إعادة التأهيل والتوعية</div>
+              </div>
+            </div>
+            <div class="audience-body">
+              <p>تعتبر هذه الفئة من أكثر الفئات حساسية واحتياجاً للدعم النفسي والتأهيل الاجتماعي. نعمل ضمن برنامج متكامل لإعادة تأهيل السجناء الشباب الذين تورطوا في قضايا مرتبطة بالمخدرات.</p>
+              <p><strong style="color:var(--gold)">التحديات:</strong> الوصم الاجتماعي، صعوبة الاندماج بعد الإفراج، غياب الدعم النفسي والمهني، خطر العودة للانحراف، ضعف فرص العمل والتكوين.</p>
+              <p><strong style="color:var(--gold)">أهداف التوعية:</strong> تقديم برامج تأهيل نفسي واجتماعي متكاملة، توفير استشارات ومرافقة نفسية مستمرة، تنمية مهارات مهنية وحياتية، المساعدة في الاندماج الاجتماعي والمهني، بناء شبكة دعم مجتمعي.</p>
+              <p><strong style="color:var(--gold)">الأثر المتوقع:</strong> تقليل معدلات العود إلى الإدمان والانحراف، وتمكين المستفيدين من الاندماج الإيجابي في المجتمع.</p>
+              <span class="audience-badge">🤝 برنامج خاص</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why These Groups -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>لماذا هذه الفئات؟</h2>
+          <div class="gold-accent"></div>
+        </div>
+        <div class="story-card">
+          <div class="story-card-icon">📊</div>
+          <p>استناداً إلى الدراسات الميدانية والإحصائيات الوطنية، تتوزع حالات تعاطي المخدرات والمؤثرات العقلية في الجزائر كما يلي:</p>
+          <ul>
+            <li>أكثر من 70% من حالات التعاطي تبدأ قبل سن 25 سنة</li>
+            <li>نسبة الذكور المدمنين تفوق الإناث، لكن الإناث في تزايد مستمر</li>
+            <li>الوسط الحضري يسجل أعلى معدلات التعاطي مقارنة بالوسط الريفي</li>
+            <li>المؤثرات العقلية والأقراص المهلوسة تصدرت قائمة المواد المتعاطاة في السنوات الأخيرة</li>
+            <li>نسبة العود إلى تعاطي المخدرات بعد الخروج من السجن تتجاوز 50% في غياب برامج التأهيل</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Coaching Quote -->
+    <section class="section" style="background:var(--surface-solid)">
+      <div class="container">
+        <div class="quote-card">
+          <p class="quote-text">"استهداف الفئات الأكثر عرضة للمخاطر ببرامج توعوية مخصصة هو مفتاح النجاح في الوقاية من المخدرات. كل فئة تحتاج إلى مقاربة مختلفة تتناسب مع خصوصياتها وظروفها."</p>
+          <div class="quote-author">— سيدي علي عبد الإله<br><span style="font-weight:400;font-size:0.8rem;color:var(--muted)">قائد برنامج Dz Young Leaders ومؤسس منصة وعي الشباب BBA</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Outreach Stats -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>مؤشرات الوصول</h2>
+          <p>إحصائيات حية تعكس مدى انتشار خدمات المنصة بين الفئات المستهدفة</p>
+          <div class="gold-accent"></div>
+        </div>
+        <div class="stats-grid" id="audienceStats">
+          <div class="stat-card"><div class="stat-value" id="audStatVolunteers">0</div><div class="stat-label">متطوع مسجل</div></div>
+          <div class="stat-card"><div class="stat-value" id="audStatConsultations">0</div><div class="stat-label">استشارة مقدمة</div></div>
+          <div class="stat-card"><div class="stat-value" id="audStatActivities">0</div><div class="stat-label">نشاط منفذ</div></div>
+          <div class="stat-card"><div class="stat-value" id="audStatCerts">0</div><div class="stat-label">شهادة مصدرة</div></div>
+          <div class="stat-card"><div class="stat-value" id="audStatEvents">0</div><div class="stat-label">فعالية منظمة</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | تحت إشراف <span class="footer-gold">برنامج Dz Young Leaders</span></p>
+      <div style="margin-top:0.75rem;display:flex;justify-content:center;flex-wrap:wrap;gap:0.5rem;font-size:0.8rem">
+        <a href="index.html">الرئيسية</a>
+        <a href="about.html">عن المشروع</a>
+        <a href="index.html#awareness">التوعية</a>
+        <a href="index.html#consultation">الاستشارات</a>
+        <a href="portal.html">بوابة المتطوعين</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/platform-core.js"></script>
+  <script>
+    function byId(id) { return document.getElementById(id); }
+    (function() {
+      var v = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+      var c = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+      var a = JSON.parse(localStorage.getItem('bba_activity_log') || '[]');
+      var certs = JSON.parse(localStorage.getItem('bba_certificates') || '[]');
+      var events = JSON.parse(localStorage.getItem('bba_events') || '[]');
+      var approved = 0;
+      for (var i = 0; i < v.length; i++) { if (v[i].status === 'approved') approved++; }
+      var completedEvents = 0;
+      for (var i = 0; i < events.length; i++) { if (events[i].status === 'completed' || events[i].status === 'open') completedEvents++; }
+      byId('audStatVolunteers').textContent = approved;
+      byId('audStatConsultations').textContent = c.length;
+      byId('audStatActivities').textContent = a.length;
+      byId('audStatCerts').textContent = certs.length;
+      byId('audStatEvents').textContent = completedEvents;
+    })();
+
+    /* Theme switcher */
+    (function() {
+      var container = byId('audThemeSwitcher');
+      if (container && window.BBA && window.BBA.Theme) {
+        window.BBA.Theme.createSwitcher(container);
+      }
+    })();
+  </script>
+</body>
+</html>

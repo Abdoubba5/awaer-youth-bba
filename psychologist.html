@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="لوحة المستشار النفسي - منصة وعي الشباب BBA">
+  <meta name="theme-color" content="#06090e">
+  <title>لوحة المستشار | منصة وعي الشباب BBA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23D4AF37'/%3E%3Ctext y='68' x='50' text-anchor='middle' font-size='50' fill='%2306090e' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="وعي BBA">
+  <style>
+    :root{--bg:#06090e;--surface:rgba(11,16,27,0.75);--surface-solid:#0b101b;--gold:#D4AF37;--gold-hover:#B3922E;--gold-light:rgba(212,175,55,0.12);--success:#10b981;--success-bg:rgba(16,185,129,0.12);--danger:#ef4444;--danger-bg:rgba(239,68,68,0.12);--text:#ffffff;--text-secondary:#e2e8f0;--muted:#94a3b8;--border:rgba(212,175,55,0.15);--border-light:rgba(255,255,255,0.06);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--shadow-sm:0 2px 8px rgba(0,0,0,0.2);--shadow-md:0 4px 20px rgba(0,0,0,0.3);--shadow-lg:0 8px 40px rgba(0,0,0,0.4);--shadow-gold:0 4px 24px rgba(212,175,55,0.15);--font:'Cairo',sans-serif;--transition:all 0.35s cubic-bezier(0.4,0,0.2,1)}
+    *,:before,:after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;direction:rtl;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding:0}
+    h1,h2,h3,h4{font-weight:700;line-height:1.4}
+    h1{font-size:clamp(1.25rem,2.5vw,1.5rem)}h2{font-size:clamp(1.1rem,2vw,1.25rem)}h3{font-size:clamp(1rem,1.8vw,1.1rem)}
+    p{color:var(--muted);font-size:clamp(0.8rem,1vw,0.9rem)}
+    a{color:var(--gold);text-decoration:none;transition:var(--transition)}
+    a:hover{color:var(--gold-hover)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.6rem 1.25rem;border-radius:var(--radius-sm);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition);border:none;outline:none;white-space:nowrap}
+    .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-hover));color:var(--bg);box-shadow:var(--shadow-gold)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(212,175,55,0.3);color:var(--bg)}
+    .btn-secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+    .btn-secondary:hover{background:var(--gold-light);transform:translateY(-2px);color:var(--gold)}
+    .btn-sm{padding:0.35rem 0.75rem;font-size:0.75rem}
+    .btn-success{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
+    .btn-success:hover{background:rgba(16,185,129,0.25)}
+    .btn-danger{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
+    .btn-danger:hover{background:rgba(239,68,68,0.25)}
+
+    /* Header */
+    .psych-header{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:1rem 0;position:sticky;top:0;z-index:100}
+    .psych-header-inner{max-width:1100px;margin:0 auto;padding:0 1rem;display:flex;align-items:center;justify-content:space-between}
+    .psych-logo{display:flex;align-items:center;gap:0.5rem;font-size:1rem;font-weight:700;color:var(--gold)}
+    .psych-logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold-hover));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--bg)}
+    .psych-user{display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--muted)}
+    .psych-user span{color:var(--gold);font-weight:600}
+
+    /* Lock Screen */
+    .lock-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem}
+    .lock-screen.hidden{display:none}
+    .lock-card{background:var(--surface);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(2rem,4vw,3rem);max-width:420px;width:100%;text-align:center;animation:fadeIn 0.5s ease}
+    .lock-icon{width:56px;height:56px;background:var(--gold-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;color:var(--gold)}
+    .lock-icon svg{width:28px;height:28px}
+    .lock-card h2{font-size:1.25rem;margin-bottom:0.5rem}
+    .lock-card p{font-size:0.85rem;margin-bottom:1.5rem}
+    .lock-error{display:none;align-items:center;gap:0.5rem;padding:0.6rem 1rem;background:var(--danger-bg);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius-sm);color:var(--danger);font-size:0.8rem;margin-bottom:0.75rem;text-align:right}
+    .lock-error.visible{display:flex}
+
+    /* Main Content */
+    .psych-main{max-width:1100px;margin:0 auto;padding:1.5rem 1rem}
+    .psych-main.hidden{display:none}
+
+    /* Stats */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem}
+    .stat-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;transition:var(--transition)}
+    .stat-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3);box-shadow:var(--shadow-gold)}
+    .stat-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem}
+    .stat-card-title{font-size:0.8rem;color:var(--muted);font-weight:500}
+    .stat-card-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gold-light);color:var(--gold)}
+    .stat-card-value{font-size:1.75rem;font-weight:700;color:var(--gold);letter-spacing:-0.02em}
+
+    /* Filters */
+    .filters-bar{display:flex;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem}
+    .filters-bar input,.filters-bar select{padding:0.5rem 0.75rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.85rem;transition:var(--transition)}
+    .filters-bar input:focus,.filters-bar select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light)}
+    .filters-bar input{flex:1;min-width:180px}
+    .filters-bar select{min-width:130px}
+
+    /* Consultation Card */
+    .consult-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:1rem;transition:var(--transition)}
+    .consult-card:hover{border-color:rgba(212,175,55,0.2)}
+    .consult-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem}
+    .consult-code{font-family:monospace;color:var(--gold);font-size:0.8rem;font-weight:600;direction:ltr;display:inline-block}
+    .consult-meta{display:flex;flex-wrap:wrap;gap:0.75rem;font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem}
+    .consult-meta span{display:flex;align-items:center;gap:0.25rem}
+    .consult-subject{font-size:0.95rem;font-weight:600;color:var(--text);margin-bottom:0.25rem}
+    .consult-message{font-size:0.85rem;color:var(--text-secondary);line-height:1.7;margin-bottom:1rem;background:rgba(255,255,255,0.02);padding:0.75rem;border-radius:var(--radius-sm)}
+    .consult-actions{display:flex;gap:0.5rem;flex-wrap:wrap}
+    .consult-response{background:rgba(212,175,55,0.04);border-right:3px solid var(--gold);padding:0.75rem;border-radius:var(--radius-sm);margin-top:0.75rem}
+    .consult-response .response-label{font-size:0.75rem;color:var(--gold);font-weight:600;margin-bottom:0.25rem}
+    .consult-response .response-text{font-size:0.85rem;color:var(--text-secondary)}
+    .badge{display:inline-flex;align-items:center;gap:0.25rem;padding:0.2rem 0.6rem;border-radius:100px;font-size:0.7rem;font-weight:600}
+    .badge-pending{background:rgba(245,158,11,0.12);color:#f59e0b}
+    .badge-approved{background:rgba(16,185,129,0.12);color:#10b981}
+    .badge-rejected{background:rgba(239,68,68,0.12);color:#ef4444}
+
+    /* Respond Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:none;align-items:center;justify-content:center;padding:1rem}
+    .modal-overlay.active{display:flex}
+    .modal-content{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;animation:fadeIn 0.3s ease}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+    .modal-header h3{font-size:1.1rem;color:var(--gold)}
+    .modal-close{background:none;border:none;color:var(--muted);cursor:pointer;padding:0.25rem;border-radius:var(--radius-sm);transition:var(--transition);font-size:1.25rem;line-height:1}
+    .modal-close:hover{color:var(--danger);background:var(--danger-bg)}
+    .form-group{margin-bottom:1rem}
+    .form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
+    .form-group input,.form-group textarea,.form-group select{width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.85rem;transition:var(--transition)}
+    .form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light)}
+    .form-group textarea{min-height:120px;resize:vertical}
+
+    /* Toast */
+    .toast-psych{position:fixed;top:5rem;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:0.75rem;pointer-events:none}
+    .toast-psych .t{display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.25rem;background:var(--surface-solid);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;animation:toastSlideIn 0.3s ease;direction:rtl;pointer-events:auto;min-width:200px;color:var(--text)}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes toastSlideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes toastSlideOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-10px)}}
+
+    .empty-state{text-align:center;padding:2rem;color:var(--muted);font-size:0.9rem}
+    .empty-state svg{width:48px;height:48px;margin-bottom:0.75rem;opacity:0.3}
+
+    .footer-links{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);text-align:center;font-size:0.8rem}
+    .footer-links a{margin:0 0.5rem;color:var(--muted)}
+    .footer-links a:hover{color:var(--gold)}
+  </style>
+</head>
+<body>
+
+  <div id="toastPsych" class="toast-psych"></div>
+
+  <!-- Login Screen -->
+  <div id="psychLogin" class="lock-screen">
+    <div class="lock-card">
+      <div class="lock-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <h2>لوحة المستشار النفسي</h2>
+      <p>إدارة الاستشارات والرد على المستفيدين</p>
+      <form id="psychLoginForm">
+        <div class="form-group" style="text-align:right">
+          <label for="psychEmail">البريد الإلكتروني</label>
+          <input type="email" id="psychEmail" placeholder="psychologist@bba.dz" required dir="ltr" autocomplete="email">
+        </div>
+        <div class="form-group" style="text-align:right">
+          <label for="psychPassword">كلمة المرور</label>
+          <input type="password" id="psychPassword" placeholder="••••••••" required dir="ltr" autocomplete="current-password">
+        </div>
+        <div id="psychLoginError" class="lock-error">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-left:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          البريد الإلكتروني أو كلمة المرور غير صحيحة
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          تسجيل الدخول
+        </button>
+      </form>
+      <div style="margin-top:1rem;font-size:0.8rem;color:var(--muted)">
+        <a href="index.html">العودة للصفحة الرئيسية</a>
+        <span style="margin:0 0.5rem">|</span>
+        <a href="admin.html">لوحة الإدارة</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div id="psychContent" class="psych-main" style="display:none">
+
+    <header class="psych-header">
+      <div class="psych-header-inner">
+        <a href="index.html" class="psych-logo">
+          <span class="psych-logo-icon">وعي</span>
+          <span>لوحة المستشار النفسي</span>
+        </a>
+        <div class="psych-user">
+          👤 <span>المستشار النفسي</span>
+          <button id="psychLogoutBtn" class="btn btn-secondary btn-sm" style="margin-right:0.75rem">تسجيل الخروج</button>
+        </div>
+      </div>
+    </header>
+    <div id="psychThemeSwitcher" style="position:fixed;bottom:1rem;left:1rem;z-index:100"></div>
+
+    <div class="psych-main">
+      <h1 style="margin-bottom:1rem">💬 إدارة الاستشارات</h1>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-card-title">جميع الاستشارات</span>
+            <div class="stat-card-icon">💬</div>
+          </div>
+          <div class="stat-card-value" id="psychTotalConsultations">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-card-title">جديدة</span>
+            <div class="stat-card-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b">🆕</div>
+          </div>
+          <div class="stat-card-value" id="psychNewConsultations" style="color:#f59e0b">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-card-title">قيد المعالجة</span>
+            <div class="stat-card-icon" style="background:rgba(99,102,241,0.12);color:#6366f1">⏳</div>
+          </div>
+          <div class="stat-card-value" id="psychInProgressConsultations" style="color:#6366f1">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-card-title">تم الرد / مغلقة</span>
+            <div class="stat-card-icon" style="background:rgba(16,185,129,0.12);color:#10b981">✅</div>
+          </div>
+          <div class="stat-card-value" id="psychAnsweredConsultations" style="color:#10b981">0</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters-bar">
+        <input type="text" id="psychSearchInput" placeholder="🔍 بحث في الاستشارات (رمز، اسم، موضوع)...">
+        <select id="psychStatusFilter">
+          <option value="">جميع الحالات</option>
+          <option value="pending">جديدة</option>
+          <option value="in_progress">قيد المعالجة</option>
+          <option value="answered">تم الرد</option>
+          <option value="closed">مغلقة</option>
+        </select>
+      </div>
+
+      <!-- Consultation List -->
+      <div id="psychConsultationList"></div>
+    </div>
+
+    <div class="footer-links">
+      <a href="index.html">🏠 الصفحة الرئيسية</a>
+      <a href="admin.html">🔐 لوحة الإدارة</a>
+      <a href="portal.html">👤 بوابة المتطوعين</a>
+      <a href="verify-certificate.html">✅ التحقق من الشهادات</a>
+    </div>
+  </div>
+
+  <!-- Respond Modal -->
+  <div id="psychRespondModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>💬 الرد على الاستشارة</h3>
+        <button type="button" class="modal-close" id="psychModalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="psychRespondBody"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/platform-core.js"></script>
+  <script>
+    /* ============================================================
+       لوحة المستشار النفسي - Psychologist Dashboard
+       Restricted to consultation management only
+       Requires: psychologist role via Supabase Auth
+       ============================================================ */
+
+    function byId(id) { return document.getElementById(id); }
+    function escapeHtml(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+    /* Toast */
+    function showPsychToast(msg, type) {
+      type = type || 'info';
+      var c = byId('toastPsych');
+      if (!c) return;
+      var t = document.createElement('div');
+      t.className = 't';
+      var color = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#D4AF37';
+      var icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+      t.style.borderRight = '3px solid ' + color;
+      t.innerHTML = '<span style="color:' + color + ';font-weight:700;margin-left:0.5rem">' + icon + '</span><span>' + msg + '</span>';
+      c.appendChild(t);
+      setTimeout(function() {
+        t.style.animation = 'toastSlideOut 0.3s ease forwards';
+        setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 300);
+      }, 3500);
+    }
+
+    /* ============================================================
+     * AUTH - Supabase + Legacy Fallback
+     * ============================================================ */
+    (function initPsychAuth() {
+      var loginScreen = byId('psychLogin');
+      var content = byId('psychContent');
+      var form = byId('psychLoginForm');
+      var errorDiv = byId('psychLoginError');
+      var logoutBtn = byId('psychLogoutBtn');
+
+      function showLogin() { loginScreen.classList.remove('hidden'); content.style.display = 'none'; }
+      function showDashboard() { loginScreen.classList.add('hidden'); content.style.display = 'block'; }
+
+      /* Try Supabase auth first */
+      function trySupabaseAuth() {
+        if (window.BBA && window.BBA.Auth) {
+          window.BBA.Auth.initSession().then(function(user) {
+            if (user && window.BBA.Auth.isLoggedIn()) {
+              var role = window.BBA.Auth.getRole();
+              if (role === 'psychologist' || role === 'super_admin') {
+                sessionStorage.setItem('bba_psych_auth', 'true');
+                showDashboard();
+                loadConsultations();
+                return;
+              }
+            }
+            /* Fallback: legacy auth */
+            if (sessionStorage.getItem('bba_psych_auth') === 'true') {
+              showDashboard();
+              loadConsultations();
+            } else {
+              showLogin();
+            }
+          });
+        } else {
+          /* Auth module not loaded yet - fallback */
+          if (sessionStorage.getItem('bba_psych_auth') === 'true') {
+            showDashboard();
+            loadConsultations();
+          } else {
+            showLogin();
+          }
+        }
+      }
+
+      /* Wait for BBA.Auth to initialize */
+      var checkAuth = setInterval(function() {
+        if (window.BBA && window.BBA.Auth) {
+          clearInterval(checkAuth);
+          trySupabaseAuth();
+        }
+      }, 300);
+      setTimeout(function() {
+        clearInterval(checkAuth);
+        /* Final fallback */
+        if (sessionStorage.getItem('bba_psych_auth') === 'true') {
+          showDashboard();
+          loadConsultations();
+        } else {
+          showLogin();
+        }
+      }, 6000);
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var email = byId('psychEmail').value.trim();
+          var pass = byId('psychPassword').value;
+          var submitBtn = form.querySelector('button[type="submit"]');
+
+          /* Try Supabase Auth first */
+          if (window.BBA && window.BBA.Auth && window.BBA.Auth.isOnline()) {
+            if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.innerHTML = '<span class="spinner"></span> جاري تسجيل الدخول...';
+            }
+
+            window.BBA.Auth.login(email, pass).then(function(result) {
+              if (result.success) {
+                var role = window.BBA.Auth.getRole();
+                if (role === 'psychologist' || role === 'super_admin') {
+                  sessionStorage.setItem('bba_psych_auth', 'true');
+                  errorDiv.classList.remove('visible');
+                  form.reset();
+                  showDashboard();
+                  loadConsultations();
+                  showPsychToast('✅ مرحباً أيها المستشار النفسي', 'success');
+                } else {
+                  window.BBA.Auth.logout();
+                  errorDiv.classList.add('visible');
+                  showPsychToast('❌ ليس لديك صلاحية الوصول', 'error');
+                }
+              } else {
+                /* Fallback to legacy */
+                legacyLogin(email, pass);
+              }
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'تسجيل الدخول';
+              }
+            });
+          } else {
+            /* Supabase offline - legacy auth */
+            legacyLogin(email, pass);
+          }
+        });
+      }
+
+      function legacyLogin(email, pass) {
+        if (email === 'psychologist@bba.dz' && pass === 'bba2026') {
+          sessionStorage.setItem('bba_psych_auth', 'true');
+          errorDiv.classList.remove('visible');
+          form.reset();
+          showDashboard();
+          loadConsultations();
+        } else {
+          errorDiv.classList.add('visible');
+          byId('psychPassword').value = '';
+        }
+      }
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+          if (window.BBA && window.BBA.Auth) {
+            window.BBA.Auth.logout();
+          } else {
+            sessionStorage.removeItem('bba_psych_auth');
+          }
+          showLogin();
+        });
+      }
+    })();
+
+    /* ============================================================
+     * CONSULTATION MANAGEMENT
+     * ============================================================ */
+    var allPsychConsultations = [];
+
+    function getConsultations() {
+      return JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+    }
+
+    function saveConsultations(data) {
+      localStorage.setItem('bba_consultations', JSON.stringify(data));
+    }
+
+    function loadConsultations() {
+      allPsychConsultations = getConsultations();
+      renderPsychConsultations();
+    }
+
+    function renderPsychConsultations() {
+      var searchVal = (byId('psychSearchInput') ? byId('psychSearchInput').value : '').trim().toLowerCase();
+      var filterVal = byId('psychStatusFilter') ? byId('psychStatusFilter').value : '';
+      var list = byId('psychConsultationList');
+      if (!list) return;
+
+      /* Update stats */
+      var total = allPsychConsultations.length;
+      var newCount = 0, inProgress = 0, answeredClosed = 0;
+      for (var i = 0; i < allPsychConsultations.length; i++) {
+        var s = allPsychConsultations[i].status;
+        if (s === 'pending') newCount++;
+        else if (s === 'in_progress') inProgress++;
+        else if (s === 'answered' || s === 'closed') answeredClosed++;
+      }
+      byId('psychTotalConsultations').textContent = total;
+      byId('psychNewConsultations').textContent = newCount;
+      byId('psychInProgressConsultations').textContent = inProgress;
+      byId('psychAnsweredConsultations').textContent = answeredClosed;
+
+      /* Filter */
+      var filtered = [];
+      for (var i = 0; i < allPsychConsultations.length; i++) {
+        var c = allPsychConsultations[i];
+        if (searchVal &&
+            ((c.trackingCode || '').toLowerCase().indexOf(searchVal) === -1) &&
+            ((c.alias || '').toLowerCase().indexOf(searchVal) === -1) &&
+            ((c.subject || '').toLowerCase().indexOf(searchVal) === -1)) continue;
+        if (filterVal && c.status !== filterVal) continue;
+        filtered.push({ data: c, idx: i });
+      }
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty-state"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><p>' + (total === 0 ? 'لا توجد استشارات بعد' : 'لا توجد نتائج تطابق البحث') + '</p></div>';
+        return;
+      }
+
+      var html = '';
+      var statusText = { pending: 'جديدة', in_progress: 'قيد المعالجة', answered: 'تم الرد', closed: 'مغلقة' };
+      var statusBadge = { pending: 'badge-pending', in_progress: 'badge-pending', answered: 'badge-approved', closed: 'badge-rejected' };
+
+      for (var i = filtered.length - 1; i >= 0; i--) {
+        var item = filtered[i], c = item.data, idx = item.idx;
+        var dateStr = new Date(c.date).toLocaleDateString('ar-DZ', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        var st = statusText[c.status] || 'جديدة';
+        var sb = statusBadge[c.status] || 'badge-pending';
+
+        html += '<div class="consult-card">' +
+          '<div class="consult-header">' +
+          '<div><span class="consult-code">' + escapeHtml(c.trackingCode) + '</span>' +
+          '<span class="badge ' + sb + '" style="margin-right:0.5rem">' + st + '</span></div>' +
+          '<span style="font-size:0.75rem;color:var(--muted)">' + dateStr + '</span>' +
+          '</div>' +
+          '<div class="consult-meta">' +
+          '<span>👤 ' + escapeHtml(c.alias) + '</span>' +
+          (c.ageGroup ? '<span>📅 ' + escapeHtml(c.ageGroup) + '</span>' : '') +
+          '</div>' +
+          '<div class="consult-subject">' + escapeHtml(c.subject) + '</div>' +
+          '<div class="consult-message">' + escapeHtml(c.message) + '</div>' +
+          (c.specialistResponse ? '<div class="consult-response"><div class="response-label">💬 رد المستشار:</div><div class="response-text">' + escapeHtml(c.specialistResponse) + '</div></div>' : '') +
+          '<div class="consult-actions">' +
+          '<button class="btn btn-primary btn-sm psych-respond-btn" data-ridx="' + idx + '" style="font-size:0.75rem">💬 رد</button>' +
+          (c.status !== 'closed' ? '<button class="btn btn-success btn-sm psych-close-btn" data-ridx="' + idx + '" style="font-size:0.75rem">🔒 إغلاق</button>' : '') +
+          '</div>' +
+          '</div>';
+      }
+      list.innerHTML = html;
+
+      /* Wire buttons */
+      list.querySelectorAll('.psych-respond-btn').forEach(function(b) {
+        b.addEventListener('click', function() { openPsychRespondModal(parseInt(this.getAttribute('data-ridx'))); });
+      });
+      list.querySelectorAll('.psych-close-btn').forEach(function(b) {
+        b.addEventListener('click', function() {
+          var idx = parseInt(this.getAttribute('data-ridx'));
+          if (confirm('إغلاق هذه الاستشارة؟')) {
+            var data = getConsultations();
+            if (data[idx]) { data[idx].status = 'closed'; data[idx].lastUpdated = new Date().toISOString(); saveConsultations(data); allPsychConsultations = data; renderPsychConsultations(); showPsychToast('🔒 تم إغلاق الاستشارة', 'success'); }
+          }
+        });
+      });
+    }
+
+    /* Open respond modal */
+    function openPsychRespondModal(idx) {
+      var data = getConsultations();
+      if (idx < 0 || idx >= data.length) return;
+      var c = data[idx];
+      var body = byId('psychRespondBody');
+      if (!body) return;
+
+      body.innerHTML =
+        '<div style="margin-bottom:1rem;background:rgba(212,175,55,0.04);padding:0.75rem;border-radius:var(--radius-sm);border-right:3px solid var(--gold)">' +
+        '<div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.25rem">رمز المتابعة: <span class="consult-code">' + escapeHtml(c.trackingCode) + '</span></div>' +
+        '<div style="font-weight:600;font-size:0.9rem;margin-bottom:0.25rem">' + escapeHtml(c.subject) + '</div>' +
+        '<div style="font-size:0.8rem;color:var(--muted)">من: ' + escapeHtml(c.alias) + '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<label>الرسالة الأصلية</label>' +
+        '<textarea readonly style="width:100%;min-height:80px;padding:0.6rem 1rem;background:rgba(255,255,255,0.02);border:1px solid var(--border-light);border-radius:var(--radius-sm);color:var(--text-secondary);font-family:var(--font);font-size:0.85rem;resize:none">' + escapeHtml(c.message) + '</textarea>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<label for="psychResponseText">رد المستشار النفسي</label>' +
+        '<textarea id="psychResponseText" placeholder="اكتب ردك هنا..." style="width:100%;min-height:120px;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.9rem;resize:vertical">' + (c.specialistResponse || '') + '</textarea>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<label for="psychResponseStatus">تحديث الحالة</label>' +
+        '<select id="psychResponseStatus" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.85rem">' +
+        '<option value="in_progress"' + (c.status === 'in_progress' ? ' selected' : '') + '>⏳ قيد المعالجة</option>' +
+        '<option value="answered"' + (c.status === 'answered' ? ' selected' : '') + '>✅ تم الرد</option>' +
+        '<option value="closed"' + (c.status === 'closed' ? ' selected' : '') + '>🔒 مغلقة</option>' +
+        '</select></div>' +
+        '<button type="button" id="psychSaveResponseBtn" class="btn btn-primary" style="width:100%;justify-content:center">💾 حفظ الرد</button>';
+
+      byId('psychRespondModal').classList.add('active');
+
+      setTimeout(function() {
+        var saveBtn = byId('psychSaveResponseBtn');
+        if (saveBtn) {
+          saveBtn.onclick = function() {
+            var responseText = byId('psychResponseText').value.trim();
+            var newStatus = byId('psychResponseStatus').value;
+            if (!responseText) { showPsychToast('يرجى كتابة الرد', 'error'); return; }
+            var data2 = getConsultations();
+            if (data2[idx]) {
+              data2[idx].specialistResponse = responseText;
+              data2[idx].status = newStatus;
+              data2[idx].lastUpdated = new Date().toISOString();
+              saveConsultations(data2);
+              allPsychConsultations = data2;
+              byId('psychRespondModal').classList.remove('active');
+              renderPsychConsultations();
+              showPsychToast('✅ تم حفظ الرد بنجاح', 'success');
+            }
+          };
+        }
+      }, 50);
+    }
+
+    /* Search/filter change handlers */
+    setTimeout(function() {
+      var si = byId('psychSearchInput');
+      var sf = byId('psychStatusFilter');
+      if (si) si.addEventListener('input', renderPsychConsultations);
+      if (sf) sf.addEventListener('change', renderPsychConsultations);
+    }, 100);
+
+    /* Modal close handlers */
+    (function() {
+      var modal = byId('psychRespondModal');
+      var closeBtn = byId('psychModalClose');
+      if (closeBtn && modal) closeBtn.addEventListener('click', function() { modal.classList.remove('active'); });
+      if (modal) modal.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+    })();
+
+    /* Load data on start */
+    if (sessionStorage.getItem('bba_psych_auth') === 'true') {
+      loadConsultations();
+    }
+
+    /* Theme switcher */
+    var container = byId('psychThemeSwitcher');
+    if (container && window.BBA && window.BBA.Theme) {
+      window.BBA.Theme.createSwitcher(container);
+    }
+  </script>
+
+</body>
+</html>

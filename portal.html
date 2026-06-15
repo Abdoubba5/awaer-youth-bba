@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="بوابة المتطوعين - منصة وعي الشباب BBA">
+  <meta name="theme-color" content="#06090e">
+  <title>بوابة المتطوعين | منصة وعي الشباب BBA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/qr-utils.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/platform-core.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/dist/qrcode.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23D4AF37'/%3E%3Ctext y='68' x='50' text-anchor='middle' font-size='50' fill='%2306090e' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="وعي BBA">
+  <style>
+    :root{--bg:#06090e;--surface:rgba(11,16,27,0.75);--surface-solid:#0b101b;--gold:#D4AF37;--gold-hover:#B3922E;--gold-light:rgba(212,175,55,0.12);--success:#10b981;--success-bg:rgba(16,185,129,0.12);--danger:#ef4444;--danger-bg:rgba(239,68,68,0.12);--text:#ffffff;--text-secondary:#e2e8f0;--muted:#94a3b8;--border:rgba(212,175,55,0.15);--border-light:rgba(255,255,255,0.06);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--shadow-sm:0 2px 8px rgba(0,0,0,0.2);--shadow-md:0 4px 20px rgba(0,0,0,0.3);--shadow-lg:0 8px 40px rgba(0,0,0,0.4);--shadow-gold:0 4px 24px rgba(212,175,55,0.15);--font:'Cairo',sans-serif;--transition:all 0.35s cubic-bezier(0.4,0,0.2,1);--container:1100px}
+    *,:before,:after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;direction:rtl;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    h1,h2,h3,h4{font-weight:700;line-height:1.4}
+    h1{font-size:clamp(1.5rem,3.5vw,2rem)}h2{font-size:clamp(1.25rem,2.5vw,1.5rem)}h3{font-size:clamp(1.1rem,2vw,1.25rem)}
+    p{color:var(--muted);font-size:clamp(0.85rem,1.1vw,0.95rem)}
+    a{color:var(--gold);text-decoration:none;transition:var(--transition)}
+    a:hover{color:var(--gold-hover)}
+    .container{max-width:var(--container);margin:0 auto;padding:0 1rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.6rem 1.25rem;border-radius:var(--radius-sm);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition);border:none;outline:none;white-space:nowrap}
+    .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-hover));color:var(--bg);box-shadow:var(--shadow-gold)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(212,175,55,0.3);color:var(--bg)}
+    .btn-secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+    .btn-secondary:hover{background:var(--gold-light);transform:translateY(-2px);color:var(--gold)}
+    .btn-sm{padding:0.35rem 0.75rem;font-size:0.75rem}
+
+    /* Portal Header */
+    .portal-header{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:1rem 0;position:sticky;top:0;z-index:100}
+    .portal-header-inner{max-width:var(--container);margin:0 auto;padding:0 1rem;display:flex;align-items:center;justify-content:space-between}
+    .portal-logo{display:flex;align-items:center;gap:0.5rem;font-size:1rem;font-weight:700;color:var(--gold)}
+    .portal-logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold-hover));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--bg)}
+    .portal-nav{display:flex;align-items:center;gap:0.25rem}
+    .portal-nav a{color:var(--muted);padding:0.4rem 0.75rem;border-radius:var(--radius-sm);font-size:0.85rem;font-weight:500;transition:var(--transition)}
+    .portal-nav a:hover,.portal-nav a.active{color:var(--gold);background:var(--gold-light)}
+    .portal-user{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0.75rem;background:var(--gold-light);border-radius:100px;font-size:0.8rem;color:var(--gold)}
+
+    /* Hero Banner */
+    .portal-hero{padding:3rem 0 2rem;text-align:center}
+    .portal-hero h1{margin-bottom:0.5rem}
+    .portal-hero p{max-width:500px;margin:0 auto 1.5rem}
+    .volunteer-id{badge:inline-block;padding:0.4rem 1.25rem;background:var(--gold-light);border:1px solid var(--gold);border-radius:100px;font-size:0.85rem;color:var(--gold);font-weight:600;font-family:monospace;letter-spacing:1px;direction:ltr}
+
+    /* Stats Row */
+    .portal-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+    .portal-stat-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;text-align:center;transition:var(--transition)}
+    .portal-stat-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
+    .portal-stat-icon{font-size:1.75rem;margin-bottom:0.5rem}
+    .portal-stat-value{font-size:1.5rem;font-weight:700;color:var(--gold)}
+    .portal-stat-label{font-size:0.75rem;color:var(--muted);margin-top:0.25rem}
+
+    /* Grid Layout */
+    .portal-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem}
+    .portal-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;transition:var(--transition)}
+    .portal-card:hover{border-color:rgba(212,175,55,0.2)}
+    .portal-card.full{grid-column:1/-1}
+    .portal-card h3{font-size:0.9rem;color:var(--gold);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+    .portal-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
+    .portal-card-header h3{margin-bottom:0}
+
+    /* Profile section */
+    .profile-info{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .profile-field{display:flex;flex-direction:column;gap:0.2rem}
+    .profile-label{font-size:0.75rem;color:var(--muted);font-weight:600}
+    .profile-value{font-size:0.9rem;color:var(--text)}
+
+    /* Activity list */
+    .activity-list{display:flex;flex-direction:column;gap:0}
+    .activity-row{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--border-light)}
+    .activity-row:last-child{border-bottom:none}
+    .activity-icon{width:28px;height:28px;background:var(--gold-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0}
+    .activity-detail{flex:1}
+    .activity-title{font-size:0.8rem;color:var(--text);font-weight:500}
+    .activity-date{font-size:0.7rem;color:var(--muted)}
+    .points-badge{font-size:0.75rem;color:var(--gold);font-weight:700}
+
+    /* Tasks */
+    .task-item{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--border-light)}
+    .task-item:last-child{border-bottom:none}
+    .task-checkbox{width:18px;height:18px;border:2px solid var(--gold);border-radius:4px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--transition);background:none}
+    .task-checkbox.done{background:var(--gold);border-color:var(--gold)}
+    .task-checkbox.done:after{content:'✓';color:var(--bg);font-size:0.7rem;font-weight:700}
+    .task-info{flex:1}
+    .task-name{font-size:0.8rem;color:var(--text)}
+    .task-name.done{text-decoration:line-through;color:var(--muted)}
+    .task-points{font-size:0.7rem;color:var(--gold);font-weight:600}
+
+    /* Certificates */
+    .cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+    .cert-card{text-align:center;padding:1.25rem;background:rgba(212,175,55,0.03);border:1px solid var(--border);border-radius:var(--radius-md);transition:var(--transition)}
+    .cert-card:hover{transform:translateY(-2px);border-color:var(--gold)}
+    .cert-icon{font-size:2.5rem;margin-bottom:0.5rem}
+    .cert-title{font-size:0.8rem;font-weight:600;color:var(--text);margin-bottom:0.25rem}
+    .cert-date{font-size:0.7rem;color:var(--muted);margin-bottom:0.5rem}
+
+    /* Notifications */
+    .notif-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--border-light)}
+    .notif-item:last-child{border-bottom:none}
+    .notif-icon{width:28px;height:28px;background:var(--gold-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;margin-top:0.2rem}
+    .notif-detail{flex:1}
+    .notif-text{font-size:0.8rem;color:var(--text);line-height:1.5}
+    .notif-time{font-size:0.7rem;color:var(--muted)}
+    .notif-unread{width:8px;height:8px;background:var(--gold);border-radius:50%;flex-shrink:0;margin-top:0.4rem}
+
+    /* Footer */
+    .portal-footer{text-align:center;padding:1.5rem 0;border-top:1px solid var(--border);margin-top:2rem}
+    .portal-footer p{font-size:0.8rem}
+
+    /* Modal for ID lookup */
+    .id-lookup{display:flex;gap:0.75rem;max-width:400px;margin:1rem auto 0}
+    .id-lookup input{flex:1;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.85rem;direction:ltr;text-align:center;font-family:monospace}
+    .id-lookup input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light)}
+
+    @media(max-width:768px){.portal-stats{grid-template-columns:repeat(2,1fr)}.portal-grid{grid-template-columns:1fr}.profile-info{grid-template-columns:1fr}.portal-nav{display:none}.cert-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.portal-stats{grid-template-columns:1fr}.cert-grid{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+  </style>
+</head>
+<body>
+
+  <!-- ======== PORTAL LOGIN SCREEN ======== -->
+  <div id="portalLogin" class="lock-screen">
+    <div class="lock-card">
+      <div class="lock-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      </div>
+      <h2>بوابة المتطوعين</h2>
+      <p>يرجى تسجيل الدخول للوصول إلى لوحة المتطوع الخاصة بك</p>
+      <form id="portalLoginForm">
+        <div class="form-group" style="text-align:right">
+          <label for="portalLoginId">معرف المتطوع</label>
+          <input type="text" id="portalLoginId" name="volunteerId" placeholder="VOL-BBA-2026-XXXX" required dir="ltr" style="text-align:center;font-family:monospace;font-size:0.95rem">
+        </div>
+        <div class="form-group" style="text-align:right">
+          <label for="portalLoginPhone">رقم الهاتف</label>
+          <input type="tel" id="portalLoginPhone" name="phone" placeholder="05XX-XX-XX-XX" required dir="ltr">
+        </div>
+        <div id="portalLoginError" class="lock-error">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-left:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="portalLoginErrorText">بيانات الدخول غير صحيحة</span>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          تسجيل الدخول
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======== PORTAL DASHBOARD ======== -->
+  <div id="portalContent" style="display:none">
+
+  <header class="portal-header">
+    <div class="portal-header-inner">
+      <a href="index.html" class="portal-logo">
+        <span class="portal-logo-icon">وعي</span>
+        <span>بوابة المتطوعين</span>
+      </a>
+      <nav class="portal-nav">
+        <a href="#profile" class="active">الملف الشخصي</a>
+        <a href="#activities">النشاطات</a>
+        <a href="#tasks">المهام</a>
+        <a href="#certificates">الشهادات</a>
+      </nav>
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <div id="portalThemeSwitcher"></div>
+        <div class="portal-user" id="portalUserName">👤 متطوع</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="portal-hero">
+      <h1>مرحباً بك في بوابة المتطوعين</h1>
+      <p>منصة متابعة نشاطاتك التطوعية وإنجازاتك في برنامج Dz Young Leaders</p>
+      <div id="volunteerIdDisplay" class="volunteer-id">VOL-BBA-2026-0000</div>
+    </section>
+
+    <div class="portal-stats">
+      <div class="portal-stat-card">
+        <div class="portal-stat-icon">⭐</div>
+        <div class="portal-stat-value" id="statPoints">0</div>
+        <div class="portal-stat-label">النقاط</div>
+      </div>
+      <div class="portal-stat-card">
+        <div class="portal-stat-icon">📋</div>
+        <div class="portal-stat-value" id="statTasks">0/0</div>
+        <div class="portal-stat-label">المهام المنجزة</div>
+      </div>
+      <div class="portal-stat-card">
+        <div class="portal-stat-icon">🎯</div>
+        <div class="portal-stat-value" id="statActivities">0</div>
+        <div class="portal-stat-label">النشاطات</div>
+      </div>
+      <div class="portal-stat-card">
+        <div class="portal-stat-icon">🏆</div>
+        <div class="portal-stat-value" id="statCerts">0</div>
+        <div class="portal-stat-label">الشهادات</div>
+      </div>
+    </div>
+
+    <div class="portal-grid">
+
+      <div id="profile" class="portal-card">
+        <h3>👤 الملف الشخصي</h3>
+        <div class="profile-info" id="profileInfo">
+          <div class="profile-field">
+            <span class="profile-label">الاسم الكامل</span>
+            <span class="profile-value" id="pName">---</span>
+          </div>
+          <div class="profile-field">
+            <span class="profile-label">البريد الإلكتروني</span>
+            <span class="profile-value" id="pEmail">---</span>
+          </div>
+          <div class="profile-field">
+            <span class="profile-label">رقم الهاتف</span>
+            <span class="profile-value" id="pPhone">---</span>
+          </div>
+          <div class="profile-field">
+            <span class="profile-label">البلدية</span>
+            <span class="profile-value" id="pMunicipality">---</span>
+          </div>
+          <div class="profile-field">
+            <span class="profile-label">نوع العضوية</span>
+            <span class="profile-value" id="pMembership">---</span>
+          </div>
+          <div class="profile-field">
+            <span class="profile-label">تاريخ الانضمام</span>
+            <span class="profile-value" id="pDate">---</span>
+          </div>
+          <div class="profile-field" style="grid-column:1/-1;display:none" id="profileTeamField">
+            <span class="profile-label">فريق البلدية</span>
+            <span class="profile-value" id="pTeam">---</span>
+          </div>
+          <div class="profile-field" style="grid-column:1/-1" id="profileStatsRow">
+            <span class="profile-label">إحصائيات المشاركة</span>
+            <div style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:0.4rem">
+              <span style="display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.75rem;background:var(--gold-light);border-radius:100px;font-size:0.75rem;color:var(--gold)">📋 <span id="pParticipationCount">0</span> مشاركة</span>
+              <span style="display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.75rem;background:rgba(16,185,129,0.12);border-radius:100px;font-size:0.75rem;color:var(--success)">✅ <span id="pAttendanceRate">0%</span> حضور</span>
+              <span style="display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.75rem;background:var(--gold-light);border-radius:100px;font-size:0.75rem;color:var(--gold)">🏆 <span id="pCertCount">0</span> شهادات</span>
+              <span style="display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.75rem;background:rgba(139,92,246,0.12);border-radius:100px;font-size:0.75rem;color:#8b5cf6">⭐ <span id="pPointsTotal">0</span> نقطة</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="activities" class="portal-card">
+        <div class="portal-card-header">
+          <h3>📅 النشاطات الأخيرة</h3>
+          <span style="font-size:0.7rem;color:var(--muted)">آخر 7 أيام</span>
+        </div>
+        <div id="activitiesList" class="activity-list"></div>
+      </div>
+
+      <div id="tasks" class="portal-card">
+        <div class="portal-card-header">
+          <h3>✅ المهام الموكلة</h3>
+          <span style="font-size:0.7rem;color:var(--muted)">تحدد النقاط</span>
+        </div>
+        <div id="tasksList"></div>
+      </div>
+
+      <div class="portal-card" id="portalEventsCard">
+        <div class="portal-card-header">
+          <h3>📅 الفعاليات القادمة</h3>
+          <span style="font-size:0.7rem;color:var(--muted)">سجل للمشاركة</span>
+        </div>
+        <div id="portalEventsList"></div>
+      </div>
+
+      <div class="portal-card">
+        <div class="portal-card-header">
+          <h3>🔔 الإشعارات</h3>
+          <span id="notifCount" style="font-size:0.7rem;color:var(--muted)">0 جديد</span>
+        </div>
+        <div id="notificationsList"></div>
+      </div>
+
+      <div id="certificates" class="portal-card full">
+        <h3>🏆 الشهادات والإنجازات</h3>
+        <div id="certGrid" class="cert-grid"></div>
+      </div>
+
+    </div>
+
+    <footer class="portal-footer">
+      <p>© 2026 <span style="color:var(--gold);font-weight:600">منصة وعي الشباب BBA</span> | برنامج <span style="color:var(--gold);font-weight:600">Dz Young Leaders</span></p>
+      <p style="margin-top:0.5rem;font-size:0.75rem">
+        <a href="index.html">العودة إلى الصفحة الرئيسية</a>
+        <span style="color:var(--muted);margin:0 0.5rem">|</span>
+        <a href="admin.html">لوحة الإدارة</a>
+      </p>
+    </footer>
+
+  </main>
+
+  <!-- Hidden container for certificate PDF generation -->
+  <div id="portalCertPDFContainer" style="position:fixed;left:-9999px;top:0;z-index:-1;opacity:0;pointer-events:none"></div>
+
+  <!-- Certificate Preview Modal -->
+  <div id="portalCertPreviewModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:800px">
+      <div class="modal-header">
+        <h3>📜 الشهادة</h3>
+        <button type="button" class="modal-close" id="portalCertModalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="portalCertPreviewBody"></div>
+      <div style="display:flex;gap:0.75rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
+        <button type="button" id="portalDownloadCertBtn" class="btn btn-primary" style="flex:1;justify-content:center">📥 تحميل PDF</button>
+        <button type="button" id="portalCertModalCloseBtn" class="btn btn-secondary" style="flex:1;justify-content:center">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* Utility */
+    function byId(id) { return document.getElementById(id); }
+    function escapeHtml(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+    /* Theme switcher */
+    (function() {
+      var container = byId('portalThemeSwitcher');
+      if (container && window.BBA && window.BBA.Theme) {
+        window.BBA.Theme.createSwitcher(container);
+      }
+    })();
+
+    /* Current volunteer ID for localStorage keying */
+    var currentPortalKey = '';
+    var currentVolunteerData = null;
+
+    /* ============================================================
+     * PORTAL LOGIN SYSTEM
+     * Requires: volunteer role via Supabase Auth, OR
+     * Legacy: volunteer ID + phone number with approved status
+     * ============================================================ */
+    (function initPortalLogin() {
+      var loginScreen = byId('portalLogin');
+      var content = byId('portalContent');
+      var form = byId('portalLoginForm');
+      var errorDiv = byId('portalLoginError');
+      var errorText = byId('portalLoginErrorText');
+
+      function showLogin() {
+        if (loginScreen) loginScreen.classList.remove('hidden');
+        if (content) content.style.display = 'none';
+      }
+
+      function showDashboard() {
+        if (loginScreen) loginScreen.classList.add('hidden');
+        if (content) content.style.display = 'block';
+      }
+
+      /* Try Supabase Auth first */
+      function trySupabasePortalAuth() {
+        if (window.BBA && window.BBA.Auth) {
+          window.BBA.Auth.initSession().then(function(user) {
+            if (user && window.BBA.Auth.isLoggedIn()) {
+              var role = window.BBA.Auth.getRole();
+              if (role === 'volunteer') {
+                var roleData = window.BBA.Auth.getRoleData();
+                var vid = roleData && roleData.volunteer_id ? roleData.volunteer_id : null;
+                if (vid) {
+                  /* Load volunteer data by volunteer_id */
+                  var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+                  for (var i = 0; i < volunteers.length; i++) {
+                    if (volunteers[i].volunteerId === vid && volunteers[i].status === 'approved' && !volunteers[i].suspended) {
+                      currentVolunteerData = volunteers[i];
+                      sessionStorage.setItem('bba_portal_session', JSON.stringify({ id: vid, name: volunteers[i].fullName }));
+                      showDashboard();
+                      loadVolunteerData(vid);
+                      return;
+                    }
+                  }
+                  /* Volunteer record not found locally but role exists - still allow access */
+                  currentVolunteerData = { volunteerId: vid, fullName: roleData.display_name || 'متطوع', email: user.email };
+                  sessionStorage.setItem('bba_portal_session', JSON.stringify({ id: vid, name: roleData.display_name || 'متطوع' }));
+                  showDashboard();
+                  loadVolunteerData(vid);
+                  return;
+                }
+              }
+            }
+            /* Fallback: legacy portal session */
+            checkLegacySession();
+          });
+        } else {
+          checkLegacySession();
+        }
+      }
+
+      function checkLegacySession() {
+        var savedSession = sessionStorage.getItem('bba_portal_session');
+        if (savedSession) {
+          try {
+            var session = JSON.parse(savedSession);
+            var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+            var found = null;
+            for (var i = 0; i < volunteers.length; i++) {
+              if (volunteers[i].volunteerId === session.id && volunteers[i].status === 'approved' && !volunteers[i].suspended) {
+                found = volunteers[i];
+                break;
+              }
+            }
+            if (found) {
+              currentVolunteerData = found;
+              showDashboard();
+              loadVolunteerData(found.volunteerId);
+              return;
+            }
+          } catch(e) {}
+          sessionStorage.removeItem('bba_portal_session');
+        }
+        showLogin();
+      }
+
+      /* Wait for BBA.Auth then try Supabase auth */
+      var checkAuth = setInterval(function() {
+        if (window.BBA && window.BBA.Auth) {
+          clearInterval(checkAuth);
+          trySupabasePortalAuth();
+        }
+      }, 300);
+      setTimeout(function() {
+        clearInterval(checkAuth);
+        checkLegacySession();
+      }, 6000);
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var inputId = byId('portalLoginId').value.trim();
+          var inputPhone = byId('portalLoginPhone').value.trim();
+
+          if (!inputId || !inputPhone) {
+            errorText.textContent = 'يرجى إدخال معرف المتطوع ورقم الهاتف';
+            errorDiv.classList.add('visible');
+            return;
+          }
+
+          var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+          var found = null;
+          for (var i = 0; i < volunteers.length; i++) {
+            if (volunteers[i].volunteerId === inputId) {
+              found = volunteers[i];
+              break;
+            }
+          }
+
+          if (!found) {
+            errorText.textContent = 'بيانات الدخول غير صحيحة';
+            errorDiv.classList.add('visible');
+            return;
+          }
+
+          /* Verify phone number */
+          var cleanInputPhone = inputPhone.replace(/\s/g, '').replace(/-/g, '');
+          var cleanFoundPhone = found.phone.replace(/\s/g, '').replace(/-/g, '');
+          if (cleanInputPhone !== cleanFoundPhone) {
+            errorText.textContent = 'بيانات الدخول غير صحيحة';
+            errorDiv.classList.add('visible');
+            return;
+          }
+
+          /* Check approval status */
+          if (found.status !== 'approved') {
+            errorText.textContent = 'لم يتم قبول طلبك بعد';
+            errorDiv.classList.add('visible');
+            return;
+          }
+
+          if (found.suspended) {
+            errorText.textContent = 'تم تعليق حسابك مؤقتاً. يرجى التواصل مع الإدارة';
+            errorDiv.classList.add('visible');
+            return;
+          }
+
+          /* Login successful */
+          errorDiv.classList.remove('visible');
+          sessionStorage.setItem('bba_portal_session', JSON.stringify({ id: found.volunteerId, name: found.fullName }));
+          currentVolunteerData = found;
+          form.reset();
+          showDashboard();
+          loadVolunteerData(found.volunteerId);
+        });
+      }
+    })();
+
+    /* Load or initialize portal data from localStorage */
+    function getPortalData(vid) {
+      if (!vid) return null;
+      var key = 'bba_portal_' + vid;
+      var raw = localStorage.getItem(key);
+      if (raw) {
+        try { return JSON.parse(raw); } catch(e) { return null; }
+      }
+      return null;
+    }
+
+    function savePortalData(vid, data) {
+      localStorage.setItem('bba_portal_' + vid, JSON.stringify(data));
+    }
+
+    /* Load volunteer data from localStorage */
+    function loadVolunteerData(lookupId) {
+      var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+      var found = null;
+
+      if (lookupId) {
+        for (var i = 0; i < volunteers.length; i++) {
+          if (volunteers[i].volunteerId === lookupId) { found = volunteers[i]; break; }
+        }
+      } else {
+        for (var i = 0; i < volunteers.length; i++) {
+          if (volunteers[i].status === 'approved') { found = volunteers[i]; break; }
+        }
+      }
+
+      if (!found) {
+        byId('volunteerIdDisplay').textContent = 'لم يتم العثور على متطوع معتمد';
+        return;
+      }
+
+      var vid = found.volunteerId || 'VOL-BBA-2026-0000';
+      currentPortalKey = vid;
+      byId('volunteerIdDisplay').textContent = vid;
+      byId('pName').textContent = found.fullName || '---';
+      byId('pEmail').textContent = found.email || '---';
+      byId('pPhone').textContent = found.phone || '---';
+      byId('pMunicipality').textContent = found.municipality || '---';
+      byId('pMembership').textContent = found.membershipType === 'admin' ? 'عضو فعال في الإدارة' : (found.membershipType === 'member' ? 'عضو في التنظيم' : '---');
+      byId('pDate').textContent = found.date ? new Date(found.date).toLocaleDateString('ar-DZ', { year: 'numeric', month: 'long', day: 'numeric' }) : '---';
+
+      /* Load REAL data from admin-managed localStorage - NO DEMO DATA */
+      /* First: load from new bba_activity_log (admin-managed) */
+      var activityLog = JSON.parse(localStorage.getItem('bba_activity_log') || '[]');
+      var activitiesFromLog = [];
+      for (var al = 0; al < activityLog.length; al++) {
+        if (activityLog[al].volunteerId === vid) {
+          activitiesFromLog.push({
+            title: activityLog[al].title,
+            points: activityLog[al].points || 0,
+            date: activityLog[al].date ? new Date(activityLog[al].date).toLocaleDateString('ar-DZ', { year: 'numeric', month: 'long', day: 'numeric' }) : ''
+          });
+        }
+      }
+      /* Then: also load from legacy portal data for backward compatibility */
+      var portalData = getPortalData(vid);
+      var legacyActivities = portalData && portalData.activities ? portalData.activities : [];
+      /* Merge both sources, preferring new activity log */
+      var activities = activitiesFromLog.length > 0 ? activitiesFromLog : legacyActivities;
+      var tasks = JSON.parse(localStorage.getItem('bba_tasks') || '[]');
+      var notifications = JSON.parse(localStorage.getItem('bba_notifications_data') || '[]');
+      var achievements = JSON.parse(localStorage.getItem('bba_achievements') || '[]');
+      var certificates = JSON.parse(localStorage.getItem('bba_certificates') || '[]');
+      var pointsHistory = JSON.parse(localStorage.getItem('bba_points_' + vid) || '[]');
+
+      /* Filter tasks assigned to this volunteer or 'all' */
+      var myTasks = [];
+      for (var t = 0; t < tasks.length; t++) {
+        if (tasks[t].assignedTo === 'all' || tasks[t].assignedTo === vid) {
+          myTasks.push(tasks[t]);
+        }
+      }
+
+      /* Filter notifications for this volunteer or 'all' */
+      var myNotifs = [];
+      for (var n = 0; n < notifications.length; n++) {
+        if (notifications[n].targetVolunteer === 'all' || notifications[n].targetVolunteer === vid) {
+          myNotifs.push(notifications[n]);
+        }
+      }
+
+      /* Filter achievements for this volunteer */
+      var myAchievements = [];
+      for (var a = 0; a < achievements.length; a++) {
+        if (achievements[a].assignedTo === vid) {
+          myAchievements.push(achievements[a]);
+        }
+      }
+
+      /* Filter certificates for this volunteer */
+      var myCerts = [];
+      for (var c = 0; c < certificates.length; c++) {
+        if (certificates[c].volunteerId === vid) {
+          myCerts.push(certificates[c]);
+        }
+      }
+
+      /* Calculate points */
+      var totalPoints = 0;
+      for (var p = 0; p < pointsHistory.length; p++) {
+        if (pointsHistory[p].type === 'add') totalPoints += pointsHistory[p].amount;
+        else totalPoints -= pointsHistory[p].amount;
+      }
+      for (var p = 0; p < activities.length; p++) {
+        totalPoints += parseInt(activities[p].points) || 0;
+      }
+
+      /* Stats */
+      byId('statPoints').textContent = totalPoints;
+      byId('statTasks').textContent = myTasks.length > 0 ? '0/' + myTasks.length : '0';
+      byId('statActivities').textContent = activities.length > 0 || myAchievements.length > 0 ? (activities.length + myAchievements.length) : '0';
+      byId('statCerts').textContent = myCerts.length;
+
+      /* Render activities */
+      var al = byId('activitiesList');
+      if (activities.length === 0 && myAchievements.length === 0) {
+        al.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.85rem">لا توجد نشاطات بعد. سيتم إضافتها من قبل الإدارة.</div>';
+      } else {
+        var aHtml = '';
+        for (var i = 0; i < activities.length; i++) {
+          aHtml += '<div class="activity-row"><div class="activity-icon">📌</div><div class="activity-detail"><div class="activity-title">' + escapeHtml(activities[i].title) + '</div><div class="activity-date">' + (activities[i].date || '') + '</div></div><div class="points-badge">' + (activities[i].points || '') + '</div></div>';
+        }
+        for (var i = 0; i < myAchievements.length; i++) {
+          aHtml += '<div class="activity-row"><div class="activity-icon" style="background:var(--success-bg)">' + (myAchievements[i].icon || '🏆') + '</div><div class="activity-detail"><div class="activity-title">' + escapeHtml(myAchievements[i].title) + '</div><div class="activity-date">' + (myAchievements[i].description || '') + '</div></div><div class="points-badge" style="color:var(--success)">إنجاز</div></div>';
+        }
+        al.innerHTML = aHtml;
+      }
+
+      /* Render tasks from admin - with toggle support */
+      var tl = byId('tasksList');
+      if (myTasks.length === 0) {
+        tl.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.85rem">لا توجد مهام حالياً. سيتم إضافة المهام من قبل الإدارة.</div>';
+      } else {
+        var tHtml = '';
+        var doneCount = 0;
+        for (var i = 0; i < myTasks.length; i++) {
+          var taskKey = 'bba_task_done_' + vid + '_' + i;
+          var isDone = localStorage.getItem(taskKey) === 'true';
+          if (isDone) doneCount++;
+          var priorityColor = myTasks[i].priority === 'urgent' ? 'var(--danger)' : myTasks[i].priority === 'high' ? 'var(--success)' : myTasks[i].priority === 'low' ? 'var(--muted)' : 'var(--gold)';
+          var priorityText = { low: 'منخفضة', medium: 'متوسطة', high: 'عالية', urgent: 'عاجلة' };
+          tHtml += '<div class="task-item"><div class="task-checkbox' + (isDone ? ' done' : '') + '" data-task-portal="' + i + '"></div><div class="task-info"><div class="task-name' + (isDone ? ' done' : '') + '">' + escapeHtml(myTasks[i].name) + '</div><div style="font-size:0.7rem;color:var(--muted)">' + (myTasks[i].deadline ? '📅 ' + new Date(myTasks[i].deadline).toLocaleDateString('ar-DZ') : '') + ' <span style="color:' + priorityColor + '">' + (priorityText[myTasks[i].priority] || '') + '</span></div></div><div class="task-points" style="color:' + priorityColor + '">' + (priorityText[myTasks[i].priority] || '') + '</div></div>';
+        }
+        tl.innerHTML = tHtml;
+        byId('statTasks').textContent = doneCount + '/' + myTasks.length;
+
+        var checkboxes = tl.querySelectorAll('.task-checkbox');
+        for (var i = 0; i < checkboxes.length; i++) {
+          (function(cb, taskIdx) {
+            cb.addEventListener('click', function() {
+              this.classList.toggle('done');
+              var taskNameEl = this.parentElement.querySelector('.task-name');
+              if (taskNameEl) taskNameEl.classList.toggle('done');
+              var taskKey = 'bba_task_done_' + vid + '_' + taskIdx;
+              localStorage.setItem(taskKey, this.classList.contains('done') ? 'true' : 'false');
+              var newDone = 0;
+              var allCbs = tl.querySelectorAll('.task-checkbox');
+              for (var c = 0; c < allCbs.length; c++) { if (allCbs[c].classList.contains('done')) newDone++; }
+              byId('statTasks').textContent = newDone + '/' + myTasks.length;
+              showToast(this.classList.contains('done') ? '✅ تم إكمال المهمة!' : '🔄 تم إلغاء الإكمال', 'info');
+            });
+          })(checkboxes[i], i);
+        }
+      }
+
+      /* Render notifications */
+      var nl = byId('notificationsList');
+      if (myNotifs.length === 0) {
+        nl.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.85rem">لا توجد إشعارات جديدة</div>';
+        byId('notifCount').textContent = '0 جديد';
+      } else {
+        var nHtml = '';
+        var unreadCount = 0;
+        var notificationsSeen = JSON.parse(localStorage.getItem('bba_notifs_seen_' + vid) || '[]');
+        for (var i = myNotifs.length - 1; i >= 0; i--) {
+          var notifKey = vid + '_' + i;
+          var isUnread = notificationsSeen.indexOf(notifKey) === -1;
+          if (isUnread) unreadCount++;
+          var typeIcon = { info: 'ℹ️', alert: '⚠️', new_task: '📋', achievement: '🏆' };
+          nHtml += '<div class="notif-item"><div class="notif-icon">' + (typeIcon[myNotifs[i].type] || '📢') + '</div><div class="notif-detail"><div class="notif-text">' + escapeHtml(myNotifs[i].title) + ': ' + escapeHtml(myNotifs[i].message) + '</div><div class="notif-time">' + new Date(myNotifs[i].createdAt).toLocaleDateString('ar-DZ', { day: 'numeric', month: 'short' }) + '</div></div>' + (isUnread ? '<div class="notif-unread"></div>' : '') + '</div>';
+        }
+        nl.innerHTML = nHtml;
+        byId('notifCount').textContent = unreadCount + ' جديد';
+        /* Mark as seen on click */
+        nl.addEventListener('click', function() {
+          var seen = [];
+          for (var s = 0; s < myNotifs.length; s++) { seen.push(vid + '_' + s); }
+          localStorage.setItem('bba_notifs_seen_' + vid, JSON.stringify(seen));
+          byId('notifCount').textContent = '0 جديد';
+          var dots = nl.querySelectorAll('.notif-unread');
+          for (var d = 0; d < dots.length; d++) { if (dots[d].parentNode) dots[d].parentNode.removeChild(dots[d]); }
+        }, { once: true });
+      }
+
+      /* Build landscape certificate HTML for preview/PDF */
+      function buildPortalCertHTML(c, qrDataUrl) {
+        var volName = currentVolunteerData ? currentVolunteerData.fullName : '---';
+        var issueDateStr = c.issueDate ? new Date(c.issueDate).toLocaleDateString('ar-DZ', { year: 'numeric', month: 'long', day: 'numeric' }) : '---';
+        var certNum = c.certificateNumber || '---';
+        var volId = c.volunteerId || '---';
+        var desc = c.description || '';
+        var baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname.replace(/[^/]*$/, '');
+        var verifyUrl = baseUrl + 'verify-certificate.html?id=' + encodeURIComponent(certNum);
+        var qrUrl = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(verifyUrl);
+        return '<div dir="rtl" style="width:297mm;height:210mm;background:#0b101b;padding:0;position:relative;font-family:\'Cairo\',sans-serif;overflow:hidden">' +
+          '<div style="position:absolute;inset:8px;border:2.5px solid #D4AF37;border-radius:14px;pointer-events:none"></div>' +
+          '<div style="position:absolute;inset:14px;border:1px solid rgba(212,175,55,0.25);border-radius:10px;pointer-events:none"></div>' +
+          '<div style="position:absolute;top:16px;right:16px;width:50px;height:50px;border-top:3px solid #D4AF37;border-right:3px solid #D4AF37;border-radius:0 8px 0 0"></div>' +
+          '<div style="position:absolute;top:16px;left:16px;width:50px;height:50px;border-top:3px solid #D4AF37;border-left:3px solid #D4AF37;border-radius:8px 0 0 0"></div>' +
+          '<div style="position:absolute;bottom:16px;right:16px;width:50px;height:50px;border-bottom:3px solid #D4AF37;border-right:3px solid #D4AF37;border-radius:0 0 8px 0"></div>' +
+          '<div style="position:absolute;bottom:16px;left:16px;width:50px;height:50px;border-bottom:3px solid #D4AF37;border-left:3px solid #D4AF37;border-radius:0 0 0 8px"></div>' +
+          '<div style="position:absolute;top:40px;left:100px;right:100px;height:1px;background:linear-gradient(90deg,transparent,#D4AF37,transparent)"></div>' +
+          '<div style="position:absolute;top:52px;left:60px;right:60px;display:flex;align-items:center;justify-content:space-between">' +
+          '<div style="display:flex;align-items:center;gap:12px">' +
+          '<div style="width:48px;height:48px;background:linear-gradient(135deg,#D4AF37,#B3922E);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#06090e;font-weight:700;flex-shrink:0">وعي</div>' +
+          '<div><h1 style="color:#D4AF37;font-size:20px;font-weight:700;margin:0;letter-spacing:1px;line-height:1.2">شهادة تقدير ومشاركة</h1>' +
+          '<p style="color:#94a3b8;font-size:11px;margin:2px 0 0">برنامج Dz Young Leaders</p></div>' +
+          '</div>' +
+          '<div style="background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);border-radius:8px;padding:6px 14px;text-align:center">' +
+          '<div style="font-size:7px;color:#94a3b8;margin-bottom:2px">رقم الشهادة</div>' +
+          '<div style="font-size:10px;color:#D4AF37;font-weight:700;font-family:monospace;direction:ltr">' + certNum + '</div>' +
+          '</div>' +
+          '</div>' +
+          '<div style="position:absolute;top:95px;left:280px;right:60px;bottom:80px;display:flex;flex-direction:column;justify-content:center">' +
+          '<p style="color:#e2e8f0;font-size:12px;line-height:2;margin:0 0 12px;text-align:center">' +
+          'تشهد منصة <strong style="color:#D4AF37">وعي الشباب BBA</strong> التابعة لبرنامج <strong style="color:#D4AF37">Dz Young Leaders</strong> بأن:' +
+          '</p>' +
+          '<div style="background:rgba(212,175,55,0.05);border:1px solid rgba(212,175,55,0.15);border-radius:12px;padding:14px 20px;margin:0 auto 12px;max-width:360px;text-align:center">' +
+          '<h2 style="color:#D4AF37;font-size:24px;font-weight:700;margin:0;letter-spacing:1px;line-height:1.3">' + escapeHtml(volName) + '</h2>' +
+          '</div>' +
+          '<p style="color:#cbd5e1;font-size:11px;line-height:1.9;margin:0 auto;max-width:440px;text-align:center">' +
+          'قد شارك بفعالية في الأنشطة والمبادرات التوعوية الخاصة بالمنصة، وأظهر التزاماً ومسؤولية وروحاً تطوعية متميزة.\n\nوتقديراً لجهوده ومساهماته الفعالة تمنح له هذه الشهادة.' +
+          '</p>' +
+          (desc ? '<p style="color:#94a3b8;font-size:10px;margin:8px auto 0;font-style:italic;max-width:400px;text-align:center">' + escapeHtml(desc) + '</p>' : '') +
+          '</div>' +
+          '<div style="position:absolute;top:120px;right:30px;width:220px;text-align:center">' +
+          '<p style="color:#D4AF37;font-size:11px;font-weight:600;margin:0;line-height:1.6">منصة وعي الشباب BBA</p>' +
+          '<p style="color:#94a3b8;font-size:9px;margin:2px 0">برنامج Dz Young Leaders</p>' +
+          '<p style="color:#94a3b8;font-size:8px;margin:0">ولاية برج بوعريريج، الجزائر</p>' +
+          '<div style="width:1px;height:60px;background:linear-gradient(180deg,#D4AF37,transparent);margin:14px auto"></div>' +
+          '</div>' +
+          '<div style="position:absolute;bottom:50px;left:60px;right:60px;display:flex;align-items:flex-end;justify-content:space-between">' +
+          '<div style="text-align:center">' +
+          '<img src="' + qrUrl + '" alt="QR" style="width:70px;height:70px;border:2px solid #D4AF37;border-radius:8px;display:block;margin:0 auto 4px" crossorigin="anonymous" onerror="this.style.display=\'none\'">' +
+          '<div style="font-size:7px;color:#94a3b8">مسح للتحقق</div>' +
+          '</div>' +
+          '<div style="text-align:center;position:relative">' +
+          '<div style="width:95px;height:95px;border:3px solid #D4AF37;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(212,175,55,0.04);margin:0 auto">' +
+          '<div style="font-size:8px;color:#D4AF37;font-weight:700;line-height:1.3;text-align:center">منصة وعي\nالشباب BBA</div>' +
+          '<div style="font-size:6px;color:#94a3b8;line-height:1.2;margin-top:2px;text-align:center">Dz Young Leaders\nOfficial</div>' +
+          '</div>' +
+          '</div>' +
+          '<div style="text-align:center">' +
+          '<div style="border-top:2px solid #D4AF37;width:170px;margin:0 auto 6px;padding-top:6px">' +
+          '<p style="color:#D4AF37;font-size:12px;font-weight:600;margin:0;line-height:1.5">Sidiali Abdelilah</p>' +
+          '<p style="color:#e2e8f0;font-size:10px;margin:0" dir="rtl">سيدي علي عبد الإله</p>' +
+          '</div>' +
+          '<p style="color:#94a3b8;font-size:8px;margin:0;max-width:170px;line-height:1.5">قائد برنامج Dz Young Leaders\nومؤسس منصة وعي الشباب BBA</p>' +
+          '</div>' +
+          '</div>' +
+          '<div style="position:absolute;bottom:20px;left:60px;right:60px;display:flex;align-items:center;justify-content:space-between;padding-top:6px;border-top:1px solid rgba(212,175,55,0.15)">' +
+          '<div style="display:flex;gap:16px;font-size:8px;color:#94a3b8">' +
+          '<span style="direction:ltr;font-family:monospace">📜 ' + certNum + '</span>' +
+          '<span style="direction:ltr;font-family:monospace">👤 ' + volId + '</span>' +
+          '<span>📅 ' + issueDateStr + '</span>' +
+          '</div>' +
+          '<a href="' + verifyUrl + '" target="_blank" style="color:#D4AF37;font-size:8px;text-decoration:none">تحقق من صحة الشهادة 🔍</a>' +
+          '</div>' +
+          '</div>';
+      }
+
+      /* Portal certificate preview */
+      var portalCertPreviewData = null;
+
+      function showPortalCertPreview(c) {
+        portalCertPreviewData = c;
+        var modal = byId('portalCertPreviewModal');
+        var body = byId('portalCertPreviewBody');
+        if (!modal || !body) return;
+
+        /* Generate QR code client-side */
+        var qrDataUrl = null;
+        if (window.BBA && window.BBA.QR && c.certificateNumber) {
+          window.BBA.QR.generateForCertificate(c.certificateNumber, 100).then(function(qrResult) {
+            qrDataUrl = qrResult.dataUrl;
+            body.innerHTML = '<div style="transform:scale(0.45);transform-origin:top center;width:210mm;height:297mm;overflow:hidden">' + buildPortalCertHTML(c, qrDataUrl) + '</div>';
+            modal.classList.add('active');
+          }).catch(function() {
+            body.innerHTML = '<div style="transform:scale(0.45);transform-origin:top center;width:210mm;height:297mm;overflow:hidden">' + buildPortalCertHTML(c) + '</div>';
+            modal.classList.add('active');
+          });
+        } else {
+          body.innerHTML = '<div style="transform:scale(0.45);transform-origin:top center;width:210mm;height:297mm;overflow:hidden">' + buildPortalCertHTML(c) + '</div>';
+          modal.classList.add('active');
+        }
+      }
+
+      function downloadPortalCertPDF(c) {
+        if (!c) { showToast('❌ الشهادة غير متوفرة', 'error'); return; }
+        if (typeof html2canvas === 'undefined' || typeof jspdf === 'undefined') {
+          showToast('مكتبات PDF قيد التحميل، يرجى المحاولة مرة أخرى', 'error');
+          return;
+        }
+        showToast('📄 جاري إنشاء ملف PDF...', 'info');
+        var container = byId('portalCertPDFContainer');
+        if (!container) return;
+        container.innerHTML = buildPortalCertHTML(c);
+        container.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;opacity:0;pointer-events:none;width:297mm';
+        setTimeout(function() {
+          html2canvas(container, { scale: 2.5, useCORS: true, backgroundColor: '#0b101b', width: 1123, height: 794, logging: false })
+            .then(function(canvas) {
+              var imgData = canvas.toDataURL('image/jpeg', 0.95);
+              var pdf = new jspdf.jsPDF('l', 'mm', 'a4');
+              pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210);
+              pdf.save('CERT_' + (c.certificateNumber || 'certificate') + '.pdf');
+              container.innerHTML = '';
+              showToast('✅ تم تحميل ملف PDF بنجاح', 'success');
+            })
+            .catch(function(err) {
+              showToast('❌ حدث خطأ: ' + err.message, 'error');
+              container.innerHTML = '';
+            });
+        }, 300);
+      }
+
+      /* Render certificates */
+      var cg = byId('certGrid');
+      if (myCerts.length === 0) {
+        cg.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem">لم يتم إصدار شهادات بعد</div>';
+      } else {
+        var cHtml = '';
+        for (var i = 0; i < myCerts.length; i++) {
+          (function(cert, idx) {
+            var certNum = cert.certificateNumber || '---';
+            cHtml += '<div class="cert-card" style="position:relative">' +
+              '<div class="cert-icon">📜</div>' +
+              '<div class="cert-title">' + escapeHtml(cert.title) + '</div>' +
+              '<div style="font-size:0.65rem;color:var(--gold);font-family:monospace;direction:ltr;margin-bottom:0.25rem">' + certNum + '</div>' +
+              '<div class="cert-date">' + new Date(cert.issueDate).toLocaleDateString('ar-DZ', { year: 'numeric', month: 'long', day: 'numeric' }) + '</div>' +
+              '<div style="display:flex;gap:0.4rem;justify-content:center;margin-top:0.5rem">' +
+              '<button class="btn btn-secondary btn-sm view-cert-btn" style="font-size:0.65rem;padding:0.25rem 0.6rem">👁️ عرض</button>' +
+              '<button class="btn btn-primary btn-sm download-cert-btn" style="font-size:0.65rem;padding:0.25rem 0.6rem">📥 PDF</button>' +
+              '</div></div>';
+          })(myCerts[i], i);
+        }
+        cg.innerHTML = cHtml;
+
+        /* Wire buttons */
+        var certCards = cg.querySelectorAll('.cert-card');
+        for (var ci = 0; ci < certCards.length; ci++) {
+          (function(cardIdx) {
+            var vBtn = certCards[cardIdx].querySelector('.view-cert-btn');
+            var dBtn = certCards[cardIdx].querySelector('.download-cert-btn');
+            if (vBtn) {
+              vBtn.addEventListener('click', function() { showPortalCertPreview(myCerts[cardIdx]); });
+            }
+            if (dBtn) {
+              dBtn.addEventListener('click', function() { downloadPortalCertPDF(myCerts[cardIdx]); });
+            }
+          })(ci);
+        }
+      }
+
+      /* Render team info */
+      var teams = JSON.parse(localStorage.getItem('bba_teams') || '[]');
+      var myTeam = null;
+      for (var ti = 0; ti < teams.length; ti++) {
+        var tm = teams[ti].members || [];
+        for (var tmi = 0; tmi < tm.length; tmi++) {
+          if (tm[tmi] === vid) { myTeam = teams[ti]; break; }
+        }
+        if (myTeam) break;
+        if (teams[ti].leaderId === vid) { myTeam = teams[ti]; break; }
+      }
+      var teamField = byId('profileTeamField');
+      var teamValue = byId('pTeam');
+      if (myTeam && teamField && teamValue) {
+        teamField.style.display = 'block';
+        teamValue.textContent = myTeam.name + (myTeam.leaderId === vid ? ' (قائد الفريق)' : '');
+      } else if (teamField) {
+        teamField.style.display = 'none';
+      }
+
+      /* Update profile stats */
+      /* Participation count = activities.length */
+      byId('pParticipationCount').textContent = activities.length;
+      /* Attendance rate = count attended events / total registered events */
+      var events = JSON.parse(localStorage.getItem('bba_events') || '[]');
+      var totalRegs = 0, totalAttended = 0;
+      for (var ei = 0; ei < events.length; ei++) {
+        var regs = events[ei].registrations || [];
+        for (var ri = 0; ri < regs.length; ri++) {
+          if (regs[ri].volunteerId === vid) {
+            totalRegs++;
+            if (regs[ri].attended) totalAttended++;
+          }
+        }
+      }
+      var attRate = totalRegs > 0 ? Math.round((totalAttended / totalRegs) * 100) : 0;
+      byId('pAttendanceRate').textContent = attRate + '%';
+      byId('pCertCount').textContent = myCerts.length;
+      byId('pPointsTotal').textContent = totalPoints;
+
+      /* Render upcoming events */
+      var eventsList = byId('portalEventsList');
+      var today = new Date();
+      today.setHours(0,0,0,0);
+      var openEvents = [];
+      for (var ei = 0; ei < events.length; ei++) {
+        if (events[ei].status === 'open') {
+          var ed = new Date(events[ei].date + 'T00:00:00');
+          if (ed >= today) openEvents.push(events[ei]);
+        }
+      }
+      openEvents.sort(function(a,b){ return new Date(a.date) - new Date(b.date); });
+      openEvents = openEvents.slice(0, 5);
+      if (openEvents.length === 0) {
+        eventsList.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.85rem">لا توجد فعاليات قادمة حالياً</div>';
+      } else {
+        var eHtml = '';
+        for (var ei = 0; ei < openEvents.length; ei++) {
+          var e = openEvents[ei];
+          var isRegistered = false;
+          var eRegs = e.registrations || [];
+          for (var ri = 0; ri < eRegs.length; ri++) {
+            if (eRegs[ri].volunteerId === vid) { isRegistered = true; break; }
+          }
+          var seatsFull = e.seats > 0 && eRegs.length >= e.seats;
+          var eventId = events.indexOf(e);
+          eHtml += '<div class="activity-row"><div class="activity-icon">' + (e.typeIcon || '📅') + '</div>' +
+            '<div class="activity-detail"><div class="activity-title">' + escapeHtml(e.title) + '</div>' +
+            '<div class="activity-date">' + new Date(e.date).toLocaleDateString('ar-DZ',{day:'numeric',month:'short'}) +
+            (e.location ? ' | ' + escapeHtml(e.location) : '') +
+            ' | ' + (eRegs.length) + '/' + (e.seats || '∞') + ' مقعد</div></div>' +
+            (isRegistered ? '<button class="btn btn-sm portal-unregister-btn" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.5rem;font-size:0.65rem;border-radius:4px;cursor:pointer;font-family:var(--font)" data-event-id="' + eventId + '">إلغاء</button>' :
+              (seatsFull ? '<span class="badge badge-rejected" style="font-size:0.65rem">ممتلئ</span>' :
+                '<button class="btn btn-sm portal-register-btn" style="background:transparent;color:var(--gold);border:1px solid var(--gold);padding:0.2rem 0.5rem;font-size:0.65rem;border-radius:4px;cursor:pointer;font-family:var(--font)" data-event-id="' + eventId + '">تسجيل</button>')) +
+            '</div>';
+        }
+        eventsList.innerHTML = eHtml;
+
+        /* Wire register/unregister buttons */
+        eventsList.querySelectorAll('.portal-register-btn').forEach(function(b) {
+          b.addEventListener('click', function() {
+            var eid = parseInt(this.getAttribute('data-event-id'));
+            var evData = JSON.parse(localStorage.getItem('bba_events') || '[]');
+            if (evData[eid]) {
+              if (!evData[eid].registrations) evData[eid].registrations = [];
+              evData[eid].registrations.push({ volunteerId: vid, volunteerName: found.fullName, attended: false, registeredAt: new Date().toISOString() });
+              localStorage.setItem('bba_events', JSON.stringify(evData));
+              showToast('✅ تم التسجيل في الفعالية بنجاح', 'success');
+              /* Update stats */
+              totalRegs++;
+              byId('pParticipationCount').textContent = activities.length + 1;
+              loadVolunteerData(vid);
+            }
+          });
+        });
+        eventsList.querySelectorAll('.portal-unregister-btn').forEach(function(b) {
+          b.addEventListener('click', function() {
+            var eid = parseInt(this.getAttribute('data-event-id'));
+            var evData = JSON.parse(localStorage.getItem('bba_events') || '[]');
+            if (evData[eid] && evData[eid].registrations) {
+              var newRegs = [];
+              for (var ri = 0; ri < evData[eid].registrations.length; ri++) {
+                if (evData[eid].registrations[ri].volunteerId !== vid) newRegs.push(evData[eid].registrations[ri]);
+              }
+              evData[eid].registrations = newRegs;
+              localStorage.setItem('bba_events', JSON.stringify(evData));
+              showToast('🔄 تم إلغاء التسجيل', 'info');
+              loadVolunteerData(vid);
+            }
+          });
+        });
+      }
+
+      /* Render achievements in profile */
+      var profileInfo = byId('profileInfo');
+      var existingAchievements = profileInfo.querySelector('.profile-achievements');
+      if (!existingAchievements && myAchievements.length > 0) {
+        var achHtml = '<div class="profile-field profile-achievements" style="grid-column:1/-1"><span class="profile-label">الإنجازات</span><div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.25rem">';
+        for (var i = 0; i < myAchievements.length; i++) {
+          achHtml += '<span style="display:inline-flex;align-items:center;gap:0.25rem;padding:0.2rem 0.6rem;background:var(--gold-light);border-radius:100px;font-size:0.75rem;color:var(--gold)">' + (myAchievements[i].icon || '🏆') + ' ' + escapeHtml(myAchievements[i].title) + '</span>';
+        }
+        achHtml += '</div></div>';
+        profileInfo.innerHTML += achHtml;
+      }
+      if (found.adminNotes) {
+        var existingNotes = profileInfo.querySelector('.profile-notes');
+        if (!existingNotes) {
+          profileInfo.innerHTML += '<div class="profile-field profile-notes" style="grid-column:1/-1"><span class="profile-label">ملاحظات الإدارة</span><span class="profile-value" style="background:rgba(212,175,55,0.05);padding:0.5rem;border-radius:var(--radius-sm);border-right:3px solid var(--gold);margin-top:0.25rem;font-size:0.85rem">' + escapeHtml(found.adminNotes) + '</span></div>';
+        }
+      }
+    }
+
+    /* Toast system */
+    function showToast(msg, type) {
+      type = type || 'info';
+      var c = byId('toastContainer');
+      if (!c) {
+        c = document.createElement('div');
+        c.id = 'toastContainer';
+        c.style.cssText = 'position:fixed;top:5rem;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:0.75rem;pointer-events:none';
+        document.body.appendChild(c);
+      }
+      var icons = { success: '✓', error: '✗', info: 'ℹ' };
+      var t = document.createElement('div');
+      t.style.cssText = 'display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.25rem;background:var(--surface-solid);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;animation:toastSlideIn 0.3s ease;direction:rtl;pointer-events:auto;min-width:200px;color:var(--text)';
+      t.style.borderRight = '3px solid ' + (type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--gold)');
+      t.innerHTML = '<span style="font-weight:700;color:' + (type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--gold)') + '">' + icons[type] + '</span><span>' + msg + '</span>';
+      c.appendChild(t);
+      setTimeout(function() {
+        t.style.animation = 'toastSlideOut 0.3s ease forwards';
+        setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 300);
+      }, 3000);
+    }
+
+    /* Initialize certificate preview modal close handlers */
+    (function() {
+      var modal = byId('portalCertPreviewModal');
+      var closeBtn = byId('portalCertModalClose');
+      var closeBtn2 = byId('portalCertModalCloseBtn');
+      var downloadBtnPortal = byId('portalDownloadCertBtn');
+
+      if (closeBtn && modal) {
+        closeBtn.addEventListener('click', function() { modal.classList.remove('active'); });
+      }
+      if (closeBtn2 && modal) {
+        closeBtn2.addEventListener('click', function() { modal.classList.remove('active'); });
+      }
+      if (modal) {
+        modal.addEventListener('click', function(e) {
+          if (e.target === this) this.classList.remove('active');
+        });
+      }
+      if (downloadBtnPortal && modal) {
+        downloadBtnPortal.addEventListener('click', function() {
+          if (portalCertPreviewData) {
+            downloadPortalCertPDF(portalCertPreviewData);
+          } else {
+            showToast('❌ لا توجد شهادة للتحميل', 'error');
+          }
+        });
+      }
+    })();
+
+  </script>
+</div>
+
+</body>
+</html>

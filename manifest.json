@@ -1,0 +1,52 @@
+{
+  "name": "منصة وعي الشباب BBA",
+  "short_name": "وعي BBA",
+  "description": "منصة رقمية للتوعية بمخاطر المخدرات والمؤثرات العقلية وتعزيز الصحة النفسية لدى الشباب في ولاية برج بوعريريج",
+  "start_url": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait-primary",
+  "theme_color": "#06090e",
+  "background_color": "#06090e",
+  "categories": ["education", "health", "social"],
+  "lang": "ar",
+  "dir": "rtl",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='38' fill='%2306090e'/%3E%3Ctext y='132' x='96' text-anchor='middle' font-size='96' fill='%23D4AF37' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%2306090e'/%3E%3Ctext y='352' x='256' text-anchor='middle' font-size='256' fill='%23D4AF37' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "الاستشارات",
+      "short_name": "استشارات",
+      "description": "طلب ومتابعة الاستشارات النفسية",
+      "url": "./index.html#consultation"
+    },
+    {
+      "name": "التوعية",
+      "short_name": "توعية",
+      "description": "مركز التوعية والمقالات",
+      "url": "./index.html#awareness"
+    },
+    {
+      "name": "بوابة المتطوعين",
+      "short_name": "متطوعين",
+      "description": "بوابة المتطوعين",
+      "url": "./portal.html"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false,
+  "related_applications": []
+}

@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="منصة وعي الشباب BBA - منصة رقمية للتوعية بمخاطر المخدرات والمؤثرات العقلية وتعزيز الصحة النفسية لدى الشباب في ولاية برج بوعريريج">
+  <meta name="theme-color" content="#06090e">
+  <meta property="og:title" content="منصة وعي الشباب BBA">
+  <meta property="og:description" content="منصة رقمية للتوعية بمخاطر المخدرات والمؤثرات العقلية وتعزيز الصحة النفسية">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_DZ">
+  <title>منصة وعي الشباب BBA | Dz Young Leaders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23D4AF37'/%3E%3Ctext y='68' x='50' text-anchor='middle' font-size='50' fill='%2306090e' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="وعي BBA">
+  <style>
+    :root{--bg:#06090e;--surface:rgba(11,16,27,0.75);--surface-solid:#0b101b;--gold:#D4AF37;--gold-hover:#B3922E;--gold-light:rgba(212,175,55,0.12);--success:#10b981;--success-bg:rgba(16,185,129,0.12);--danger:#ef4444;--danger-bg:rgba(239,68,68,0.12);--text:#ffffff;--text-secondary:#e2e8f0;--muted:#94a3b8;--border:rgba(212,175,55,0.15);--border-light:rgba(255,255,255,0.06);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--radius-xl:28px;--shadow-sm:0 2px 8px rgba(0,0,0,0.2);--shadow-md:0 4px 20px rgba(0,0,0,0.3);--shadow-lg:0 8px 40px rgba(0,0,0,0.4);--shadow-gold:0 4px 24px rgba(212,175,55,0.15);--shadow-gold-hover:0 8px 32px rgba(212,175,55,0.3);--font:'Cairo',sans-serif;--transition:all 0.35s cubic-bezier(0.4,0,0.2,1);--nav-height:72px;--nav-height-mobile:64px;--container:1200px}
+    *,:before,:after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:80px}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;direction:rtl;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    h1,h2,h3,h4{font-weight:700;line-height:1.4}
+    h1{font-size:clamp(1.75rem,4.5vw,3rem)}h2{font-size:clamp(1.5rem,3.5vw,2.25rem)}h3{font-size:clamp(1.25rem,2.5vw,1.5rem)}
+    p{color:var(--muted);font-size:clamp(0.9rem,1.2vw,1rem)}
+    a{color:var(--gold);text-decoration:none;transition:var(--transition)}
+    a:hover{color:var(--gold-hover)}ul{list-style:none}img{max-width:100%;height:auto;display:block}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+    .container{width:100%;max-width:var(--container);margin:0 auto;padding:0 clamp(1rem,3vw,2rem)}
+    .section{padding:clamp(3rem,8vw,6rem) 0}
+    .section-header{text-align:center;margin-bottom:clamp(2rem,5vw,3.5rem)}
+    .section-header p{max-width:600px;margin:0.75rem auto 0}
+    .gold-accent{display:inline-block;width:60px;height:3px;background:var(--gold);border-radius:2px;margin-top:0.75rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1.75rem;border-radius:var(--radius-sm);font-family:var(--font);font-size:clamp(0.85rem,1.1vw,0.95rem);font-weight:600;cursor:pointer;transition:var(--transition);border:none;outline:none;white-space:nowrap}
+    .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-hover));color:var(--bg);box-shadow:var(--shadow-gold)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-gold-hover);color:var(--bg)}
+    .btn-secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+    .btn-secondary:hover{background:var(--gold-light);transform:translateY(-2px);color:var(--gold)}
+    .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}.btn-sm{padding:0.4rem 1rem;font-size:0.8rem}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:var(--nav-height);transition:var(--transition)}
+    .nav-inner{max-width:var(--container);margin:0 auto;padding:0 clamp(1rem,3vw,2rem);height:100%;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:0.75rem;font-size:1.1rem;font-weight:700;color:var(--gold)}
+    .nav-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold-hover));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--bg);flex-shrink:0}
+    .nav-links{display:flex;align-items:center;gap:0.25rem}
+    .nav-links a{color:var(--muted);padding:0.5rem 1rem;border-radius:var(--radius-sm);font-size:0.9rem;font-weight:500;transition:var(--transition)}
+    .nav-links a:hover,.nav-links a.active{color:var(--gold);background:var(--gold-light)}
+    .nav-mobile{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;background:var(--surface-solid);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:0.5rem 0;height:var(--nav-height-mobile)}
+    .nav-mobile-inner{display:flex;justify-content:space-around;align-items:center;height:100%;padding:0 0.5rem}
+    .nav-mobile a{display:flex;flex-direction:column;align-items:center;gap:0.15rem;color:var(--muted);font-size:0.6rem;padding:0.3rem 0.5rem;border-radius:var(--radius-sm);transition:var(--transition);min-width:56px}
+    .nav-mobile a svg{width:22px;height:22px}
+    .nav-mobile a:hover,.nav-mobile a.active{color:var(--gold)}
+    /* ===== PARALLAX HERO ===== */
+    .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-top:var(--nav-height)}
+    .hero-bg{position:absolute;inset:0;z-index:-1}
+    .hero-bg:before{content:'';position:absolute;top:-30%;right:-20%;width:600px;height:600px;background:radial-gradient(circle,rgba(212,175,55,0.06) 0%,transparent 70%);border-radius:50%}
+    .hero-bg:after{content:'';position:absolute;bottom:-20%;left:-20%;width:500px;height:500px;background:radial-gradient(circle,rgba(212,175,55,0.04) 0%,transparent 70%);border-radius:50%}
+    /* Parallax floating shapes */
+    .hero-shapes{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+    .hero-shape{position:absolute;border-radius:50%;opacity:0.15;transition:transform 0.1s ease-out;will-change:transform}
+    .hero-shape-1{width:120px;height:120px;top:15%;right:10%;background:radial-gradient(circle,rgba(212,175,55,0.3),transparent);animation:floatShape 8s ease-in-out infinite}
+    .hero-shape-2{width:80px;height:80px;top:60%;right:25%;border:2px solid rgba(212,175,55,0.2);background:transparent;animation:floatShape 6s ease-in-out infinite reverse}
+    .hero-shape-3{width:160px;height:160px;bottom:10%;left:5%;background:radial-gradient(circle,rgba(212,175,55,0.12),transparent);animation:floatShape 10s ease-in-out infinite 1s}
+    .hero-shape-4{width:50px;height:50px;top:30%;left:20%;border:2px solid rgba(212,175,55,0.15);background:transparent;transform:rotate(45deg);border-radius:8px;animation:floatShape 7s ease-in-out infinite 0.5s}
+    .hero-shape-5{width:90px;height:90px;bottom:30%;right:40%;background:radial-gradient(circle,rgba(16,185,129,0.08),transparent);animation:floatShape 9s ease-in-out infinite 2s}
+    @keyframes floatShape{0%,100%{transform:translateY(0) scale(1)}25%{transform:translateY(-20px) scale(1.05)}50%{transform:translateY(-10px) scale(0.95)}75%{transform:translateY(-25px) scale(1.02)}}
+    .hero-content{max-width:700px;position:relative;z-index:1;transition:transform 0.1s ease-out}
+    .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.4rem 1rem;background:var(--gold-light);border:1px solid var(--border);border-radius:100px;font-size:0.8rem;color:var(--gold);margin-bottom:1.5rem;backdrop-filter:blur(8px)}
+    .hero h1{margin-bottom:1rem;background:linear-gradient(135deg,var(--text) 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero p{font-size:clamp(1rem,1.5vw,1.15rem);margin-bottom:2rem;max-width:560px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:1rem}
+    /* Interactive Stat Cards */
+    .hero-stats{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2.5rem}
+    .hero-stat{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.25rem;background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);min-width:150px;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);cursor:pointer;position:relative;overflow:hidden}
+    .hero-stat:hover{transform:translateY(-4px);border-color:rgba(212,175,55,0.4);box-shadow:0 8px 24px rgba(212,175,55,0.15)}
+    .hero-stat:active{transform:translateY(-1px)}
+    .hero-stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform 0.4s ease;transform-origin:center}
+    .hero-stat:hover::after{transform:scaleX(1)}
+    .hero-stat-icon{font-size:1.5rem;flex-shrink:0;transition:transform 0.4s ease}
+    .hero-stat:hover .hero-stat-icon{transform:scale(1.15) rotate(5deg)}
+    .hero-stat-info{display:flex;flex-direction:column}
+    .hero-stat-value{font-size:1.25rem;font-weight:700;color:var(--gold);transition:color 0.3s ease}
+    .hero-stat-label{font-size:0.7rem;color:var(--muted)}
+    /* Stat progress ring */
+    .hero-stat-ring{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+    .hero-stat-ring svg{width:100%;height:100%;opacity:0.15;transition:opacity 0.4s ease}
+    .hero-stat:hover .hero-stat-ring svg{opacity:0.3}
+    /* Stat detail popover */
+    .hero-stat-detail{position:absolute;top:calc(100% + 4px);right:0;min-width:160px;background:var(--surface-solid);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.6rem 0.75rem;font-size:0.7rem;color:var(--text-secondary);opacity:0;transform:translateY(-4px);pointer-events:none;transition:all 0.3s ease;z-index:10;box-shadow:var(--shadow-md)}
+    .hero-stat:hover .hero-stat-detail,.hero-stat.active .hero-stat-detail{opacity:1;transform:translateY(0);pointer-events:auto}
+    .hero-stat.active{border-color:rgba(212,175,55,0.4);box-shadow:0 4px 16px rgba(212,175,55,0.12)}
+    .hero-stat-detail-row{display:flex;justify-content:space-between;align-items:center;padding:0.2rem 0;border-bottom:1px solid var(--border-light)}
+    .hero-stat-detail-row:last-child{border-bottom:none}
+    .hero-stat-detail-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-left:0.35rem}
+    .hero-stat-progress{height:2px;background:var(--border-light);border-radius:2px;margin-top:0.3rem;overflow:hidden}
+    .hero-stat-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-hover));border-radius:2px;transition:width 0.6s ease}
+    @keyframes statPulse{0%{box-shadow:0 0 0 0 rgba(212,175,55,0.2)}70%{box-shadow:0 0 0 6px rgba(212,175,55,0)}100%{box-shadow:0 0 0 0 rgba(212,175,55,0)}}
+    .hero-stat.pulse{animation:statPulse 1s ease-out}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:1rem;margin-bottom:2rem}
+    .stat-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;transition:var(--transition);text-align:center}
+    .stat-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
+    .stat-card-value{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:var(--gold)}
+    .stat-card-label{font-size:0.8rem;color:var(--muted);margin-top:0.25rem}
+    .impact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:2rem}
+    .impact-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;text-align:center;transition:var(--transition)}
+    .impact-card:hover{transform:translateY(-4px);border-color:rgba(212,175,55,0.3);box-shadow:var(--shadow-gold)}
+    .impact-icon{font-size:2.5rem;margin-bottom:0.75rem}
+    .impact-value{font-size:2rem;font-weight:700;color:var(--gold)}
+    .impact-label{font-size:0.85rem;color:var(--muted)}
+    .awareness-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:1.5rem}
+    .article-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;transition:var(--transition);cursor:pointer}
+    .article-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(212,175,55,0.25);border-color:rgba(212,175,55,0.3)}
+    .article-img{width:100%;height:200px;object-fit:cover;background:var(--surface-solid)}
+    .article-body{padding:1.25rem}
+    .article-category{display:inline-block;padding:0.2rem 0.75rem;background:var(--gold-light);color:var(--gold);border-radius:100px;font-size:0.75rem;font-weight:600;margin-bottom:0.75rem}
+    .article-body h3{font-size:clamp(1rem,1.5vw,1.15rem);margin-bottom:0.5rem}
+    .article-body p{font-size:0.85rem;margin-bottom:1rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .article-body .btn{padding:0.5rem 1.25rem;font-size:0.8rem}
+    .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:1.25rem}
+    .event-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;transition:var(--transition)}
+    .event-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
+    .event-card-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem}
+    .event-card-icon{font-size:1.75rem;flex-shrink:0}
+    .event-card-title{font-weight:600;color:var(--text);font-size:0.95rem}
+    .event-card-type{font-size:0.7rem;padding:0.15rem 0.5rem;background:var(--gold-light);border-radius:100px;color:var(--gold);display:inline-block}
+    .event-card-meta{display:flex;flex-wrap:wrap;gap:0.5rem;font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem}
+    .event-card-meta span{display:flex;align-items:center;gap:0.25rem}
+    .achieve-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.25rem}
+    .achieve-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;text-align:center;transition:var(--transition)}
+    .achieve-card:hover{transform:translateY(-2px);border-color:var(--gold)}
+    .achieve-icon{font-size:2.5rem;margin-bottom:0.5rem}
+    .achieve-title{font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:0.25rem}
+    .achieve-date{font-size:0.72rem;color:var(--muted)}
+    .form-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.5rem,4vw,2.5rem);max-width:680px;margin:0 auto}
+    .form-card h3{margin-bottom:0.5rem}.form-card>p{margin-bottom:1.5rem;font-size:0.9rem}
+    .form-group{margin-bottom:1.25rem}
+    .form-group label{display:block;font-size:0.85rem;font-weight:600;color:var(--text-secondary);margin-bottom:0.4rem}
+    .form-group input,.form-group select,.form-group textarea{width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.9rem;transition:var(--transition);direction:rtl}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light);background:rgba(255,255,255,0.06)}
+    .form-group textarea{min-height:120px;resize:vertical}
+    .form-group select{cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 1rem center;padding-left:2.5rem}
+    .form-group select option{background:var(--surface-solid);color:var(--text)}
+    .membership-options{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+    .membership-option{padding:1.25rem;background:rgba(255,255,255,0.03);border:2px solid var(--border-light);border-radius:var(--radius-md);text-align:center;cursor:pointer;transition:var(--transition)}
+    .membership-option:hover{border-color:var(--border);background:rgba(255,255,255,0.05)}
+    .membership-option.selected{border-color:var(--gold);background:var(--gold-light);box-shadow:0 0 20px rgba(212,175,55,0.15)}
+    .membership-option-icon{font-size:2rem;margin-bottom:0.5rem}
+    .membership-option-label{font-weight:600;font-size:0.9rem}
+    .membership-option-desc{font-size:0.75rem;color:var(--muted);margin-top:0.25rem}
+    .tracking-code-container{margin-top:1.5rem;padding:1.5rem;background:rgba(212,175,55,0.05);border:1px solid var(--gold);border-radius:var(--radius-md);box-shadow:0 0 20px rgba(212,175,55,0.1),inset 0 0 20px rgba(212,175,55,0.05);animation:glowPulse 2s ease-in-out infinite alternate;text-align:center;display:none}
+    .tracking-code-container.visible{display:block}
+    @keyframes glowPulse{0%{box-shadow:0 0 15px rgba(212,175,55,0.1),inset 0 0 15px rgba(212,175,55,0.03)}100%{box-shadow:0 0 30px rgba(212,175,55,0.25),inset 0 0 25px rgba(212,175,55,0.08)}}
+    .tracking-code{font-size:clamp(1.25rem,3vw,1.75rem);font-weight:700;color:var(--gold);letter-spacing:2px;direction:ltr;margin-bottom:0.75rem;font-family:'Courier New',monospace}
+    .toast-container{position:fixed;top:calc(var(--nav-height) + 1rem);left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:0.75rem;pointer-events:none}
+    .toast{display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1.5rem;background:var(--surface-solid);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);font-size:0.9rem;animation:toastSlideIn 0.4s cubic-bezier(0.4,0,0.2,1);pointer-events:auto;min-width:280px;direction:rtl}
+    .toast.toast-exit{animation:toastSlideOut 0.3s cubic-bezier(0.4,0,0.2,1) forwards}
+    .toast-success{border-right:3px solid var(--success)}.toast-error{border-right:3px solid var(--danger)}.toast-info{border-right:3px solid var(--gold)}
+    .toast-icon{flex-shrink:0}.toast-success .toast-icon{color:var(--success)}.toast-error .toast-icon{color:var(--danger)}.toast-info .toast-icon{color:var(--gold)}
+    @keyframes toastSlideIn{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
+    @keyframes toastSlideOut{from{transform:translateY(0);opacity:1}to{transform:translateY(-20px);opacity:0}}
+    .footer{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:2rem 0;text-align:center}
+    .footer p{font-size:0.85rem}.footer-gold{color:var(--gold);font-weight:600}
+    .footer-links{display:flex;justify-content:center;flex-wrap:wrap;gap:0.75rem;margin-top:1rem;font-size:0.82rem}
+    .footer-links a{color:var(--muted);padding:0.25rem 0.75rem;border-radius:100px;border:1px solid var(--border-light);transition:var(--transition)}
+    .footer-links a:hover{color:var(--gold);border-color:var(--gold)}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:none;align-items:center;justify-content:center;padding:1rem}
+    .modal-overlay.active{display:flex}
+    .modal-content{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.5rem,3vw,2rem);max-width:660px;width:100%;max-height:90vh;overflow-y:auto;animation:fadeIn 0.3s ease}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
+    .modal-header h3{font-size:1.15rem;color:var(--gold)}
+    .modal-close{background:none;border:none;color:var(--muted);cursor:pointer;padding:0.25rem;border-radius:var(--radius-sm);transition:var(--transition);font-size:1.25rem;line-height:1}
+    .modal-close:hover{color:var(--danger);background:var(--danger-bg)}
+    .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:100px;font-size:0.75rem;font-weight:600}
+    .badge-pending{background:var(--gold-light);color:var(--gold)}.badge-approved{background:var(--success-bg);color:var(--success)}.badge-rejected{background:var(--danger-bg);color:var(--danger)}
+    .detail-row{display:flex;padding:0.5rem 0;border-bottom:1px solid var(--border-light)}.detail-row:last-child{border-bottom:none}
+    .detail-label{flex:0 0 100px;color:var(--muted);font-size:0.85rem;font-weight:600}.detail-value{flex:1;color:var(--text);font-size:0.9rem}
+    .timeline{position:relative;padding-right:2rem;margin:1rem 0}
+    .timeline:before{content:'';position:absolute;right:7px;top:0;bottom:0;width:2px;background:var(--border-light)}
+    .timeline-item{position:relative;padding:0.75rem 0;padding-right:1.25rem}
+    .timeline-item:before{content:'';position:absolute;right:-14px;top:1.1rem;width:16px;height:16px;border-radius:50%;background:var(--surface-solid);border:2px solid var(--border)}
+    .timeline-item.active:before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 10px rgba(212,175,55,0.4)}
+    .timeline-item.done:before{background:var(--success);border-color:var(--success)}
+    .timeline-item-text{font-size:0.85rem;color:var(--text)}
+    .timeline-item-date{font-size:0.72rem;color:var(--muted)}
+    .contact-buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:1.5rem}
+    .contact-btn{display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:1.25rem;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:var(--transition);font-family:var(--font);color:var(--text)}
+    .contact-btn:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 4px 20px rgba(212,175,55,0.15)}
+    .contact-btn-icon{font-size:2rem}.contact-btn-label{font-weight:600;font-size:0.9rem}.contact-btn-desc{font-size:0.75rem;color:var(--muted)}
+    .testimonial-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:1.5rem}
+    .testimonial-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;transition:var(--transition);position:relative}
+    .testimonial-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
+    .testimonial-card:before{content:'\\201C';position:absolute;top:-0.25rem;right:1rem;font-size:4rem;color:var(--gold);opacity:0.15;font-weight:700;line-height:1}
+    .testimonial-text{font-size:0.88rem;color:var(--text-secondary);line-height:1.8;margin-bottom:1rem;font-style:italic}
+    .testimonial-author{display:flex;align-items:center;gap:0.75rem}
+    .testimonial-avatar{width:40px;height:40px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .testimonial-name{font-size:0.85rem;font-weight:600;color:var(--gold)}
+    .testimonial-role{font-size:0.72rem;color:var(--muted)}
+    .announcement-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:1rem;transition:var(--transition)}
+    .announcement-card:hover{border-color:rgba(212,175,55,0.3)}
+    .announcement-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem}
+    .announcement-title{font-weight:600;color:var(--gold);font-size:0.95rem}
+    .announcement-date{font-size:0.72rem;color:var(--muted);white-space:nowrap}
+    .announcement-text{font-size:0.85rem;color:var(--text-secondary);line-height:1.7}
+    .quick-links{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.5rem;justify-content:center}
+    .quick-link-btn{display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition)}
+    .quick-link-btn:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:var(--shadow-gold);color:var(--gold)}
+    .chart-container{max-width:100%;height:350px;margin:0 auto}
+    .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    .chart-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem}
+    .chart-card h3{font-size:0.95rem;margin-bottom:1rem;text-align:center;color:var(--gold)}
+    .verify-section{display:flex;gap:0.75rem;max-width:500px;margin:1.5rem auto 0}
+    .verify-section input{flex:1;padding:0.75rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.85rem;direction:ltr;text-align:center;font-family:monospace;letter-spacing:1px}
+    .verify-section input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light)}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in-up{animation:fadeInUp 0.6s ease forwards}
+    @media(max-width:1024px){.charts-grid{grid-template-columns:1fr}}
+    @media(max-width:768px){.nav{display:none}.nav-mobile{display:flex}body{padding-bottom:var(--nav-height-mobile)}.membership-options{grid-template-columns:1fr}.hero{min-height:90vh;padding-top:1rem}.contact-buttons{grid-template-columns:1fr}.hero-stats{flex-direction:column;align-items:stretch}}
+    @media(max-width:480px){.hero-actions{flex-direction:column}.hero-actions .btn{width:100%;justify-content:center}.verify-section{flex-direction:column}}
+    @media(min-width:1440px){:root{--container:1320px}.hero-content{max-width:800px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+  </style>
+</head>
+<body>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Notice Bar -->
+  <div id="noticeBar" style="display:none;background:linear-gradient(135deg,#D4AF37,#B3922E);padding:0.5rem 0;text-align:center;font-size:0.82rem;font-weight:600;color:#06090e;position:relative;z-index:999;cursor:pointer" onclick="this.style.display='none'">
+    <span id="noticeBarText"></span>
+    <span style="margin-right:0.75rem;opacity:0.6">✕</span>
+  </div>
+
+  <!-- Article Modal -->
+  <div id="articleModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📖 المقال التوعوي</h3>
+        <button type="button" class="modal-close" id="articleModalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="articleModalBody"></div>
+    </div>
+  </div>
+
+  <nav class="nav" role="navigation" aria-label="القائمة الرئيسية">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">
+        <span class="nav-logo-icon" aria-hidden="true">وعي</span>
+        <span id="heroTitleText">منصة وعي الشباب BBA</span>
+      </a>
+      <div class="nav-links">
+        <a href="#hero" class="active">الرئيسية</a>
+        <a href="about.html">عن المشروع</a>
+        <a href="target-audience.html">الفئة المستهدفة</a>
+        <a href="#impact">الأثر</a>
+        <a href="#events">الفعاليات</a>
+        <a href="#awareness">التوعية</a>
+        <a href="#consultation">الاستشارات</a>
+        <a href="#stats">الإحصائيات</a>
+        <a href="#contact">تواصل</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem">
+        <div id="indexThemeSwitcher"></div>
+      </div>
+    </div>
+  </nav>
+
+  <nav class="nav-mobile" role="navigation" aria-label="القائمة السفلية">
+    <div class="nav-mobile-inner">
+      <a href="#hero">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>الرئيسية</span>
+      </a>
+      <a href="#events">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>الفعاليات</span>
+      </a>
+      <a href="#awareness">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span>التوعية</span>
+      </a>
+      <a href="#consultation">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>الاستشارات</span>
+      </a>
+      <a href="#contact">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span>تواصل</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO SECTION (Parallax) ===== -->
+  <section id="hero" class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <!-- Parallax floating shapes -->
+    <div class="hero-shapes" aria-hidden="true">
+      <div class="hero-shape hero-shape-1" data-parallax="0.04"></div>
+      <div class="hero-shape hero-shape-2" data-parallax="0.06"></div>
+      <div class="hero-shape hero-shape-3" data-parallax="0.03"></div>
+      <div class="hero-shape hero-shape-4" data-parallax="0.07"></div>
+      <div class="hero-shape hero-shape-5" data-parallax="0.05"></div>
+    </div>
+    <div class="container">
+      <div class="hero-content" id="heroContent">
+        <div class="hero-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span id="heroBadgeText">Dz Young Leaders - برج بوعريريج</span>
+        </div>
+        <h1 id="heroMainTitle">منصة وعي الشباب BBA</h1>
+        <p id="heroSubtitle">منصة رقمية للتوعية بمخاطر المخدرات والمؤثرات العقلية وتعزيز الصحة النفسية لدى الشباب في ولاية برج بوعريريج.</p>
+        <div class="hero-actions" id="heroActions">
+          <a id="heroPrimaryBtn" href="#consultation" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span id="heroPrimaryBtnText">طلب استشارة سرية</span>
+          </a>
+          <a id="heroSecondaryBtn" href="#volunteer" class="btn btn-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="heroSecondaryBtnText">الانضمام كمتطوع</span>
+          </a>
+        </div>
+        <!-- Interactive Animated Statistics -->
+        <div class="hero-stats" id="heroStats">
+          <div class="hero-stat pulse" id="heroStatVolunteers" tabindex="0" role="button" aria-label="عرض تفاصيل المتطوعين">
+            <div class="hero-stat-icon">👥</div>
+            <div class="hero-stat-info">
+              <span class="hero-stat-value" id="heroVolunteers">0</span>
+              <span class="hero-stat-label">متطوع</span>
+              <div class="hero-stat-progress"><div class="hero-stat-progress-fill" id="heroVolProgress" style="width:0%"></div></div>
+            </div>
+            <div class="hero-stat-detail" id="heroVolDetail">
+              <div class="hero-stat-detail-row"><span><span class="hero-stat-detail-dot" style="background:var(--success)"></span>معتمد</span><span id="heroVolApproved" style="color:var(--gold);font-weight:600">0</span></div>
+              <div class="hero-stat-detail-row"><span><span class="hero-stat-detail-dot" style="background:#f59e0b"></span>قيد الانتظار</span><span id="heroVolPending" style="color:var(--muted)">0</span></div>
+            </div>
+          </div>
+          <div class="hero-stat" id="heroStatConsultations" tabindex="0" role="button" aria-label="عرض تفاصيل الاستشارات">
+            <div class="hero-stat-icon">💬</div>
+            <div class="hero-stat-info">
+              <span class="hero-stat-value" id="heroConsultations">0</span>
+              <span class="hero-stat-label">استشارة</span>
+              <div class="hero-stat-progress"><div class="hero-stat-progress-fill" id="heroConProgress" style="width:0%"></div></div>
+            </div>
+            <div class="hero-stat-detail" id="heroConDetail">
+              <div class="hero-stat-detail-row"><span><span class="hero-stat-detail-dot" style="background:var(--success)"></span>تم الرد</span><span id="heroConAnswered" style="color:var(--gold);font-weight:600">0</span></div>
+              <div class="hero-stat-detail-row"><span><span class="hero-stat-detail-dot" style="background:#f59e0b"></span>معلقة</span><span id="heroConPending" style="color:var(--muted)">0</span></div>
+            </div>
+          </div>
+          <div class="hero-stat" id="heroStatActivities" tabindex="0" role="button" aria-label="عرض تفاصيل النشاطات">
+            <div class="hero-stat-icon">📅</div>
+            <div class="hero-stat-info">
+              <span class="hero-stat-value" id="heroActivities">0</span>
+              <span class="hero-stat-label">نشاط</span>
+              <div class="hero-stat-progress"><div class="hero-stat-progress-fill" id="heroActProgress" style="width:0%"></div></div>
+            </div>
+            <div class="hero-stat-detail" id="heroActDetail">
+              <div class="hero-stat-detail-row"><span><span class="hero-stat-detail-dot" style="background:var(--success)"></span>حملة توعوية</span><span id="heroActCampaigns" style="color:var(--gold);font-weight:600">0</span></div>
+              <div class="hero-stat-detail-row"><span><span class="hero-stat-detail-dot" style="background:#8b5cf6"></span>ورشة تدريبية</span><span id="heroActWorkshops" style="color:var(--muted)">0</span></div>
+            </div>
+          </div>
+          <div class="hero-stat" id="heroStatCertificates" tabindex="0" role="button" aria-label="عرض تفاصيل الشهادات">
+            <div class="hero-stat-icon">📜</div>
+            <div class="hero-stat-info">
+              <span class="hero-stat-value" id="heroCertificates">0</span>
+              <span class="hero-stat-label">شهادة</span>
+              <div class="hero-stat-progress"><div class="hero-stat-progress-fill" id="heroCertProgress" style="width:0%"></div></div>
+            </div>
+            <div class="hero-stat-detail" id="heroCertDetail">
+              <div class="hero-stat-detail-row"><span><span class="hero-stat-detail-dot" style="background:var(--gold)"></span>شهرية</span><span id="heroCertMonthly" style="color:var(--gold);font-weight:600">0</span></div>
+              <div class="hero-stat-detail-row"><span><span class="hero-stat-detail-dot" style="background:var(--success)"></span>سنوية</span><span id="heroCertAnnual" style="color:var(--muted)">0</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VOLUNTEER IMPACT SECTION ===== -->
+  <section id="impact" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>أثر المتطوعين</h2>
+        <p>إحصائيات حية تعكس حجم المشاركة المجتمعية والتأثير الإيجابي لبرنامج Dz Young Leaders</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div class="impact-grid" id="impactGrid">
+        <div class="impact-card"><div class="impact-icon">👥</div><div class="impact-value" id="impactVolunteers">0</div><div class="impact-label">إجمالي المتطوعين</div></div>
+        <div class="impact-card"><div class="impact-icon">✅</div><div class="impact-value" id="impactApproved">0</div><div class="impact-label">متطوع معتمد</div></div>
+        <div class="impact-card"><div class="impact-icon">📋</div><div class="impact-value" id="impactActivities">0</div><div class="impact-label">نشاط منجز</div></div>
+        <div class="impact-card"><div class="impact-icon">📜</div><div class="impact-value" id="impactCerts">0</div><div class="impact-label">شهادة مصدرة</div></div>
+        <div class="impact-card"><div class="impact-icon">📅</div><div class="impact-value" id="impactEvents">0</div><div class="impact-label">فعالية منفذة</div></div>
+        <div class="impact-card"><div class="impact-icon">🏛️</div><div class="impact-value" id="impactTeams">0</div><div class="impact-label">فريق بلدية</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== UPCOMING EVENTS SECTION ===== -->
+  <section id="events" class="section" style="background:var(--surface-solid)">
+    <div class="container">
+      <div class="section-header">
+        <h2>الأنشطة والفعاليات القادمة</h2>
+        <p>فعاليات توعوية وتدريبية ينظمها برنامج Dz Young Leaders - سجل الآن للمشاركة</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div id="upcomingEventsGrid" class="events-grid"></div>
+      <div style="text-align:center;margin-top:1.5rem">          <a href="portal.html" class="btn btn-primary" id="eventsPortalBtn">🔐 بوابة المتطوعين للتسجيل</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LATEST ACHIEVEMENTS SECTION ===== -->
+  <section id="achievements" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>آخر الإنجازات والشهادات</h2>
+        <p>نحن فخورون بإنجازات متطوعينا المتميزين في برنامج Dz Young Leaders</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div id="achievementsGrid" class="achieve-grid"></div>
+    </div>
+  </section>
+
+  <!-- ===== AWARENESS CENTER ===== -->
+  <section id="awareness" class="section" style="background:var(--surface-solid)">
+    <div class="container">
+      <div class="section-header">
+        <h2>مركز التوعية</h2>
+        <p>معلومات موثوقة وحقائق علمية حول الوقاية من المخدرات وتعزيز الصحة النفسية - اضغط على أي مقال لقراءته كاملاً</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div id="awarenessGrid" class="awareness-grid" role="list"></div>
+    </div>
+  </section>
+
+  <!-- ===== CONSULTATION SECTION ===== -->
+  <section id="consultation" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>الاستشارات النفسية</h2>
+        <p>استشارات نفسية مجانية وسرية - يمكنك طلب استشارة جديدة أو متابعة استشارة سابقة</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div class="tracking-tabs" style="display:flex;gap:0;margin-bottom:1.5rem;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;max-width:480px;margin-left:auto;margin-right:auto">
+        <button type="button" class="tracking-tab active" style="flex:1;padding:0.6rem;text-align:center;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--gold);background:var(--gold-light);border:none;font-family:var(--font);transition:var(--transition)" data-tab="new-consult">طلب استشارة جديدة</button>
+        <button type="button" class="tracking-tab" style="flex:1;padding:0.6rem;text-align:center;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--muted);background:transparent;border:none;font-family:var(--font);transition:var(--transition)" data-tab="track-consult">تتبع استشارة سابقة</button>
+      </div>
+      <div id="tab-new-consult" class="form-card">
+        <h3>نموذج طلب استشارة</h3>
+        <p>املأ النموذج أدناه وستتلقى رمز متابعة فريد لمتابعة طلبك.</p>
+        <form id="consultationForm" novalidate>
+          <div class="form-group">
+            <label for="consultAlias">الاسم المستعار *</label>
+            <input type="text" id="consultAlias" placeholder="أدخل اسماً مستعاراً" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="consultAge">الفئة العمرية *</label>
+            <select id="consultAge" required>
+              <option value="">اختر فئتك العمرية</option>
+              <option value="13-17">13 - 17 سنة</option>
+              <option value="18-25">18 - 25 سنة</option>
+              <option value="26-35">26 - 35 سنة</option>
+              <option value="36+">36 سنة فأكثر</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="consultSubject">الموضوع *</label>
+            <input type="text" id="consultSubject" placeholder="عنوان الاستشارة" required maxlength="100">
+          </div>
+          <div class="form-group">
+            <label for="consultMessage">الرسالة *</label>
+            <textarea id="consultMessage" placeholder="اكتب استشارتك هنا بتفصيل..." required maxlength="2000"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">📨 إرسال الاستشارة</button>
+        </form>
+        <div id="trackingContainer" class="tracking-code-container">
+          <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:1rem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <h4 style="color:var(--gold);font-size:1rem">رمز متابعة استشارتك</h4>
+          </div>
+          <div id="trackingCode" class="tracking-code">BBA-XXXX-XXXX</div>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem">احتفظ بهذا الرقم لمتابعة حالة استشارتك</p>
+          <button type="button" id="copyCodeBtn" class="btn btn-secondary">📋 نسخ الرمز</button>
+        </div>
+      </div>
+      <div id="tab-track-consult" class="form-card" style="display:none">
+        <h3>تتبع حالة الاستشارة</h3>
+        <p>أدخل رمز المتابعة الذي حصلت عليه عند تقديم طلب الاستشارة لمعرفة حالته.</p>
+        <form id="trackingForm" novalidate>
+          <div class="form-group">
+            <label for="trackingCodeInput">رمز المتابعة *</label>
+            <input type="text" id="trackingCodeInput" placeholder="BBA-XXXX-XXXX" required maxlength="20" dir="ltr" style="text-align:center;font-family:monospace;font-size:1.1rem;letter-spacing:2px">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">🔍 بحث</button>
+        </form>
+        <div id="trackingResult" class="tracking-result" style="margin-top:1.5rem;padding:1.5rem;background:rgba(212,175,55,0.03);border:1px solid var(--border);border-radius:var(--radius-md);display:none"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PUBLIC STATISTICS SECTION ===== -->
+  <section id="stats" class="section" style="background:var(--surface-solid)">
+    <div class="container">
+      <div class="section-header">
+        <h2>الإحصائيات العامة</h2>
+        <p>إحصائيات حية حول توزيع المتطوعين والنشاطات حسب البلديات في ولاية برج بوعريريج</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3>🏛️ توزيع المتطوعين حسب البلدية</h3>
+          <div class="chart-container"><canvas id="publicVolunteerChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>📊 إحصائيات الاستشارات</h3>
+          <div class="chart-container"><canvas id="publicConsultationChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS SECTION ===== -->
+  <section id="testimonials" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>قصص وتجارب</h2>
+        <p>قصص نجاح وتجارب ملهمة من متطوعينا ومستفيدينا في برنامج Dz Young Leaders</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div class="testimonial-grid" id="testimonialsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ SECTION ===== -->
+  <section id="faq" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>الأسئلة الشائعة</h2>
+        <p>إجابات على أكثر الأسئلة شيوعاً حول منصة وعي الشباب BBA وبرنامج Dz Young Leaders</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div id="faqAccordion" style="max-width:700px;margin:0 auto"></div>
+    </div>
+  </section>
+
+  <!-- ===== PARTNERS SECTION ===== -->
+  <section id="partners" class="section" style="background:var(--surface-solid)">
+    <div class="container">
+      <div class="section-header">
+        <h2>شركاؤنا</h2>
+        <p>نفتخر بشراكاتنا مع المؤسسات والهيئات الداعمة لبرنامجنا التطوعي</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div id="partnersGrid" style="display:flex;flex-wrap:wrap;gap:2rem;justify-content:center;align-items:center"></div>
+    </div>
+  </section>
+
+  <!-- ===== NEWS & ANNOUNCEMENTS SECTION ===== -->
+  <section id="announcements" class="section" style="background:var(--surface-solid)">
+    <div class="container">
+      <div class="section-header">
+        <h2>آخر الأخبار والإعلانات</h2>
+        <p>أحدث الإعلانات والتحديثات من إدارة منصة وعي الشباب BBA</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div id="announcementsList" style="max-width:700px;margin:0 auto"></div>
+    </div>
+  </section>
+
+  <!-- ===== QUICK ACCESS SECTION ===== -->
+  <section id="quick-access" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>خدمات المنصة</h2>
+        <p>اختر الخدمة التي تريدها من خلال الروابط السريعة</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div class="quick-links">
+        <a href="portal.html" class="quick-link-btn" id="quickLinkPortal">👤 بوابة المتطوعين</a>
+        <a href="admin.html" class="quick-link-btn" id="quickLinkAdmin" style="display:none">🔐 لوحة الإدارة</a>
+        <a href="psychologist.html" class="quick-link-btn" id="quickLinkPsych" style="display:none">💬 لوحة المستشار النفسي</a>
+        <span class="quick-link-btn" id="verifyCertQuickBtn" style="cursor:pointer">✅ التحقق من الشهادات</span>
+      </div>
+      <!-- Certificate Verification -->
+      <div id="verifySection" class="form-card" style="margin-top:2rem;display:none">
+        <h3 style="text-align:center">✅ التحقق من صحة الشهادة</h3>
+        <p style="text-align:center">أدخل رقم الشهادة للتحقق من صحتها</p>
+        <div class="verify-section">
+          <input type="text" id="publicCertInput" placeholder="CERT-BBA-2026-XXXX" dir="ltr">
+          <button type="button" id="publicCertVerifyBtn" class="btn btn-primary" style="flex-shrink:0">تحقق</button>
+        </div>
+        <div id="publicCertResult" style="margin-top:1rem;text-align:center;display:none"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VOLUNTEER REGISTRATION SECTION ===== -->
+  <section id="volunteer" class="section" style="background:var(--surface-solid)">
+    <div class="container">
+      <div class="section-header">
+        <h2>التطوع معنا</h2>
+        <p>انضم إلى فريقنا التطوعي وساهم في بناء جيل واعٍ ومستقبل آمن لشباب ولاية برج بوعريريج</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div class="form-card">
+        <h3>نموذج التسجيل التطوعي</h3>
+        <p>سجل بياناتك للانضمام إلى برنامج Dz Young Leaders التطوعي.</p>
+        <form id="volunteerForm" novalidate>
+          <div class="form-group">
+            <label for="volunteerName">الاسم الكامل *</label>
+            <input type="text" id="volunteerName" placeholder="الاسم واللقب" required maxlength="100">
+          </div>
+          <div class="form-group">
+            <label for="volunteerEmail">البريد الإلكتروني *</label>
+            <input type="email" id="volunteerEmail" placeholder="example@email.com" required dir="ltr">
+          </div>
+          <div class="form-group">
+            <label for="volunteerPhone">رقم الهاتف *</label>
+            <input type="tel" id="volunteerPhone" placeholder="05XX-XX-XX-XX" required dir="ltr">
+          </div>
+          <div class="form-group">
+            <label for="volunteerMunicipality">البلدية *</label>
+            <select id="volunteerMunicipality" required><option value="">اختر بلديتك</option></select>
+          </div>
+          <div class="form-group">
+            <label>نوع العضوية *</label>
+            <div class="membership-options">
+              <div class="membership-option" data-value="admin" role="button" tabindex="0">
+                <div class="membership-option-icon">⭐</div>
+                <div class="membership-option-label">عضو فعال في الإدارة</div>
+                <div class="membership-option-desc">مهام قيادية وتنظيمية</div>
+              </div>
+              <div class="membership-option" data-value="member" role="button" tabindex="0">
+                <div class="membership-option-icon">🤝</div>
+                <div class="membership-option-label">عضو في التنظيم</div>
+                <div class="membership-option-desc">مهام تطوعية وميدانية</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="volunteerMotivation">الدافع للتطوع</label>
+            <textarea id="volunteerMotivation" placeholder="ما هو دافعك للانضمام إلينا؟" maxlength="500"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">👥 تسجيل المتطوع</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT SECTION ===== -->
+  <section id="contact" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>تواصل معنا</h2>
+        <p>للاستفسارات والاقتراحات، يمكنكم التواصل معنا عبر القنوات التالية</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div class="form-card" style="text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:1rem">🤝</div>
+        <h3 style="margin-bottom:0.5rem">فريق Dz Young Leaders - برج بوعريريج</h3>
+        <p style="margin-bottom:1.5rem">نحن هنا للإجابة على استفساراتكم وتقديم الدعم. اختر طريقة التواصل المناسبة لك.</p>
+        <div class="contact-buttons">
+          <button type="button" id="contactEmailBtn" class="contact-btn contact-email" style="background:linear-gradient(135deg,rgba(212,175,55,0.1),transparent)">
+            <div class="contact-btn-icon">📧</div>
+            <div class="contact-btn-label">البريد الإلكتروني</div>
+            <div class="contact-btn-desc" style="direction:ltr;font-size:0.75rem;color:var(--gold)">abdelilah.sidiali@univ-bba.dz</div>
+          </button>
+          <button type="button" id="contactWhatsAppBtn" class="contact-btn contact-whatsapp" style="background:linear-gradient(135deg,rgba(37,211,102,0.1),transparent)">
+            <div class="contact-btn-icon">💬</div>
+            <div class="contact-btn-label">واتساب</div>
+            <div class="contact-btn-desc" style="direction:ltr;font-size:0.75rem;color:var(--gold)">+213 54 07 35 461</div>
+          </button>
+          <button type="button" class="contact-btn contact-call contact-call-btn" data-phone="+213540735461" style="background:linear-gradient(135deg,rgba(16,185,129,0.1),transparent)">
+            <div class="contact-btn-icon">📞</div>
+            <div class="contact-btn-label">اتصال مباشر</div>
+            <div class="contact-btn-desc" style="direction:ltr;font-size:0.75rem;color:var(--gold)">+213 54 07 35 461</div>
+          </button>
+          <button type="button" class="contact-btn contact-call contact-call-btn" data-phone="+213665376480" style="background:linear-gradient(135deg,rgba(16,185,129,0.1),transparent)">
+            <div class="contact-btn-icon">📞</div>
+            <div class="contact-btn-label">اتصال بديل</div>
+            <div class="contact-btn-desc" style="direction:ltr;font-size:0.75rem;color:var(--gold)">+213 66 53 76 480</div>
+          </button>
+        </div>
+        <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+          <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;color:var(--muted);font-size:0.85rem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>ولاية برج بوعريريج، الجزائر</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;color:var(--muted);font-size:0.85rem;margin-top:0.5rem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>الأحد - الخميس: 09:00 - 17:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>        © 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | تحت إشراف <span class="footer-gold">برنامج Dz Young Leaders</span> | جميع الحقوق محفوظة</p>
+      <div class="footer-links">
+        <a href="about.html">📖 عن المشروع</a>
+        <a href="target-audience.html">🎯 الفئة المستهدفة</a>
+        <a href="portal.html" id="footerLinkPortal">👤 بوابة المتطوعين</a>
+        <a href="psychologist.html" id="footerLinkPsych" style="display:none">💬 لوحة المستشار</a>
+        <a href="verify-certificate.html">✅ التحقق من الشهادات</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/platform-core.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    /* ============================================================
+     * CMS DYNAMIC DATA INITIALIZATION
+     * Seed defaults if empty, then populate all sections
+     * ============================================================ */
+    (function initCMSData() {
+      function cmsGet(key, def) {
+        try { return JSON.parse(localStorage.getItem('bba_cms_' + key) || JSON.stringify(def)); }
+        catch(e) { return def; }
+      }
+      function cmsSet(key, data) { localStorage.setItem('bba_cms_' + key, JSON.stringify(data)); }
+
+      /* Seed default CMS data if not exists */
+      if (!localStorage.getItem('bba_cms_hero')) {
+        cmsSet('hero', { badge: 'Dz Young Leaders - برج بوعريريج', title: 'منصة وعي الشباب BBA', subtitle: 'منصة رقمية للتوعية بمخاطر المخدرات والمؤثرات العقلية وتعزيز الصحة النفسية لدى الشباب في ولاية برج بوعريريج.', primaryBtnText: 'طلب استشارة سرية', primaryBtnLink: '#consultation', secondaryBtnText: 'الانضمام كمتطوع', secondaryBtnLink: '#volunteer' });
+      }
+      if (!localStorage.getItem('bba_cms_notice_bar')) {
+        cmsSet('notice_bar', { message: 'مرحباً بكم في منصة وعي الشباب BBA | برنامج Dz Young Leaders', visible: true, priority: 'info', expiresAt: '' });
+      }
+      if (!localStorage.getItem('bba_cms_testimonials')) {
+        cmsSet('testimonials', [
+          { id: 1, text: 'التطوع في المنصة غير حياتي، تعلمت كيف أساعد غيري وأكون جزءاً من تغيير إيجابي في مجتمعي.', author: 'متطوع متميز', role: 'عضو في التنظيم - برج بوعريريج', avatar: '⭐', published: true },
+          { id: 2, text: 'الاستشارات النفسية ساعدتني كثيراً في تخطي فترة صعبة. أشكر الفريق على الاحترافية والسرية التامة.', author: 'مستفيد من الخدمات', role: 'مستشار - رأس الوادي', avatar: '💚', published: true },
+          { id: 3, text: 'فخور بأن أكون جزءاً من هذا البرنامج الرائد. الورشات التدريبية والحملات التوعوية التي ننظمها تحدث فرقاً حقيقياً.', author: 'قائد فريق', role: 'عضو فعال في الإدارة - المنصورة', avatar: '🏆', published: true }
+        ]);
+      }
+      if (!localStorage.getItem('bba_cms_faq')) {
+        cmsSet('faq', [
+          { question: 'كيف يمكنني الانضمام كمتطوع؟', answer: 'يمكنك التسجيل من خلال نموذج التطوع في الصفحة الرئيسية. بعد تقديم الطلب، ستقوم الإدارة بمراجعته والرد عليك.', published: true },
+          { question: 'كيف يمكنني متابعة حالة استشارتي؟', answer: 'استخدم رمز المتابعة الذي حصلت عليه عند تقديم الاستشارة في قسم تتبع الاستشارات.', published: true },
+          { question: 'هل الاستشارات مجانية وسرية؟', answer: 'نعم، جميع الاستشارات مجانية وسرية تماماً. يمكنك استخدام اسم مستعار لضمان الخصوصية.', published: true },
+          { question: 'كيف أحصل على شهادة تطوع؟', answer: 'بعد المشاركة في الأنشطة والفعاليات، تقوم الإدارة بإصدار شهادات تقدير للمتطوعين المتميزين.', published: true }
+        ]);
+      }
+      if (!localStorage.getItem('bba_cms_partners')) {
+        cmsSet('partners', [
+          { name: 'Dz Young Leaders', logo: '', website: '#', category: 'شريك رسمي', published: true },
+          { name: 'جامعة برج بوعريريج', logo: '', website: '#', category: 'شريك أكاديمي', published: true }
+        ]);
+      }
+
+      /* Notice Bar */
+      var notice = cmsGet('notice_bar', {});
+      var nb = byId('noticeBar'), nt = byId('noticeBarText');
+      if (nb && nt && notice.visible && notice.message) {
+        var isExpired = notice.expiresAt && new Date(notice.expiresAt + 'T23:59:59') < new Date();
+        if (!isExpired) {
+          nt.textContent = notice.message;
+          nb.style.display = 'block';
+          if (notice.priority === 'urgent') nb.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+          else if (notice.priority === 'alert') nb.style.background = 'linear-gradient(135deg,#f59e0b,#d97706)';
+        }
+      }
+
+      /* Hero section */
+      var hero = cmsGet('hero', {});
+      if (hero.badge && byId('heroBadgeText')) byId('heroBadgeText').textContent = hero.badge;
+      if (hero.title && byId('heroMainTitle')) byId('heroMainTitle').textContent = hero.title;
+      if (hero.title && byId('heroTitleText')) byId('heroTitleText').textContent = hero.title;
+      if (hero.subtitle && byId('heroSubtitle')) byId('heroSubtitle').textContent = hero.subtitle;
+      if (hero.primaryBtnText && byId('heroPrimaryBtnText')) byId('heroPrimaryBtnText').textContent = hero.primaryBtnText;
+      if (hero.primaryBtnLink && byId('heroPrimaryBtn')) byId('heroPrimaryBtn').href = hero.primaryBtnLink;
+      if (hero.secondaryBtnText && byId('heroSecondaryBtnText')) byId('heroSecondaryBtnText').textContent = hero.secondaryBtnText;
+      if (hero.secondaryBtnLink && byId('heroSecondaryBtn')) byId('heroSecondaryBtn').href = hero.secondaryBtnLink;
+
+      /* Testimonials */
+      var testimonials = cmsGet('testimonials', []);
+      var tg = byId('testimonialsGrid');
+      if (tg && testimonials.length > 0) {
+        var tHtml = '';
+        for (var ti = 0; ti < testimonials.length; ti++) {
+          var t = testimonials[ti];
+          tHtml += '<div class="testimonial-card"><p class="testimonial-text">"' + escapeHtml(t.text) + '"</p><div class="testimonial-author"><div class="testimonial-avatar">' + (t.avatar || '⭐') + '</div><div><div class="testimonial-name">' + escapeHtml(t.author) + '</div><div class="testimonial-role">' + escapeHtml(t.role || '') + '</div></div></div></div>';
+        }
+        tg.innerHTML = tHtml;
+      }
+
+      /* FAQ Accordion */
+      var faqs = cmsGet('faq', []);
+      var fa = byId('faqAccordion');
+      if (fa && faqs.length > 0) {
+        var fHtml = '';
+        for (var fi = 0; fi < faqs.length; fi++) {
+          var f = faqs[fi];
+          fHtml += '<div style="background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:0.75rem;overflow:hidden">' +
+            '<button type="button" style="width:100%;padding:1rem 1.25rem;background:none;border:none;color:var(--text);font-family:var(--font);font-size:0.9rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;text-align:right" onclick="var p=this.nextElementSibling;var i=this.querySelector(\'.faq-icon\');if(p.style.maxHeight){p.style.maxHeight=null;i.textContent=\'+\'}else{p.style.maxHeight=p.scrollHeight+\'px\';i.textContent=\'−\'}">' +
+            '<span>' + escapeHtml(f.question) + '</span>' +
+            '<span class="faq-icon" style="flex-shrink:0;color:var(--gold);font-size:1.25rem;font-weight:700">+</span></button>' +
+            '<div style="max-height:0;overflow:hidden;transition:max-height 0.3s ease"><div style="padding:0 1.25rem 1rem;font-size:0.85rem;color:var(--text-secondary);line-height:1.8">' + escapeHtml(f.answer) + '</div></div></div>';
+        }
+        fa.innerHTML = fHtml;
+      }
+
+      /* Partners */
+      var partners = cmsGet('partners', []);
+      var pg = byId('partnersGrid');
+      if (pg && partners.length > 0) {
+        var pHtml = '';
+        for (var pi = 0; pi < partners.length; pi++) {
+          var p = partners[pi];
+          pHtml += '<a href="' + (p.website || '#') + '" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:1rem 1.5rem;background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);text-decoration:none;transition:all 0.3s ease;min-width:140px" onmouseover="this.style.borderColor=\'var(--gold)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.transform=\'none\'">' +
+            '<div style="font-size:2.5rem;color:var(--gold)">🤝</div>' +
+            '<div style="color:var(--text);font-size:0.85rem;font-weight:600;text-align:center">' + escapeHtml(p.name) + '</div>' +
+            (p.category ? '<div style="color:var(--muted);font-size:0.7rem">' + escapeHtml(p.category) + '</div>' : '') +
+            '</a>';
+        }
+        pg.innerHTML = pHtml;
+      }
+
+      /* Dynamic articles from CMS */
+      var articles = cmsGet('articles', []);
+      var published = [];
+      for (var ai = 0; ai < articles.length; ai++) {
+        if (articles[ai].published !== false) published.push(articles[ai]);
+      }
+      if (published.length > 0 && typeof openArticleModal === 'function') {
+        window.ARTICLES = published;
+        var grid = byId('awarenessGrid');
+        if (grid) {
+          var html = '';
+          for (var ai = 0; ai < published.length; ai++) {
+            var a = published[ai];
+            html += '<article class="article-card fade-in-up"><img class="article-img" src="' + (a.image || '') + '" alt="' + escapeHtml(a.title) + '" loading="lazy" onerror="this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22250%22 fill=%22%230b101b%22/%3E\'"><div class="article-body"><span class="article-category">' + escapeHtml(a.category) + '</span><h3>' + escapeHtml(a.title) + '</h3><div style="display:flex;gap:0.75rem;font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem"><span>📅 ' + (a.date || '') + '</span><span>⏱ ' + (a.readingTime || '5') + ' دقائق</span></div><p>' + escapeHtml(a.summary) + '</p><button type="button" class="btn btn-secondary btn-sm read-more-btn" data-id="' + a.id + '">قراءة المزيد</button></div></article>';
+          }
+          grid.innerHTML = html;
+          grid.querySelectorAll('.read-more-btn').forEach(function(b) {
+            b.onclick = function() {
+              var id = parseInt(this.getAttribute('data-id'), 10);
+              for (var j = 0; j < published.length; j++) {
+                if (published[j].id === id) {
+                  openArticleModal(published[j]);
+                  break;
+                }
+              }
+            };
+          });
+        }
+      }
+    })();
+
+    /* ============================================================
+     * HERO ANIMATED STATISTICS
+     * Load real values from localStorage with animation
+     * ============================================================ */
+    (function initHeroStats() {
+      var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+      var consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+      var activityLog = JSON.parse(localStorage.getItem('bba_activity_log') || '[]');
+      var certificates = JSON.parse(localStorage.getItem('bba_certificates') || '[]');
+
+      function animateNumber(el, target) {
+        if (!el) return;
+        var start = 0;
+        var step = Math.max(1, Math.ceil(target / 60));
+        var timer = setInterval(function() {
+          start += step;
+          if (start >= target) { start = target; clearInterval(timer); }
+          el.textContent = start;
+        }, 20);
+      }
+
+      animateNumber(byId('heroVolunteers'), volunteers.length);
+      animateNumber(byId('heroConsultations'), consultations.length);
+      animateNumber(byId('heroActivities'), activityLog.length);
+      animateNumber(byId('heroCertificates'), certificates.length);
+
+      /* Impact grid */
+      var approved = 0;
+      for (var i = 0; i < volunteers.length; i++) { if (volunteers[i].status === 'approved') approved++; }
+      var events = JSON.parse(localStorage.getItem('bba_events') || '[]');
+      var completedEvents = 0;
+      for (var i = 0; i < events.length; i++) { if (events[i].status === 'completed') completedEvents++; }
+      var teams = JSON.parse(localStorage.getItem('bba_teams') || '[]');
+      animateNumber(byId('impactVolunteers'), volunteers.length);
+      animateNumber(byId('impactApproved'), approved);
+      animateNumber(byId('impactActivities'), activityLog.length);
+      animateNumber(byId('impactCerts'), certificates.length);
+      animateNumber(byId('impactEvents'), completedEvents);
+      animateNumber(byId('impactTeams'), teams.length);
+    })();
+
+    /* ============================================================
+     * UPCOMING EVENTS - Display open events from localStorage
+     * ============================================================ */
+    (function initUpcomingEvents() {
+      var grid = byId('upcomingEventsGrid');
+      if (!grid) return;
+      var events = JSON.parse(localStorage.getItem('bba_events') || '[]');
+      var today = new Date(); today.setHours(0,0,0,0);
+      var open = [];
+      for (var i = 0; i < events.length; i++) {
+        if (events[i].status === 'open') {
+          var ed = new Date(events[i].date + 'T00:00:00');
+          if (ed >= today) open.push(events[i]);
+        }
+      }
+      open.sort(function(a,b){ return new Date(a.date) - new Date(b.date); });
+      open = open.slice(0, 6);
+      if (open.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)"><div style="font-size:3rem;margin-bottom:1rem">📅</div><p>لا توجد فعاليات قادمة حالياً. تابعنا على وسائل التواصل الاجتماعي لمعرفة أحدث الفعاليات.</p></div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < open.length; i++) {
+        var e = open[i];
+        var regs = e.registrations || [];
+        html += '<div class="event-card fade-in-up" style="animation-delay:' + (i * 0.1) + 's">' +
+          '<div class="event-card-header">' +
+          '<div class="event-card-icon">' + (e.typeIcon || '📅') + '</div>' +
+          '<div><div class="event-card-title">' + escapeHtml(e.title) + '</div>' +
+          '<span class="event-card-type">' + escapeHtml(e.type) + '</span></div></div>' +
+          '<div class="event-card-meta">' +
+          '<span>📅 ' + new Date(e.date).toLocaleDateString('ar-DZ',{year:'numeric',month:'long',day:'numeric'}) + '</span>' +
+          (e.location ? '<span>📍 ' + escapeHtml(e.location) + '</span>' : '') +
+          (e.municipality ? '<span>🏛️ ' + escapeHtml(e.municipality) + '</span>' : '') +
+          '<span>👥 ' + regs.length + '/' + (e.seats || '∞') + '</span></div>' +
+          (e.description ? '<p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0.75rem">' + escapeHtml(e.description) + '</p>' : '') +
+          '<a href="portal.html" class="btn btn-secondary btn-sm">التسجيل في الفعالية</a></div>';
+      }
+      grid.innerHTML = html;
+    })();
+
+    /* ============================================================
+     * LATEST ACHIEVEMENTS & CERTIFICATES
+     * ============================================================ */
+    (function initAchievements() {
+      var grid = byId('achievementsGrid');
+      if (!grid) return;
+      var certificates = JSON.parse(localStorage.getItem('bba_certificates') || '[]');
+      var achievements = JSON.parse(localStorage.getItem('bba_achievements') || '[]');
+      var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+      var html = '';
+      /* Show latest 3 certificates */
+      var certs = certificates.slice(-3).reverse();
+      for (var i = 0; i < certs.length && i < 3; i++) {
+        var c = certs[i];
+        var volName = c.volunteerName || c.volunteerId || '---';
+        for (var v = 0; v < volunteers.length; v++) {
+          if (volunteers[v].volunteerId === c.volunteerId) { volName = volunteers[v].fullName; break; }
+        }
+        html += '<div class="achieve-card"><div class="achieve-icon">📜</div><div class="achieve-title">' + escapeHtml(c.title) + '</div><div style="font-size:0.72rem;color:var(--gold);font-family:monospace;margin-bottom:0.2rem">' + (c.certificateNumber || '') + '</div><div class="achieve-date">' + new Date(c.issueDate).toLocaleDateString('ar-DZ',{year:'numeric',month:'long',day:'numeric'}) + '</div><div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem">👤 ' + escapeHtml(volName) + '</div></div>';
+      }
+      /* Show latest 3 achievements */
+      var achs = achievements.slice(-3).reverse();
+      for (var i = 0; i < achs.length && i < 3; i++) {
+        var a = achs[i];
+        var volName = a.assignedTo;
+        for (var v = 0; v < volunteers.length; v++) {
+          if (volunteers[v].volunteerId === a.assignedTo) { volName = volunteers[v].fullName; break; }
+        }
+        html += '<div class="achieve-card"><div class="achieve-icon">' + (a.icon || '🏆') + '</div><div class="achieve-title">' + escapeHtml(a.title) + '</div><div class="achieve-date">' + new Date(a.dateAwarded).toLocaleDateString('ar-DZ',{year:'numeric',month:'long',day:'numeric'}) + '</div><div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem">👤 ' + escapeHtml(volName) + '</div></div>';
+      }
+      if (html === '') {
+        html = '<div style="text-align:center;padding:3rem;color:var(--muted);grid-column:1/-1"><div style="font-size:3rem;margin-bottom:1rem">🏆</div><p>سيتم عرض الإنجازات والشهادات هنا قريباً</p></div>';
+      }
+      grid.innerHTML = html;
+    })();
+
+    /* ============================================================
+     * IMPROVED CONSULTATION TRACKING with Timeline
+     * ============================================================ */
+    (function initTrackingResult() {
+      var origSubmit = document.getElementById('trackingForm');
+      if (!origSubmit) return;
+      origSubmit.addEventListener('submit', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var code = byId('trackingCodeInput').value.trim();
+        var resultDiv = byId('trackingResult');
+        if (!code) { showToast('يرجى إدخال رمز المتابعة', 'error'); return; }
+        var consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+        var found = null;
+        for (var i = 0; i < consultations.length; i++) {
+          if (consultations[i].trackingCode === code) { found = consultations[i]; break; }
+        }
+        if (!found) {
+          resultDiv.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted)"><div style="font-size:3rem;margin-bottom:1rem">🔍</div><p>لم يتم العثور على استشارة بهذا الرمز. يرجى التحقق من الرمز والمحاولة مرة أخرى.</p></div>';
+          resultDiv.style.display = 'block';
+          return;
+        }
+        var statusMap = { pending: { text: 'جديدة', cls: 'badge-pending' }, in_progress: { text: 'قيد المعالجة', cls: 'badge-pending' }, answered: { text: 'تم الرد', cls: 'badge-approved' }, closed: { text: 'مغلقة', cls: 'badge-rejected' } };
+        var st = statusMap[found.status] || statusMap.pending;
+
+        /* Build timeline */
+        var timelineSteps = [
+          { key: 'pending', label: 'تم الاستلام', icon: '📩', done: true },
+          { key: 'in_progress', label: 'قيد الدراسة', icon: '📖', done: found.status === 'in_progress' || found.status === 'answered' || found.status === 'closed' },
+          { key: 'answered', label: 'تم الرد', icon: '💬', done: found.status === 'answered' || found.status === 'closed' },
+          { key: 'closed', label: 'أغلقت الحالة', icon: '🔒', done: found.status === 'closed' }
+        ];
+        var tlHtml = '<div class="timeline">';
+        for (var t = 0; t < timelineSteps.length; t++) {
+          var step = timelineSteps[t];
+          var isActive = step.key === found.status;
+          tlHtml += '<div class="timeline-item ' + (step.done ? 'done' : '') + (isActive ? ' active' : '') + '"><div class="timeline-item-text">' + step.icon + ' ' + step.label + '</div></div>';
+        }
+        tlHtml += '</div>';
+
+        var lastUpdate = found.lastUpdated ? new Date(found.lastUpdated).toLocaleDateString('ar-DZ', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'لم يتم التحديث بعد';
+        resultDiv.innerHTML =
+          '<div style="text-align:center;margin-bottom:1rem"><div style="font-size:2rem;margin-bottom:0.5rem">📋</div><h4 style="color:var(--gold);margin-bottom:0.25rem">نتيجة البحث</h4><div class="tracking-code" style="font-size:1rem;margin-bottom:0.5rem">' + escapeHtml(found.trackingCode) + '</div><span class="badge ' + st.cls + '">' + st.text + '</span></div>' +
+          '<div class="detail-row"><span class="detail-label">الموضوع</span><span class="detail-value">' + escapeHtml(found.subject) + '</span></div>' +
+          '<div class="detail-row"><span class="detail-label">آخر تحديث</span><span class="detail-value">' + lastUpdate + '</span></div>' +
+          '<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)"><h5 style="color:var(--gold);font-size:0.9rem;margin-bottom:0.5rem">⏳ مسار التقدم</h5>' + tlHtml + '</div>' +
+          (found.specialistResponse ? '<div class="detail-row" style="align-items:flex-start;margin-top:0.75rem"><span class="detail-label">رد المستشار</span><span class="detail-value" style="background:rgba(212,175,55,0.05);padding:0.75rem;border-radius:var(--radius-sm);border-right:3px solid var(--gold)">' + escapeHtml(found.specialistResponse) + '</span></div>' : '') +
+          (found.extraNotes ? '<div class="detail-row" style="align-items:flex-start"><span class="detail-label">ملاحظات</span><span class="detail-value" style="background:rgba(16,185,129,0.05);padding:0.75rem;border-radius:var(--radius-sm);border-right:3px solid var(--success)">' + escapeHtml(found.extraNotes) + '</span></div>' : '');
+        resultDiv.style.display = 'block';
+        showToast('تم العثور على الاستشارة ✓', 'success');
+      });
+    })();
+
+    /* ============================================================
+     * PUBLIC STATISTICS CHARTS
+     * ============================================================ */
+    (function initPublicCharts() {
+      var volCanvas = byId('publicVolunteerChart');
+      var conCanvas = byId('publicConsultationChart');
+      if (!volCanvas && !conCanvas) return;
+
+      var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+      var consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+
+      if (volCanvas && typeof Chart !== 'undefined') {
+        var counts = {};
+        for (var i = 0; i < volunteers.length; i++) {
+          counts[volunteers[i].municipality] = (counts[volunteers[i].municipality] || 0) + 1;
+        }
+        var entries = Object.entries(counts).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+        var labels = [], data = [];
+        for (var j = 0; j < entries.length; j++) { labels.push(entries[j][0]); data.push(entries[j][1]); }
+        var ctx = volCanvas.getContext('2d');
+        var gradient = ctx.createLinearGradient(0,0,0,300);
+        gradient.addColorStop(0, 'rgba(212, 175, 55, 0.6)');
+        gradient.addColorStop(1, 'rgba(212, 175, 55, 0.1)');
+        new Chart(ctx, {
+          type: 'bar',
+          data: { labels: labels, datasets: [{ label: 'عدد المتطوعين', data: data, backgroundColor: gradient, borderColor: 'rgba(212, 175, 55, 0.8)', borderWidth: 1, borderRadius: 4 }] },
+          options: { responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#D4AF37', bodyColor: '#fff', borderColor: 'rgba(212, 175, 55, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8, rtl: true } },
+            scales: { x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 11 }, maxRotation: 45 } }, y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 10 } } } },
+            animation: { duration: 1000, easing: 'easeOutQuart' } }
+        });
+      }
+
+      if (conCanvas && typeof Chart !== 'undefined') {
+        var pendingC = 0, inProgressC = 0, answeredC = 0, closedC = 0;
+        for (var i = 0; i < consultations.length; i++) {
+          if (consultations[i].status === 'pending') pendingC++;
+          else if (consultations[i].status === 'in_progress') inProgressC++;
+          else if (consultations[i].status === 'answered') answeredC++;
+          else if (consultations[i].status === 'closed') closedC++;
+        }
+        var ctx2 = conCanvas.getContext('2d');
+        new Chart(ctx2, {
+          type: 'doughnut',
+          data: {
+            labels: ['جديدة', 'قيد المعالجة', 'تم الرد', 'مغلقة'],
+            datasets: [{ data: [pendingC, inProgressC, answeredC, closedC], backgroundColor: ['#f59e0b', '#6366f1', '#10b981', '#94a3b8'], borderWidth: 0, hoverOffset: 8 }]
+          },
+          options: { responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Cairo', size: 11 }, padding: 12, usePointStyle: true } },
+              tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#D4AF37', bodyColor: '#fff', borderColor: 'rgba(212, 175, 55, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8, rtl: true } },
+            cutout: '60%',
+            animation: { duration: 1000, easing: 'easeOutQuart' } }
+        });
+      }
+    })();
+
+    /* ============================================================
+     * ANNOUNCEMENTS
+     * ============================================================ */
+    (function initAnnouncements() {
+      var list = byId('announcementsList');
+      if (!list) return;
+      var data = JSON.parse(localStorage.getItem('bba_notifications_data') || '[]');
+      var announcements = [];
+      for (var i = data.length - 1; i >= 0; i--) {
+        if (data[i].targetVolunteer === 'all') announcements.push(data[i]);
+      }
+      announcements = announcements.slice(0, 5);
+      if (announcements.length === 0) {
+        list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted)"><div style="font-size:3rem;margin-bottom:1rem">📢</div><p>لا توجد إعلانات حالياً. سيتم نشر الإعلانات هنا من قبل الإدارة.</p></div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < announcements.length; i++) {
+        var a = announcements[i];
+        var typeIcon = { info: 'ℹ️', alert: '⚠️', new_task: '📋', achievement: '🏆' };
+        html += '<div class="announcement-card"><div class="announcement-header"><div class="announcement-title">' + (typeIcon[a.type] || '📢') + ' ' + escapeHtml(a.title) + '</div><div class="announcement-date">' + new Date(a.createdAt).toLocaleDateString('ar-DZ',{year:'numeric',month:'short',day:'numeric'}) + '</div></div><div class="announcement-text">' + escapeHtml(a.message) + '</div></div>';
+      }
+      list.innerHTML = html;
+    })();
+
+    /* ============================================================
+     * CERTIFICATE VERIFICATION (Quick Section)
+     * ============================================================ */
+    (function initPublicCertVerify() {
+      var toggleBtn = byId('verifyCertQuickBtn');
+      var section = byId('verifySection');
+      if (toggleBtn && section) {
+        toggleBtn.onclick = function() {
+          section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        };
+      }
+      var verifyBtn = byId('publicCertVerifyBtn');
+      var certInput = byId('publicCertInput');
+      var resultDiv = byId('publicCertResult');
+      if (verifyBtn && certInput && resultDiv) {
+        verifyBtn.onclick = function() {
+          var searchCode = certInput.value.trim();
+          if (!searchCode) { showToast('يرجى إدخال رقم الشهادة', 'error'); return; }
+          var certs = JSON.parse(localStorage.getItem('bba_certificates') || '[]');
+          var found = null;
+          for (var i = 0; i < certs.length; i++) {
+            if (certs[i].certificateNumber === searchCode) { found = certs[i]; break; }
+          }
+          if (found) {
+            var volName = found.volunteerName || found.volunteerId || '---';
+            resultDiv.innerHTML = '<div style="padding:1rem;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:var(--radius-sm);text-align:center"><div style="font-size:2rem;margin-bottom:0.5rem">✅</div><h4 style="color:var(--success);margin-bottom:0.5rem">شهادة صحيحة</h4><div class="detail-row"><span class="detail-label">الاسم</span><span class="detail-value">' + escapeHtml(volName) + '</span></div><div class="detail-row"><span class="detail-label">رقم الشهادة</span><span class="detail-value" style="font-family:monospace;color:var(--gold)">' + found.certificateNumber + '</span></div><div class="detail-row"><span class="detail-label">تاريخ الإصدار</span><span class="detail-value">' + new Date(found.issueDate).toLocaleDateString('ar-DZ',{year:'numeric',month:'long',day:'numeric'}) + '</span></div><div class="detail-row"><span class="detail-label">الحالة</span><span class="detail-value"><span class="badge badge-approved">صحيحة</span></span></div></div>';
+          } else {
+            resultDiv.innerHTML = '<div style="padding:1rem;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius-sm);text-align:center"><div style="font-size:2rem;margin-bottom:0.5rem">❌</div><h4 style="color:var(--danger);margin-bottom:0.25rem">شهادة غير موجودة</h4><p style="font-size:0.85rem;color:var(--muted)">لم يتم العثور على شهادة بهذا الرقم. يرجى التحقق من الرقم والمحاولة مرة أخرى.</p></div>';
+          }
+          resultDiv.style.display = 'block';
+        };
+        certInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') verifyBtn.click();
+        });
+      }
+    })();
+
+    /* ============================================================
+     * CONSULTATION TABS
+     * ============================================================ */
+    /* ============================================================
+     * PARALLAX HERO - Mouse tracking + depth effect
+     * ============================================================ */
+    (function initHeroParallax() {
+      var hero = document.querySelector('.hero');
+      var content = document.getElementById('heroContent');
+      var shapes = document.querySelectorAll('.hero-shape');
+      if (!hero) return;
+
+      /* Mouse-based parallax */
+      hero.addEventListener('mousemove', function(e) {
+        var rect = hero.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+
+        /* Move shapes with parallax factor */
+        for (var i = 0; i < shapes.length; i++) {
+          var factor = parseFloat(shapes[i].getAttribute('data-parallax')) || 0.04;
+          shapes[i].style.transform = 'translate(' + (x * factor * 100) + 'px, ' + (y * factor * 100) + 'px)';
+        }
+
+        /* Subtle content shift */
+        if (content) {
+          content.style.transform = 'translate(' + (x * -8) + 'px, ' + (y * -8) + 'px)';
+        }
+      });
+
+      /* Reset on mouse leave */
+      hero.addEventListener('mouseleave', function() {
+        for (var i = 0; i < shapes.length; i++) {
+          shapes[i].style.transform = '';
+        }
+        if (content) content.style.transform = '';
+      });
+
+      /* Scroll-based parallax depth on hero background */
+      var heroBg = document.querySelector('.hero-bg');
+      if (heroBg) {
+        window.addEventListener('scroll', function() {
+          var scrollY = window.scrollY;
+          var heroHeight = hero.offsetHeight;
+          if (scrollY <= heroHeight) {
+            var progress = scrollY / heroHeight;
+            heroBg.style.transform = 'translateY(' + (progress * 40) + 'px)';
+            heroBg.style.opacity = 1 - progress * 0.3;
+            if (shapes.length > 0) {
+              shapes[0].style.transform = 'translateY(' + (progress * -60) + 'px)';
+              shapes[0].style.opacity = 1 - progress * 0.5;
+            }
+          }
+        }, { passive: true });
+      }
+    })();
+
+    /* ============================================================
+     * INTERACTIVE STAT CARDS - Detailed breakdown on hover
+     * ============================================================ */
+    (function initInteractiveStats() {
+      var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+      var consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+      var activityLog = JSON.parse(localStorage.getItem('bba_activity_log') || '[]');
+      var certificates = JSON.parse(localStorage.getItem('bba_certificates') || '[]');
+
+      /* Volunteers breakdown */
+      var approved = 0, pending = 0;
+      for (var i = 0; i < volunteers.length; i++) {
+        if (volunteers[i].status === 'approved') approved++;
+        else if (volunteers[i].status === 'pending') pending++;
+      }
+      var totalVol = volunteers.length || 1;
+      if (byId('heroVolApproved')) byId('heroVolApproved').textContent = approved;
+      if (byId('heroVolPending')) byId('heroVolPending').textContent = pending;
+      if (byId('heroVolProgress')) byId('heroVolProgress').style.width = Math.round((approved / totalVol) * 100) + '%';
+
+      /* Consultations breakdown */
+      var answered = 0, pendingC = 0;
+      for (var i = 0; i < consultations.length; i++) {
+        if (consultations[i].status === 'answered' || consultations[i].status === 'closed') answered++;
+        else if (consultations[i].status === 'pending' || consultations[i].status === 'in_progress') pendingC++;
+      }
+      var totalCon = consultations.length || 1;
+      if (byId('heroConAnswered')) byId('heroConAnswered').textContent = answered;
+      if (byId('heroConPending')) byId('heroConPending').textContent = pendingC;
+      if (byId('heroConProgress')) byId('heroConProgress').style.width = Math.round((answered / totalCon) * 100) + '%';
+
+      /* Activities breakdown */
+      var campaigns = 0, workshops = 0;
+      var events = JSON.parse(localStorage.getItem('bba_events') || '[]');
+      for (var i = 0; i < events.length; i++) {
+        if (events[i].type === 'حملة توعوية' || events[i].type === 'نشاط ميداني') campaigns++;
+        else if (events[i].type === 'ورشة عمل' || events[i].type === 'دورة تدريبية') workshops++;
+      }
+      for (var i = 0; i < activityLog.length; i++) {
+        if (activityLog[i].description && activityLog[i].description.indexOf('حملة') !== -1) campaigns++;
+        else if (activityLog[i].description && (activityLog[i].description.indexOf('ورشة') !== -1 || activityLog[i].description.indexOf('تدريب') !== -1)) workshops++;
+      }
+      var totalAct = activityLog.length || 1;
+      if (byId('heroActCampaigns')) byId('heroActCampaigns').textContent = campaigns;
+      if (byId('heroActWorkshops')) byId('heroActWorkshops').textContent = workshops;
+      if (byId('heroActProgress')) byId('heroActProgress').style.width = Math.round(((campaigns + workshops) / totalAct) * 100) + '%';
+
+      /* Certificates breakdown - monthly vs annual estimate */
+      var monthlyCerts = 0, annualCerts = 0;
+      var now = new Date();
+      for (var i = 0; i < certificates.length; i++) {
+        var certDate = new Date(certificates[i].issueDate);
+        if (certDate.getFullYear() === now.getFullYear() && certDate.getMonth() === now.getMonth()) monthlyCerts++;
+        if (certDate.getFullYear() === now.getFullYear()) annualCerts++;
+      }
+      var totalCert = Math.max(certificates.length, 1);
+      if (byId('heroCertMonthly')) byId('heroCertMonthly').textContent = monthlyCerts;
+      if (byId('heroCertAnnual')) byId('heroCertAnnual').textContent = annualCerts;
+      if (byId('heroCertProgress')) byId('heroCertProgress').style.width = Math.min(100, Math.round((annualCerts / totalCert) * 100)) + '%';
+
+      /* Click to toggle active state */
+      var statCards = document.querySelectorAll('.hero-stat');
+      for (var i = 0; i < statCards.length; i++) {
+        (function(card) {
+          card.addEventListener('click', function() {
+            var wasActive = this.classList.contains('active');
+            for (var j = 0; j < statCards.length; j++) {
+              statCards[j].classList.remove('active');
+            }
+            if (!wasActive) this.classList.add('active');
+          });
+          /* Keyboard support */
+          card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              this.click();
+            }
+          });
+        })(statCards[i]);
+      }
+    })();
+
+    /* Theme switcher */
+    (function() {
+      var c = byId('indexThemeSwitcher');
+      if (c && window.BBA && window.BBA.Theme) {
+        window.BBA.Theme.createSwitcher(c);
+      }
+    })();
+
+    /* ============================================================
+     * AUTH-AWARE DASHBOARD LINK VISIBILITY
+     * Show/hide dashboard links based on auth status & role.
+     * ============================================================ */
+    (function initAuthLinks() {
+      function updateAuthLinks() {
+        var el = function(id) { return document.getElementById(id); };
+
+        var portalBtn = el('quickLinkPortal');
+        var portalFooter = el('footerLinkPortal');
+        var portalEvents = el('eventsPortalBtn');
+        var adminBtn = el('quickLinkAdmin');
+        var psychBtn = el('quickLinkPsych');
+        var psychFooter = el('footerLinkPsych');
+
+        if (!window.BBA || !window.BBA.Auth) {
+          /* Auth not loaded yet — retry */
+          setTimeout(updateAuthLinks, 500);
+          return;
+        }
+
+        var auth = window.BBA.Auth;
+        var user = auth.getUser();
+        var role = auth.getRole();
+        var loggedIn = auth.isLoggedIn();
+
+        /* Portal: show if logged in (any role gets access) */
+        if (portalBtn) portalBtn.style.display = loggedIn ? '' : 'none';
+        if (portalFooter) portalFooter.style.display = loggedIn ? '' : 'none';
+        /* Events portal button: always visible (guests can see registration option) */
+        if (portalEvents) portalEvents.style.display = '';
+
+        /* Admin: only super_admin or admin */
+        var isAdmin = role === 'super_admin' || role === 'admin';
+        if (adminBtn) adminBtn.style.display = isAdmin ? '' : 'none';
+
+        /* Psychologist: only psychologist or super_admin */
+        var isPsych = role === 'psychologist' || role === 'super_admin';
+        if (psychBtn) psychBtn.style.display = isPsych ? '' : 'none';
+        if (psychFooter) psychFooter.style.display = isPsych ? '' : 'none';
+      }
+
+      /* Run after DOM ready with a short delay for BBA.Auth init */
+      if (document.readyState === 'complete') {
+        setTimeout(updateAuthLinks, 1000);
+      } else {
+        document.addEventListener('DOMContentLoaded', function() {
+          setTimeout(updateAuthLinks, 1000);
+        });
+      }
+    })();
+
+    (function initConsultTabs() {
+      var tabs = document.querySelectorAll('.tracking-tab');
+      for (var i = 0; i < tabs.length; i++) {
+        (function(tab) {
+          tab.addEventListener('click', function() {
+            for (var j = 0; j < tabs.length; j++) {
+              tabs[j].style.color = 'var(--muted)';
+              tabs[j].style.background = 'transparent';
+            }
+            this.style.color = 'var(--gold)';
+            this.style.background = 'var(--gold-light)';
+            var target = this.getAttribute('data-tab');
+            byId('tab-new-consult').style.display = target === 'new-consult' ? 'block' : 'none';
+            byId('tab-track-consult').style.display = target === 'track-consult' ? 'block' : 'none';
+          });
+        })(tabs[i]);
+      }
+    })();
+
+    /* ============================================================
+     * EVENT MODAL CLOSE HANDLERS
+     * ============================================================ */
+    (function() {
+      var am = byId('articleModal');
+      var amc = byId('articleModalClose');
+      if (amc && am) {
+        amc.addEventListener('click', function() { am.classList.remove('active'); });
+        am.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+      }
+      /* Close any modal on Escape key */
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-overlay.active').forEach(function(m) { m.classList.remove('active'); });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

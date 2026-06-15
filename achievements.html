@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="إنجازات منصة وعي الشباب BBA - Dz Young Leaders">
+  <meta name="theme-color" content="#06090e">
+  <title>الإنجازات السنوية | منصة وعي الشباب BBA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23D4AF37'/%3E%3Ctext y='68' x='50' text-anchor='middle' font-size='50' fill='%2306090e' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E">
+  <style>
+    :root{--bg:#06090e;--surface:rgba(11,16,27,0.75);--surface-solid:#0b101b;--gold:#D4AF37;--gold-hover:#B3922E;--gold-light:rgba(212,175,55,0.12);--success:#10b981;--success-bg:rgba(16,185,129,0.12);--danger:#ef4444;--text:#ffffff;--text-secondary:#e2e8f0;--muted:#94a3b8;--border:rgba(212,175,55,0.15);--border-light:rgba(255,255,255,0.06);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--font:'Cairo',sans-serif;--transition:all 0.35s cubic-bezier(0.4,0,0.2,1);--container:1100px}
+    *,:before,:after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;direction:rtl;min-height:100vh;-webkit-font-smoothing:antialiased}
+    h1,h2,h3{font-weight:700;line-height:1.4}
+    p{color:var(--muted);font-size:clamp(0.9rem,1.1vw,1rem)}
+    a{color:var(--gold);text-decoration:none;transition:var(--transition)}
+    a:hover{color:var(--gold-hover)}
+    .container{max-width:var(--container);margin:0 auto;padding:0 1rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.6rem 1.25rem;border-radius:var(--radius-sm);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition);border:none}
+    .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-hover));color:var(--bg);box-shadow:0 4px 24px rgba(212,175,55,0.15)}
+    .btn-secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+    .btn-secondary:hover{background:var(--gold-light);transform:translateY(-2px)}
+
+    /* Header */
+    .header{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:1rem 0;position:sticky;top:0;z-index:100}
+    .header-inner{max-width:var(--container);margin:0 auto;padding:0 1rem;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;align-items:center;gap:0.5rem;font-size:1rem;font-weight:700;color:var(--gold)}
+    .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold-hover));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--bg)}
+
+    /* Hero */
+    .hero{text-align:center;padding:3rem 0 2rem}
+    .hero-icon{font-size:4rem;margin-bottom:1rem}
+    .hero h1{font-size:clamp(1.5rem,3.5vw,2rem);margin-bottom:0.5rem;background:linear-gradient(135deg,var(--text) 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero p{max-width:600px;margin:0 auto}
+
+    /* Stats */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0}
+    .stat-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;text-align:center;transition:var(--transition)}
+    .stat-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3);box-shadow:0 4px 24px rgba(212,175,55,0.1)}
+    .stat-icon{font-size:2rem;margin-bottom:0.5rem}
+    .stat-value{font-size:2rem;font-weight:700;color:var(--gold)}
+    .stat-label{font-size:0.8rem;color:var(--muted);margin-top:0.25rem}
+    .stat-detail{font-size:0.72rem;color:var(--muted);margin-top:0.15rem}
+
+    /* Charts */
+    .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2rem 0}
+    .chart-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem}
+    .chart-card h3{font-size:0.95rem;margin-bottom:1rem;text-align:center;color:var(--gold)}
+    .chart-container{height:300px;max-width:100%}
+
+    /* Timeline */
+    .timeline{position:relative;padding:1rem 0;margin:1rem 0}
+    .timeline:before{content:'';position:absolute;right:7px;top:0;bottom:0;width:2px;background:var(--border-light)}
+    .timeline-item{position:relative;padding:0.75rem 0;padding-right:1.5rem;margin-right:0.5rem}
+    .timeline-item:before{content:'';position:absolute;right:-14px;top:1.1rem;width:16px;height:16px;border-radius:50%;background:var(--surface-solid);border:2px solid var(--gold)}
+    .timeline-item.done:before{background:var(--gold)}
+    .timeline-text{font-size:0.85rem;color:var(--text)}
+    .timeline-date{font-size:0.72rem;color:var(--muted)}
+
+    /* Bottom section */
+    .achievement-highlights{margin:2rem 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+    .highlight-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem}
+    .highlight-card h3{font-size:0.95rem;color:var(--gold);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+
+    .footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border);margin-top:2rem}
+    .footer p{font-size:0.8rem}
+    .footer-gold{color:var(--gold);font-weight:600}
+
+    @media(max-width:768px){.charts-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">وعي</span>
+        <span>منصة وعي الشباب BBA</span>
+      </a>
+      <nav>
+        <a href="index.html" style="font-size:0.85rem;color:var(--muted);padding:0.4rem 0.75rem;border-radius:var(--radius-sm)">الصفحة الرئيسية</a>
+        <a href="portal.html" style="font-size:0.85rem;color:var(--muted);padding:0.4rem 0.75rem;border-radius:var(--radius-sm)">بوابة المتطوعين</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-icon">🏆</div>
+      <h1>الإنجازات السنوية</h1>
+      <p id="achYearDesc">إحصائيات وإنجازات برنامج Dz Young Leaders لهذا العام</p>
+    </section>
+
+    <!-- Real-time Stats -->
+    <div class="stats-grid" id="achStatsGrid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value" id="achTotalVolunteers">0</div>
+        <div class="stat-label">إجمالي المتطوعين</div>
+        <div class="stat-detail" id="achApprovedVolunteers">0 معتمد</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💬</div>
+        <div class="stat-value" id="achTotalConsultations">0</div>
+        <div class="stat-label">الاستشارات</div>
+        <div class="stat-detail" id="achAnsweredConsultations">0 تم الرد</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value" id="achTotalActivities">0</div>
+        <div class="stat-label">النشاطات</div>
+        <div class="stat-detail" id="achTotalPoints">0 نقطة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📜</div>
+        <div class="stat-value" id="achTotalCertificates">0</div>
+        <div class="stat-label">الشهادات</div>
+        <div class="stat-detail">صادرة عن المنصة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-value" id="achTotalEvents">0</div>
+        <div class="stat-label">الفعاليات</div>
+        <div class="stat-detail" id="achCompletedEvents">0 منفذة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏛️</div>
+        <div class="stat-value" id="achTotalTeams">0</div>
+        <div class="stat-label">فرق البلديات</div>
+        <div class="stat-detail" id="achTeamMembers">0 عضو</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>🏛️ المتطوعون حسب البلدية</h3>
+        <div class="chart-container"><canvas id="achVolunteerChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>📊 حالة الاستشارات</h3>
+        <div class="chart-container"><canvas id="achConsultationChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Municipality Performance -->
+    <div class="achievement-highlights">
+      <div class="highlight-card">
+        <h3>🏛️ البلديات الأكثر نشاطاً</h3>
+        <div id="achTopMunicipalities" style="font-size:0.85rem"></div>
+      </div>
+      <div class="highlight-card">
+        <h3>⭐ أفضل المتطوعين</h3>
+        <div id="achTopVolunteers" style="font-size:0.85rem"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | برنامج <span class="footer-gold">Dz Young Leaders</span></p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/platform-core.js"></script>
+  <script>
+    function byId(id) { return document.getElementById(id); }
+    function escapeHtml(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+    (function initAchievementsPage() {
+      var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+      var consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+      var activityLog = JSON.parse(localStorage.getItem('bba_activity_log') || '[]');
+      var certificates = JSON.parse(localStorage.getItem('bba_certificates') || '[]');
+      var events = JSON.parse(localStorage.getItem('bba_events') || '[]');
+      var teams = JSON.parse(localStorage.getItem('bba_teams') || '[]');
+      var achievements = JSON.parse(localStorage.getItem('bba_achievements') || '[]');
+
+      var totalV = volunteers.length;
+      var approvedV = 0, pendingV = 0;
+      var munCounts = {};
+      var topVolCounts = {};
+      for (var i = 0; i < volunteers.length; i++) {
+        if (volunteers[i].status === 'approved') { approvedV++; }
+        if (volunteers[i].status === 'pending') pendingV++;
+        munCounts[volunteers[i].municipality] = (munCounts[volunteers[i].municipality] || 0) + 1;
+      }
+      var totalC = consultations.length;
+      var pendingC = 0, inProgC = 0, answeredC = 0, closedC = 0;
+      for (var i = 0; i < consultations.length; i++) {
+        if (consultations[i].status === 'pending') pendingC++;
+        else if (consultations[i].status === 'in_progress') inProgC++;
+        else if (consultations[i].status === 'answered') answeredC++;
+        else if (consultations[i].status === 'closed') closedC++;
+      }
+      var totalAct = activityLog.length;
+      var totalPts = 0;
+      for (var i = 0; i < activityLog.length; i++) totalPts += parseInt(activityLog[i].points) || 0;
+      var totalCerts = certificates.length;
+      var openEvents = 0, completedEvents = 0, cancelledEvents = 0;
+      for (var i = 0; i < events.length; i++) {
+        if (events[i].status === 'open') openEvents++;
+        else if (events[i].status === 'completed') completedEvents++;
+        else if (events[i].status === 'cancelled') cancelledEvents++;
+      }
+      var totalTeams = teams.length;
+      var totalMembers = 0;
+      for (var i = 0; i < teams.length; i++) totalMembers += (teams[i].members || []).length;
+
+      /* Update stats */
+      byId('achTotalVolunteers').textContent = totalV;
+      byId('achApprovedVolunteers').textContent = approvedV + ' معتمد';
+      byId('achTotalConsultations').textContent = totalC;
+      byId('achAnsweredConsultations').textContent = (answeredC + closedC) + ' تم الرد';
+      byId('achTotalActivities').textContent = totalAct;
+      byId('achTotalPoints').textContent = totalPts + ' نقطة';
+      byId('achTotalCertificates').textContent = totalCerts;
+      byId('achTotalEvents').textContent = events.length;
+      byId('achCompletedEvents').textContent = completedEvents + ' منفذة';
+      byId('achTotalTeams').textContent = totalTeams;
+      byId('achTeamMembers').textContent = totalMembers + ' عضو';
+
+      /* Year description */
+      var year = new Date().getFullYear();
+      byId('achYearDesc').textContent = 'إحصائيات وإنجازات برنامج Dz Young Leaders لعام ' + year;
+
+      /* Top municipalities */
+      var entries = Object.entries(munCounts).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
+      var munHtml = '';
+      for (var i = 0; i < entries.length; i++) {
+        munHtml += '<div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border-light);font-size:0.85rem"><span style="color:var(--text)">' + escapeHtml(entries[i][0]) + '</span><span style="color:var(--gold);font-weight:600">' + entries[i][1] + ' متطوع</span></div>';
+      }
+      if (!munHtml) munHtml = '<div style="color:var(--muted);text-align:center;padding:1rem">لا توجد بيانات</div>';
+      byId('achTopMunicipalities').innerHTML = munHtml;
+
+      /* Top volunteers by points */
+      var topVols = [];
+      for (var i = 0; i < volunteers.length; i++) {
+        if (volunteers[i].status === 'approved') {
+          var pts = JSON.parse(localStorage.getItem('bba_points_' + (volunteers[i].volunteerId || '')) || '[]');
+          var totalP = 0;
+          for (var p = 0; p < pts.length; p++) {
+            if (pts[p].type === 'add') totalP += pts[p].amount;
+            else totalP -= pts[p].amount;
+          }
+          topVols.push({ name: volunteers[i].fullName, points: totalP, id: volunteers[i].volunteerId });
+        }
+      }
+      topVols.sort(function(a,b){return b.points - a.points;});
+      topVols = topVols.slice(0, 5);
+      var volHtml = '';
+      var medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+      for (var i = 0; i < topVols.length; i++) {
+        volHtml += '<div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border-light);font-size:0.85rem"><span>' + medals[i] + ' ' + escapeHtml(topVols[i].name) + '</span><span style="color:var(--gold);font-weight:600">' + topVols[i].points + ' نقطة</span></div>';
+      }
+      if (!volHtml) volHtml = '<div style="color:var(--muted);text-align:center;padding:1rem">لا توجد بيانات</div>';
+      byId('achTopVolunteers').innerHTML = volHtml;
+
+      /* Charts */
+      if (typeof Chart !== 'undefined') {
+        /* Volunteer chart */
+        var volCanvas = byId('achVolunteerChart');
+        if (volCanvas) {
+          var volEntries = Object.entries(munCounts).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+          var volLabels = [], volData = [];
+          for (var i = 0; i < volEntries.length; i++) { volLabels.push(volEntries[i][0]); volData.push(volEntries[i][1]); }
+          var ctx = volCanvas.getContext('2d');
+          var gradient = ctx.createLinearGradient(0,0,0,300);
+          gradient.addColorStop(0, 'rgba(212, 175, 55, 0.6)');
+          gradient.addColorStop(1, 'rgba(212, 175, 55, 0.1)');
+          new Chart(ctx, {
+            type: 'bar',
+            data: { labels: volLabels, datasets: [{ label: 'عدد المتطوعين', data: volData, backgroundColor: gradient, borderColor: 'rgba(212, 175, 55, 0.8)', borderWidth: 1, borderRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#D4AF37', bodyColor: '#fff', borderColor: 'rgba(212, 175, 55, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8 } },
+              scales: { x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 11 }, maxRotation: 45 } }, y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 10 } } } },
+              animation: { duration: 1000, easing: 'easeOutQuart' } }
+          });
+        }
+
+        /* Consultation chart */
+        var conCanvas = byId('achConsultationChart');
+        if (conCanvas) {
+          new Chart(conCanvas.getContext('2d'), {
+            type: 'doughnut',
+            data: { labels: ['جديدة', 'قيد المعالجة', 'تم الرد', 'مغلقة'], datasets: [{ data: [pendingC, inProgC, answeredC, closedC], backgroundColor: ['#f59e0b', '#6366f1', '#10b981', '#94a3b8'], borderWidth: 0, hoverOffset: 8 }] },
+            options: { responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Cairo', size: 11 }, padding: 12, usePointStyle: true } },
+                tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#D4AF37', bodyColor: '#fff', borderColor: 'rgba(212, 175, 55, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8 } },
+              cutout: '60%', animation: { duration: 1000, easing: 'easeOutQuart' } }
+          });
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

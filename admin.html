@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="لوحة إدارة منصة وعي الشباب BBA - Dz Young Leaders">
+  <meta name="theme-color" content="#06090e">
+  <title>لوحة الإدارة | منصة وعي الشباب BBA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23D4AF37'/%3E%3Ctext y='68' x='50' text-anchor='middle' font-size='50' fill='%2306090e' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="وعي BBA">
+  <style>
+    #adminContent{display:none}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:none;align-items:center;justify-content:center;padding:1rem}
+    .modal-overlay.active{display:flex}
+    .modal-content{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.5rem,3vw,2rem);max-width:660px;width:100%;max-height:90vh;overflow-y:auto;animation:fadeIn 0.3s ease}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
+    .modal-header h3{font-size:1.15rem;color:var(--gold)}
+    .modal-close{background:none;border:none;color:var(--muted);cursor:pointer;padding:0.25rem;border-radius:var(--radius-sm);transition:var(--transition);font-size:1.25rem;line-height:1}
+    .modal-close:hover{color:var(--danger);background:var(--danger-bg)}
+    .modal-body .detail-row{display:flex;padding:0.5rem 0;border-bottom:1px solid var(--border-light)}
+    .modal-body .detail-row:last-child{border-bottom:none}
+    .modal-body .detail-label{flex:0 0 120px;color:var(--muted);font-size:0.85rem;font-weight:600}
+    .modal-body .detail-value{flex:1;color:var(--text);font-size:0.9rem}
+    .modal-body .detail-value.code{font-family:monospace;color:var(--gold);direction:ltr}
+    .settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:1rem}
+    .setting-item{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;transition:var(--transition)}
+    .setting-item:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
+    .setting-item h4{font-size:0.95rem;margin-bottom:0.5rem}
+    .setting-item p{font-size:0.8rem;margin-bottom:0.75rem}
+    .scroll-top-btn{position:fixed;bottom:2rem;left:2rem;z-index:9997;width:44px;height:44px;border-radius:50%;background:var(--gold);color:var(--bg);border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:var(--shadow-gold);transition:var(--transition)}
+    .scroll-top-btn.visible{display:flex}
+    .scroll-top-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-gold-hover)}
+    .notification-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:var(--danger);color:#fff;font-size:0.6rem;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .sidebar-nav a{position:relative}
+  </style>
+</head>
+<body class="admin-body">
+
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <div id="lockScreen" class="lock-screen">
+    <div class="lock-card">
+      <div class="lock-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2>لوحة الإدارة</h2>
+      <p>يرجى تسجيل الدخول للوصول إلى لوحة التحكم</p>
+      <form id="loginForm">
+        <div class="form-group" style="text-align:right">
+          <label for="loginEmail">البريد الإلكتروني</label>
+          <input type="email" id="loginEmail" name="email" placeholder="admin@bba.dz" required dir="ltr" autocomplete="email">
+        </div>
+        <div class="form-group" style="text-align:right">
+          <label for="loginPassword">كلمة المرور</label>
+          <input type="password" id="loginPassword" name="password" placeholder="••••••••" required dir="ltr" autocomplete="current-password">
+        </div>
+        <div id="loginError" class="lock-error">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-left:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          البريد الإلكتروني أو كلمة المرور غير صحيحة
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          تسجيل الدخول
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="adminContent">
+
+    <div class="admin-mobile-header">
+      <button id="menuToggle" class="admin-menu-toggle" aria-label="فتح القائمة">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <h3>منصة وعي الشباب BBA</h3>
+      <div style="width:24px"></div>
+    </div>
+
+    <div class="sidebar-overlay"></div>
+
+    <aside class="sidebar" role="navigation" aria-label="قائمة الإدارة">
+      <div class="sidebar-header">
+        <div style="width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold-hover));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:700;color:var(--bg);flex-shrink:0">وعي</div>
+        <h3 style="flex:1">لوحة الإدارة</h3>
+        <div id="adminThemeSwitcher"></div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" data-section="dashboard" class="active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          لوحة التحكم
+        </a>
+        <a href="#" data-section="volunteers">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          المتطوعون
+        </a>
+        <a href="#" data-section="consultations">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          الاستشارات
+        </a>
+        <a href="#" data-section="statistics">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          الإحصائيات
+        </a>
+        <a href="#" data-section="export">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          التصدير
+        </a>
+        <a href="#" data-section="tasks">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          المهام
+        </a>
+        <a href="#" data-section="activities">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          النشاطات
+        </a>
+        <a href="#" data-section="notifications-admin">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          الإشعارات
+        </a>
+        <a href="#" data-section="achievements">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 6 9 6 9z"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C17 4 18 9 18 9z"/><path d="M4 22h16"/><path d="M10 22V2h4v20"/></svg>
+          الإنجازات
+        </a>
+        <a href="#" data-section="certificates-admin">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          الشهادات
+        </a>
+        <a href="#" data-section="events-admin">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          الفعاليات
+        </a>
+        <a href="#" data-section="teams-admin">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          فرق البلديات
+        </a>
+        <!-- === CMS Management === -->
+        <div style="padding:0.75rem 1rem 0.25rem;font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px">📝 إدارة المحتوى</div>
+        <a href="#" data-section="cms-home">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          الصفحة الرئيسية
+        </a>
+        <a href="#" data-section="cms-articles">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          المقالات
+        </a>
+        <a href="#" data-section="cms-announcements">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          الأخبار
+        </a>
+        <a href="#" data-section="cms-gallery">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          الصور
+        </a>
+        <a href="#" data-section="cms-videos">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          الفيديوهات
+        </a>
+        <a href="#" data-section="cms-partners">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          الشركاء
+        </a>
+        <a href="#" data-section="cms-faq">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          الأسئلة الشائعة
+        </a>
+        <a href="#" data-section="cms-rehabilitation">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          إعادة التأهيل
+        </a>
+        <a href="#" data-section="cms-library">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          المكتبة الرقمية
+        </a>
+        <a href="#" data-section="cms-calendar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          التقويم
+        </a>
+        <a href="#" data-section="cms-surveys">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          الاستبيانات
+        </a>
+        <a href="#" data-section="reports-admin">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          التقارير
+        </a>
+        <a href="#" data-section="settings">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          الإعدادات
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="logoutBtn" class="btn btn-secondary" style="justify-content:center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          تسجيل الخروج
+        </button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+
+      <!-- ======== DASHBOARD ======== -->
+      <section id="dashboard" class="admin-section active">
+        <h1>لوحة التحكم</h1>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-title">إجمالي المتطوعين</span>
+              <div class="stat-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value" id="statVolunteers">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-title">طلبات الاستشارة</span>
+              <div class="stat-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value" id="statConsultations">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-title">طلبات قيد الانتظار</span>
+              <div class="stat-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value" id="statPending">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-title">الطلبات المقبولة</span>
+              <div class="stat-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+            </div>
+            <div class="stat-card-value" id="statApproved">0</div>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-top:1rem">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-title">النشاطات المسجلة</span>
+              <div class="stat-card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            </div>
+            <div class="stat-card-value" id="statActivitiesTotal">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-title">الشهادات المصدرة</span>
+              <div class="stat-card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            </div>
+            <div class="stat-card-value" id="statCertsTotal">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-title">الفعاليات القادمة</span>
+              <div class="stat-card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+            </div>
+            <div class="stat-card-value" id="statUpcomingEvents">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-title">فرق البلديات</span>
+              <div class="stat-card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            </div>
+            <div class="stat-card-value" id="statTeamsTotal">0</div>
+          </div>
+        </div>
+
+        <!-- Overview Widgets -->
+        <div class="overview-grid" style="grid-template-columns:2fr 1fr">
+          <div class="widget-card">
+            <h3>🕐 أحدث الاستشارات</h3>
+            <div id="recentConsultations"></div>
+          </div>
+          <div class="widget-card">
+            <h3>📊 الإجراءات المعلقة</h3>
+            <div id="pendingActions"></div>
+          </div>
+          <div class="widget-card">
+            <h3>👥 أحدث المتطوعين</h3>
+            <div id="recentVolunteers"></div>
+          </div>
+          <div class="widget-card">
+            <h3>📅 الفعاليات القادمة</h3>
+            <div id="dashboardUpcomingEvents"></div>
+          </div>
+          <div class="widget-card" style="grid-column:1/-1">
+            <h3>⚡ إجراءات سريعة</h3>
+            <div id="quickActions" class="quick-actions-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== VOLUNTEERS ======== -->
+      <section id="volunteers" class="admin-section">
+        <h1>إدارة المتطوعين</h1>
+        <div class="admin-card">
+          <div class="table-wrapper">
+            <table id="volunteersTable">
+              <thead>
+                <tr>
+                  <th>المعرف</th>
+                  <th>الاسم</th>
+                  <th>البريد</th>
+                  <th>الهاتف</th>
+                  <th>البلدية</th>
+                  <th>نوع العضوية</th>
+                  <th>الحالة</th>
+                  <th>حالة الحساب</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="volunteersEmpty" class="empty-state" style="display:none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <p>لا يوجد متطوعون مسجلون بعد</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CONSULTATIONS ======== -->
+      <section id="consultations" class="admin-section">
+        <h1>الاستشارات</h1>
+        <div class="admin-card">
+          <div class="table-wrapper">
+            <table id="consultationsTable">
+              <thead>
+                <tr>
+                  <th>رمز المتابعة</th>
+                  <th>الاسم المستعار</th>
+                  <th>الموضوع</th>
+                  <th>الحالة</th>
+                  <th>التاريخ</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="consultationsEmpty" class="empty-state" style="display:none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <p>لا توجد استشارات بعد</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== STATISTICS ======== -->
+      <section id="statistics" class="admin-section">
+        <h1>الإحصائيات</h1>
+        <div class="admin-card">
+          <h3>توزيع المتطوعين حسب البلدية</h3>
+          <div class="chart-container">
+            <canvas id="volunteersChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== EXPORT ======== -->
+      <section id="export" class="admin-section">
+        <h1>تصدير البيانات</h1>
+        <div class="admin-card export-section">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" style="margin-bottom:1rem">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <h3 style="margin-bottom:0.5rem">تصدير بيانات المتطوعين</h3>
+          <p>تصدير جميع بيانات المتطوعين المسجلين إلى ملف CSV متوافق مع برامج جداول البيانات</p>
+          <button id="exportBtn" class="btn btn-primary" style="margin:0 auto">📥 تصدير CSV</button>
+        </div>
+      </section>
+
+      <!-- ======== TASKS ======== -->
+      <section id="tasks" class="admin-section">
+        <h1>إدارة المهام</h1>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <p style="font-size:0.9rem">إنشاء وتعيين المهام للمتطوعين مع تحديد الأولويات والمواعيد النهائية</p>
+          <button id="createTaskBtn" class="btn btn-primary btn-sm">➕ مهمة جديدة</button>
+        </div>
+        <div class="admin-card">
+          <div class="table-wrapper">
+            <table id="tasksTable">
+              <thead>
+                <tr>
+                  <th>اسم المهمة</th>
+                  <th>مُسندة إلى</th>
+                  <th>الأولوية</th>
+                  <th>الموعد النهائي</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="tasksEmpty" class="empty-state" style="display:none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <p>لا توجد مهام بعد. أنشئ مهمة جديدة!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== ACTIVITIES ======== -->
+      <section id="activities" class="admin-section">
+        <h1>إدارة النشاطات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ إضافة نشاط جديد</h3>
+            <p style="font-size:0.85rem;margin-bottom:1rem">إنشاء نشاط تطوعي وتعيينه لأحد المتطوعين مع تحديد عدد النقاط</p>
+            <form id="activityForm">
+              <div class="form-group">
+                <label>عنوان النشاط *</label>
+                <input type="text" name="actTitle" placeholder="مثال: المشاركة في الورشة التوعوية" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+              </div>
+              <div class="form-group">
+                <label>الوصف</label>
+                <textarea name="actDesc" placeholder="وصف النشاط..." style="width:100%;min-height:60px;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);resize:vertical"></textarea>
+              </div>
+              <div style="display:flex;gap:1rem">
+                <div class="form-group" style="flex:1">
+                  <label>عدد النقاط</label>
+                  <input type="number" name="actPoints" value="10" min="0" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                </div>
+                <div class="form-group" style="flex:1">
+                  <label>التاريخ</label>
+                  <input type="date" name="actDate" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>تعيين إلى *</label>
+                <select name="actAssign" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                  <option value="">اختر متطوعاً</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">📌 إضافة النشاط</button>
+            </form>
+          </div>
+          <div class="admin-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+              <h3 style="margin:0">📋 سجل النشاطات</h3>
+              <select id="activityFilter" style="padding:0.4rem 0.75rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.8rem">
+                <option value="">جميع المتطوعين</option>
+              </select>
+            </div>
+            <div id="activitiesList" style="max-height:500px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== NOTIFICATIONS ADMIN ======== -->
+      <section id="notifications-admin" class="admin-section">
+        <h1>إدارة الإشعارات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>✉️ إرسال إشعار جديد</h3>
+            <div class="form-group">
+              <label for="notifTitle">العنوان</label>
+              <input type="text" id="notifTitle" placeholder="عنوان الإشعار" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+            </div>
+            <div class="form-group">
+              <label for="notifMessage">الرسالة</label>
+              <textarea id="notifMessage" placeholder="محتوى الإشعار..." style="width:100%;min-height:100px;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);resize:vertical"></textarea>
+            </div>
+            <div style="display:flex;gap:1rem;margin-bottom:1rem">
+              <div class="form-group" style="flex:1">
+                <label for="notifType">النوع</label>
+                <select id="notifType" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                  <option value="info">ℹ️ معلومات</option>
+                  <option value="alert">⚠️ تنبيه</option>
+                  <option value="new_task">📋 مهمة جديدة</option>
+                  <option value="achievement">🏆 إنجاز جديد</option>
+                </select>
+              </div>
+              <div class="form-group" style="flex:1">
+                <label for="notifTarget">إلى</label>
+                <select id="notifTarget" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)"></select>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem">
+              <input type="checkbox" id="notifUrgent" style="width:18px;height:18px">
+              <label for="notifUrgent" style="color:var(--danger);font-weight:600;font-size:0.85rem">⚠️ إشعار عاجل</label>
+            </div>
+            <button id="sendNotificationBtn" class="btn btn-primary" style="width:100%;justify-content:center">📨 إرسال الإشعار</button>
+          </div>
+          <div class="admin-card">
+            <h3>📋 الإشعارات المرسلة</h3>
+            <div id="notificationsListAdmin" style="max-height:500px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== ACHIEVEMENTS ======== -->
+      <section id="achievements" class="admin-section">
+        <h1>إدارة الإنجازات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>🏆 إضافة إنجاز جديد</h3>
+            <form id="achievementForm">
+              <div class="form-group">
+                <label>عنوان الإنجاز *</label>
+                <input type="text" name="achTitle" placeholder="مثال: متطوع الشهر" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+              </div>
+              <div class="form-group">
+                <label>الوصف</label>
+                <textarea name="achDesc" placeholder="وصف الإنجاز..." style="width:100%;min-height:60px;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);resize:vertical"></textarea>
+              </div>
+              <div style="display:flex;gap:1rem">
+                <div class="form-group" style="flex:1">
+                  <label>الرمز (إختياري)</label>
+                  <input type="text" name="achIcon" placeholder="🏆" value="🏆" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                </div>
+                <div class="form-group" style="flex:2">
+                  <label>تعيين إلى *</label>
+                  <select name="achAssign" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)"></select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">🏆 إضافة الإنجاز</button>
+            </form>
+          </div>
+          <div class="admin-card">
+            <h3>📋 الإنجازات الممنوحة</h3>
+            <div id="achievementsList" style="max-height:500px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CERTIFICATES ADMIN ======== -->
+      <section id="certificates-admin" class="admin-section">
+        <h1>إدارة الشهادات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>📜 إصدار شهادة جديدة</h3>
+            <p style="font-size:0.85rem;margin-bottom:1rem">سيتم إنشاء رقم شهادة فريد تلقائياً بصيغة <strong style="color:var(--gold);font-family:monospace">CERT-BBA-2026-XXXX</strong></p>
+            <form id="certificateForm">
+              <div class="form-group">
+                <label>عنوان الشهادة *</label>
+                <input type="text" name="certTitle" value="شهادة تقدير ومشاركة" placeholder="مثال: شهادة مشاركة في الورشة التوعوية" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+              </div>
+              <div class="form-group">
+                <label>الوصف</label>
+                <textarea name="certDesc" placeholder="وصف الشهادة..." style="width:100%;min-height:60px;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);resize:vertical">ساهم بفعالية في الأنشطة والمبادرات التوعوية الخاصة بالمنصة</textarea>
+              </div>
+              <div class="form-group">
+                <label>تعيين إلى *</label>
+                <select name="certAssign" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)"></select>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">📜 إصدار الشهادة</button>
+            </form>
+          </div>
+          <div class="admin-card">
+            <h3>📋 الشهادات المصدرة</h3>
+            <div id="certificatesList" style="max-height:500px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== EVENTS ADMIN ======== -->
+      <section id="events-admin" class="admin-section">
+        <h1>إدارة الفعاليات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>📅 إنشاء فعالية جديدة</h3>
+            <form id="eventForm">
+              <div class="form-group">
+                <label>نوع الفعالية *</label>
+                <select id="eventType" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                  <option value="حملة توعوية">📢 حملة توعوية</option>
+                  <option value="دورة تدريبية">📚 دورة تدريبية</option>
+                  <option value="لقاء">🤝 لقاء</option>
+                  <option value="نشاط ميداني">🏃 نشاط ميداني</option>
+                  <option value="مؤتمر">🎤 مؤتمر</option>
+                  <option value="ورشة عمل">🔧 ورشة عمل</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>عنوان الفعالية *</label>
+                <input type="text" id="eventTitle" placeholder="عنوان الفعالية" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+              </div>
+              <div class="form-group">
+                <label>الوصف</label>
+                <textarea id="eventDesc" placeholder="وصف الفعالية..." style="width:100%;min-height:80px;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);resize:vertical"></textarea>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                <div class="form-group">
+                  <label>التاريخ *</label>
+                  <input type="date" id="eventDate" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                </div>
+                <div class="form-group">
+                  <label>المكان</label>
+                  <input type="text" id="eventLocation" placeholder="المكان" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                <div class="form-group">
+                  <label>البلدية</label>
+                  <select id="eventMunicipality" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)"></select>
+                </div>
+                <div class="form-group">
+                  <label>عدد المقاعد</label>
+                  <input type="number" id="eventSeats" placeholder="50" min="1" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>الفئة المستهدفة</label>
+                <input type="text" id="eventTarget" placeholder="مثال: الشباب من 18-25 سنة" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+              </div>
+              <div class="form-group">
+                <label>الحالة</label>
+                <select id="eventStatus" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                  <option value="open">🟢 مفتوح</option>
+                  <option value="completed">✅ مكتمل</option>
+                  <option value="cancelled">🔴 ملغى</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">📅 إنشاء الفعالية</button>
+            </form>
+          </div>
+          <div class="admin-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+              <h3 style="margin:0">📋 قائمة الفعاليات</h3>
+              <select id="eventFilter" style="padding:0.4rem 0.75rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.8rem">
+                <option value="">جميع الحالات</option>
+                <option value="open">🟢 مفتوح</option>
+                <option value="completed">✅ مكتمل</option>
+                <option value="cancelled">🔴 ملغى</option>
+              </select>
+            </div>
+            <div id="eventsList" style="max-height:500px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== TEAMS ADMIN ======== -->
+      <section id="teams-admin" class="admin-section">
+        <h1>إدارة فرق البلديات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>👥 إنشاء فريق جديد</h3>
+            <form id="teamForm">
+              <div class="form-group">
+                <label>اسم الفريق *</label>
+                <input type="text" id="teamName" placeholder="مثال: فريق برج بوعريريج" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+              </div>
+              <div class="form-group">
+                <label>البلدية *</label>
+                <select id="teamMunicipality" required style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)"></select>
+              </div>
+              <div class="form-group">
+                <label>قائد الفريق</label>
+                <select id="teamLeader" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                  <option value="">اختر قائداً</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">👥 إنشاء الفريق</button>
+            </form>
+            <hr style="border-color:var(--border-light);margin:1.5rem 0">
+            <h3>➕ إضافة أعضاء للفريق</h3>
+            <div class="form-group">
+              <label>اختر الفريق</label>
+              <select id="teamMemberTeam" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                <option value="">اختر فريقاً</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>اختر متطوعاً</label>
+              <select id="teamMemberVol" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">
+                <option value="">اختر متطوعاً</option>
+              </select>
+            </div>
+            <button id="addTeamMemberBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ إضافة عضو</button>
+          </div>
+          <div class="admin-card">
+            <h3>📋 الفرق</h3>
+            <div id="teamsList" style="max-height:600px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== REPORTS ADMIN ======== -->
+      <section id="reports-admin" class="admin-section">
+        <h1>التقارير الشهرية</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>📊 إنشاء تقرير</h3>
+            <p style="font-size:0.85rem;margin-bottom:1rem">اختر نوع التقرير لإنشاء ملف PDF شامل يحتوي على جميع الإحصائيات والبيانات.</p>
+            <div style="display:grid;gap:1rem">
+              <button id="reportWeeklyBtn" class="btn btn-secondary" style="justify-content:center;padding:1rem">📅 تقرير أسبوعي</button>
+              <button id="reportMonthlyBtn" class="btn btn-primary" style="justify-content:center;padding:1rem">📅 تقرير شهري</button>
+              <button id="reportYearlyBtn" class="btn btn-secondary" style="justify-content:center;padding:1rem">📅 تقرير سنوي</button>
+            </div>
+          </div>
+          <div class="admin-card">
+            <div style="text-align:center;padding:1rem">
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" style="margin-bottom:1rem">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <h3 style="margin-bottom:0.5rem">التقارير المصدرة</h3>
+              <p style="font-size:0.85rem;margin-bottom:1rem">سيتم حفظ التقارير في جهازك بصيغة PDF مع هوية المنظمة.</p>
+              <div id="reportsInfo" style="background:rgba(212,175,55,0.05);padding:1rem;border-radius:var(--radius-sm);text-align:right">
+                <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem">📊 <strong style="color:var(--gold)">محتوى التقرير:</strong></div>
+                <ul style="font-size:0.8rem;color:var(--text-secondary);line-height:2">
+                  <li>✓ إجمالي المتطوعين والمقبولين</li>
+                  <li>✓ عدد الاستشارات والحالات</li>
+                  <li>✓ عدد النشاطات والنقاط الممنوحة</li>
+                  <li>✓ عدد الشهادات المصدرة</li>
+                  <li>✓ عدد الفعاليات المنفذة</li>
+                  <li>✓ البلديات الأكثر نشاطاً</li>
+                  <li>✓ فرق البلديات والأعضاء</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Report Preview Container -->
+        <div id="reportPDFContainer" style="position:fixed;left:-9999px;top:0;z-index:-1;opacity:0;pointer-events:none"></div>
+      </section>
+
+      <!-- ======== CMS - HOME PAGE MANAGEMENT ======== -->
+      <section id="cms-home" class="admin-section">
+        <h1>📝 إدارة الصفحة الرئيسية</h1>
+        <div class="admin-card">
+          <h3>🎯 قسم البطل (Hero Section)</h3>
+          <div id="cmsHeroForm"></div>
+        </div>
+        <div class="admin-card" style="margin-top:1rem">
+          <h3>📢 شريط الإعلان العلوي</h3>
+          <div id="cmsNoticeBarForm"></div>
+        </div>
+        <div class="admin-card" style="margin-top:1rem">
+          <h3>⭐ قصص وتجارب (الشهادات)</h3>
+          <div id="cmsTestimonialForm"></div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - ARTICLES ======== -->
+      <section id="cms-articles" class="admin-section">
+        <h1>📰 إدارة المقالات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ إضافة مقال جديد</h3>
+            <div id="cmsArticleForm"></div>
+          </div>
+          <div class="admin-card">
+            <h3>📋 المقالات المنشورة</h3>
+            <div id="cmsArticlesList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - ANNOUNCEMENTS ======== -->
+      <section id="cms-announcements" class="admin-section">
+        <h1>📢 إدارة الأخبار والإعلانات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ إضافة إعلان جديد</h3>
+            <div id="cmsAnnouncementForm"></div>
+          </div>
+          <div class="admin-card">
+            <h3>📋 الإعلانات المنشورة</h3>
+            <div id="cmsAnnouncementsList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - GALLERY ======== -->
+      <section id="cms-gallery" class="admin-section">
+        <h1>🖼️ إدارة الصور</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ إضافة ألبوم جديد</h3>
+            <div id="cmsGalleryForm"></div>
+          </div>
+          <div class="admin-card">
+            <h3>📋 الألبومات</h3>
+            <div id="cmsGalleryList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - VIDEOS ======== -->
+      <section id="cms-videos" class="admin-section">
+        <h1>🎬 إدارة الفيديوهات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ إضافة فيديو</h3>
+            <div id="cmsVideoForm"></div>
+          </div>
+          <div class="admin-card">
+            <h3>📋 الفيديوهات</h3>
+            <div id="cmsVideosList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - PARTNERS ======== -->
+      <section id="cms-partners" class="admin-section">
+        <h1>🤝 إدارة الشركاء</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ إضافة شريك</h3>
+            <div id="cmsPartnerForm"></div>
+          </div>
+          <div class="admin-card">
+            <h3>📋 قائمة الشركاء</h3>
+            <div id="cmsPartnersList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - FAQ ======== -->
+      <section id="cms-faq" class="admin-section">
+        <h1>❓ إدارة الأسئلة الشائعة</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ إضافة سؤال</h3>
+            <div id="cmsFaqForm"></div>
+          </div>
+          <div class="admin-card">
+            <h3>📋 الأسئلة</h3>
+            <div id="cmsFaqList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - DIGITAL LIBRARY ======== -->
+      <section id="cms-library" class="admin-section">
+        <h1>📚 المكتبة الرقمية</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ رفع مستند</h3>
+            <div id="cmsLibraryForm"></div>
+          </div>
+          <div class="admin-card">
+            <h3>📋 المستندات</h3>
+            <div id="cmsLibraryList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - CALENDAR ======== -->
+      <section id="cms-calendar" class="admin-section">
+        <h1>📅 التقويم</h1>
+        <div class="admin-card">
+          <h3>🗓️ عرض التقويم</h3>
+          <div id="cmsCalendarView">
+            <div style="text-align:center;padding:2rem;color:var(--muted)">
+              <div style="font-size:3rem;margin-bottom:1rem">📅</div>
+              <p>التقويم يعرض الفعاليات والأنشطة المسجلة في النظام</p>
+              <p style="font-size:0.85rem;margin-top:0.5rem">يمكن إدارة الفعاليات من قسم <a href="#events-admin" onclick="window.location.hash='events-admin'">إدارة الفعاليات</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - SURVEYS ======== -->
+      <section id="cms-surveys" class="admin-section">
+        <h1>📊 إدارة الاستبيانات</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ إنشاء استبيان</h3>
+            <div id="cmsSurveyForm"></div>
+          </div>
+          <div class="admin-card">
+            <h3>📋 الاستبيانات</h3>
+            <div id="cmsSurveysList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== CMS - REHABILITATION ======== -->
+      <section id="cms-rehabilitation" class="admin-section">
+        <h1>🛡️ إدارة برنامج إعادة التأهيل</h1>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="admin-card">
+            <h3>➕ إضافة تقرير أو تحديث</h3>
+            <div id="cmsRehabForm"></div>
+          </div>
+          <div class="admin-card">
+            <h3>📋 التقارير والتحديثات</h3>
+            <div id="cmsRehabList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== SETTINGS ======== -->
+      <section id="settings" class="admin-section">
+        <h1>الإعدادات</h1>
+        <div class="settings-grid">
+          <div class="setting-item">
+            <h4>🔔 الإشعارات</h4>
+            <p>تخصيص إعدادات الإشعارات للوحة التحكم (تشغيل/إيقاف)</p>
+            <button class="btn btn-secondary btn-sm">تعديل الإعدادات</button>
+          </div>
+          <div class="setting-item">
+            <h4>👤 بيانات المسؤول</h4>
+            <p>تحديث معلومات حساب المسؤول وتغيير كلمة المرور</p>
+            <button class="btn btn-secondary btn-sm">تعديل البيانات</button>
+          </div>
+          <div class="setting-item">
+            <h4>🎨 مظهر الواجهة</h4>
+            <p>التبديل بين المظهر الداكن والفاتح</p>
+            <button class="btn btn-secondary btn-sm">تخصيص المظهر</button>
+          </div>
+          <div class="setting-item">
+            <h4>🗄️ النسخ الاحتياطي</h4>
+            <p>إنشاء نسخة احتياطية من جميع البيانات (JSON)</p>
+            <button class="btn btn-secondary btn-sm">إنشاء نسخة</button>
+          </div>
+          <div class="setting-item">
+            <h4>📊 إعادة تعيين الإحصائيات</h4>
+            <p>مسح جميع بيانات المتطوعين والاستشارات والمهام (لا يمكن التراجع)</p>
+            <button class="btn btn-danger btn-sm">إعادة تعيين</button>
+          </div>
+          <div class="setting-item">
+            <h4>🌐 اللغة</h4>
+            <p>اللغة العربية مدعومة حالياً - المزيد قريباً</p>
+            <button class="btn btn-secondary btn-sm">تغيير اللغة</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ======== MODALS ======== -->
+  <div id="volunteerModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>تفاصيل المتطوع</h3>
+        <button type="button" class="modal-close close-modal" data-modal="volunteerModal">&times;</button>
+      </div>
+      <div class="modal-body" id="volunteerModalBody"></div>
+    </div>
+  </div>
+
+  <div id="consultationModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>تفاصيل الاستشارة</h3>
+        <button type="button" class="modal-close close-modal" data-modal="consultationModal">&times;</button>
+      </div>
+      <div class="modal-body" id="consultationModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Respond Modal -->
+  <div id="respondModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>💬 رد على الاستشارة</h3>
+        <button type="button" class="modal-close close-modal" data-modal="respondModal">&times;</button>
+      </div>
+      <div class="modal-body" id="respondModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Edit Volunteer Modal -->
+  <div id="editVolunteerModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>✏️ تعديل بيانات المتطوع</h3>
+        <button type="button" class="modal-close close-modal" data-modal="editVolunteerModal">&times;</button>
+      </div>
+      <div class="modal-body" id="editVolunteerModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Points Modal -->
+  <div id="pointsModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>⭐ إدارة النقاط</h3>
+        <button type="button" class="modal-close close-modal" data-modal="pointsModal">&times;</button>
+      </div>
+      <div class="modal-body" id="pointsModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Task Form Modal -->
+  <div id="taskModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📋 المهمة</h3>
+        <button type="button" class="modal-close close-modal" data-modal="taskModal">&times;</button>
+      </div>
+      <div class="modal-body" id="taskFormBody"></div>
+    </div>
+  </div>
+
+  <!-- Event View Modal -->
+  <div id="eventViewModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:700px">
+      <div class="modal-header">
+        <h3>📅 تفاصيل الفعالية</h3>
+        <button type="button" class="modal-close close-modal" data-modal="eventViewModal">&times;</button>
+      </div>
+      <div class="modal-body" id="eventViewBody"></div>
+    </div>
+  </div>
+
+  <!-- Team View Modal -->
+  <div id="teamViewModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:700px">
+      <div class="modal-header">
+        <h3>👥 تفاصيل الفريق</h3>
+        <button type="button" class="modal-close close-modal" data-modal="teamViewModal">&times;</button>
+      </div>
+      <div class="modal-body" id="teamViewBody"></div>
+    </div>
+  </div>
+
+  <!-- Certificate Preview Modal -->
+  <div id="certificatePreviewModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:800px">
+      <div class="modal-header">
+        <h3>📜 معاينة الشهادة</h3>
+        <button type="button" class="modal-close close-modal" data-modal="certificatePreviewModal">&times;</button>
+      </div>
+      <div class="modal-body" id="certificatePreviewBody"></div>
+      <div style="display:flex;gap:0.75rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
+        <button type="button" id="downloadCertPDFBtn" class="btn btn-primary" style="flex:1;justify-content:center">📥 تحميل PDF</button>
+        <button type="button" class="btn btn-secondary close-modal" data-modal="certificatePreviewModal" style="flex:1;justify-content:center">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden container for PDF generation -->
+  <div id="certificatePDFContainer" style="position:fixed;left:-9999px;top:0;z-index:-1;opacity:0;pointer-events:none"></div>
+
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="العودة إلى الأعلى">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/qr-utils.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/platform-core.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/cms.js"></script>
+
+  <!-- QR Code library for client-side QR generation -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/dist/qrcode.min.js"></script>
+  <script>
+    (function initScrollToTop(){var btn=document.getElementById('scrollTopBtn');if(!btn)return;window.addEventListener('scroll',function(){btn.classList.toggle('visible',window.scrollY>400)});btn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})})})();
+    (function initModals(){var closeBtns=document.querySelectorAll('.close-modal');for(var i=0;i<closeBtns.length;i++){closeBtns[i].addEventListener('click',function(){var modal=document.getElementById(this.getAttribute('data-modal'));if(modal)modal.classList.remove('active')})}var overlays=document.querySelectorAll('.modal-overlay');for(var j=0;j<overlays.length;j++){overlays[j].addEventListener('click',function(e){if(e.target===this)this.classList.remove('active')})}})();
+    /* Theme switcher */
+    (function(){
+      var c=document.getElementById('adminThemeSwitcher');
+      if(c&&window.BBA&&window.BBA.Theme) window.BBA.Theme.createSwitcher(c);
+    })();
+    /* ============================================================
+     * SUPABASE AUTH FOR ADMIN DASHBOARD
+     * Requires: super_admin or admin role
+     * Fallback: localStorage-based auth if Supabase is offline
+     * ============================================================ */
+    (function initAdminAuth() {
+      var ls = byId('lockScreen');
+      var ac = byId('adminContent');
+      var lf = byId('loginForm');
+      var le = byId('loginError');
+      var lo = byId('logoutBtn');
+      var INACTIVITY_TIMEOUT = 30 * 60 * 1000;
+      var inactivityTimer = null;
+
+      function resetInactivityTimer() {
+        if (inactivityTimer) clearTimeout(inactivityTimer);
+        if (sessionStorage.getItem('bba_admin_auth') === 'true' || sessionStorage.getItem('bba_auth_user')) {
+          inactivityTimer = setTimeout(autoLogout, INACTIVITY_TIMEOUT);
+        }
+      }
+
+      function autoLogout() {
+        if (window.BBA && window.BBA.Auth) {
+          window.BBA.Auth.logout();
+        } else {
+          sessionStorage.removeItem('bba_admin_auth');
+        }
+        if (window.BBA && window.BBA.showToast) {
+          window.BBA.showToast('تم تسجيل الخروج تلقائياً بسبب عدم النشاط', 'info');
+        }
+        if (ls) ls.classList.remove('hidden');
+        if (ac) ac.style.display = 'none';
+      }
+
+      function checkSession() {
+        return new Promise(function(resolve) {
+          var checkDb = setInterval(function() {
+            if (window.BBA && window.BBA.Auth && window.BBA.AuthGuard) {
+              clearInterval(checkDb);
+
+              /* Try Supabase auth first */
+              window.BBA.Auth.initSession().then(function(user) {
+                if (user && window.BBA.Auth.isLoggedIn()) {
+                  var role = window.BBA.Auth.getRole();
+                  if (role === 'super_admin' || role === 'admin') {
+                    /* Supabase auth passed */
+                    if (ls) ls.classList.add('hidden');
+                    if (ac) ac.style.display = 'block';
+                    sessionStorage.setItem('bba_admin_auth', 'true');
+                    resetInactivityTimer();
+                    setupActivityListeners();
+                    resolve(true);
+                    return;
+                  } else {
+                    /* Wrong role */
+                    window.BBA.Auth.logout();
+                    showToast('ليس لديك صلاحية الوصول إلى لوحة الإدارة', 'error');
+                  }
+                }
+
+                /* Fallback: check legacy localStorage auth */
+                if (sessionStorage.getItem('bba_admin_auth') === 'true') {
+                  if (ls) ls.classList.add('hidden');
+                  if (ac) ac.style.display = 'block';
+                  resetInactivityTimer();
+                  setupActivityListeners();
+                  resolve(true);
+                  return;
+                }
+
+                resolve(false);
+              });
+            }
+          }, 200);
+
+          setTimeout(function() {
+            clearInterval(checkDb);
+            /* Final fallback: legacy auth only */
+            if (sessionStorage.getItem('bba_admin_auth') === 'true') {
+              if (ls) ls.classList.add('hidden');
+              if (ac) ac.style.display = 'block';
+              resolve(true);
+            } else {
+              resolve(false);
+            }
+          }, 8000);
+        });
+      }
+
+      function setupActivityListeners() {
+        document.addEventListener('click', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+        document.addEventListener('scroll', resetInactivityTimer);
+        document.addEventListener('mousemove', resetInactivityTimer);
+      }
+
+      checkSession().then(function(authed) {
+        if (!authed && lf) {
+          /* Show login form and wire Supabase Auth */
+          if (ls) ls.classList.remove('hidden');
+          if (ac) ac.style.display = 'none';
+
+          lf.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = byId('loginEmail').value.trim();
+            var pass = byId('loginPassword').value;
+            var submitBtn = lf.querySelector('button[type="submit"]');
+
+            /* Try Supabase Auth first */
+            if (window.BBA && window.BBA.Auth && window.BBA.Auth.isOnline()) {
+              if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner"></span> جاري تسجيل الدخول...';
+              }
+
+              window.BBA.Auth.login(email, pass).then(function(result) {
+                if (result.success) {
+                  var role = window.BBA.Auth.getRole();
+                  if (role === 'super_admin' || role === 'admin') {
+                    sessionStorage.setItem('bba_admin_auth', 'true');
+                    if (ls) ls.classList.add('hidden');
+                    if (ac) ac.style.display = 'block';
+                    if (le) le.classList.remove('visible');
+                    lf.reset();
+                    resetInactivityTimer();
+                    setupActivityListeners();
+                    showToast('✅ مرحباً بك في لوحة الإدارة', 'success');
+                  } else {
+                    window.BBA.Auth.logout();
+                    if (le) le.classList.add('visible');
+                    var et = le.querySelector('.error-text') || le;
+                    if (et) et.innerHTML = 'ليس لديك صلاحية الوصول إلى لوحة الإدارة';
+                  }
+                } else {
+                  /* Fallback to legacy auth */
+                  if (email === 'admin@bba.dz' && pass === 'bba2026') {
+                    sessionStorage.setItem('bba_admin_auth', 'true');
+                    if (ls) ls.classList.add('hidden');
+                    if (ac) ac.style.display = 'block';
+                    if (le) le.classList.remove('visible');
+                    lf.reset();
+                    resetInactivityTimer();
+                    setupActivityListeners();
+                    showToast('✅ مرحباً بك في لوحة الإدارة', 'success');
+                  } else {
+                    if (le) le.classList.add('visible');
+                    byId('loginPassword').value = '';
+                  }
+                }
+                if (submitBtn) {
+                  submitBtn.disabled = false;
+                  submitBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> تسجيل الدخول';
+                }
+              });
+            } else {
+              /* Supabase offline - use legacy auth only */
+              if (email === 'admin@bba.dz' && pass === 'bba2026') {
+                sessionStorage.setItem('bba_admin_auth', 'true');
+                if (ls) ls.classList.add('hidden');
+                if (ac) ac.style.display = 'block';
+                if (le) le.classList.remove('visible');
+                lf.reset();
+                resetInactivityTimer();
+                setupActivityListeners();
+              } else {
+                if (le) le.classList.add('visible');
+                byId('loginPassword').value = '';
+              }
+            }
+          });
+        }
+      });
+
+      if (lo) {
+        lo.addEventListener('click', function() {
+          if (window.BBA && window.BBA.Auth) {
+            window.BBA.Auth.logout();
+          } else {
+            sessionStorage.removeItem('bba_admin_auth');
+          }
+          if (inactivityTimer) clearTimeout(inactivityTimer);
+          location.reload();
+        });
+      }
+    })();
+  </script>
+  <style>
+    .cms-input{width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.85rem;transition:var(--transition);direction:rtl}
+    .cms-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light);background:rgba(255,255,255,0.06)}
+    .cms-input::placeholder{color:var(--muted)}
+    .cms-input option{background:var(--surface-solid);color:var(--text)}
+  </style>
+</body>
+</html>
