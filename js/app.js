@@ -245,8 +245,23 @@ function generateTrackingCode() {
   var form = byId('consultationForm');
   if (!form) return;
 
+  /* Mount rate limit indicator once */
+  if (window.BBA && window.BBA.RateLimitIndicator) {
+    window.BBA.RateLimitIndicator.mount('consultRateLimitIndicator', 'consultation');
+  }
+
   form.addEventListener('submit', function(e) {
     e.preventDefault();
+
+    /* Rate limit check */
+    if (window.BBA && window.BBA.RateLimiter) {
+      var rl = window.BBA.RateLimiter.check('consultation');
+      if (!rl.allowed) {
+        showToast(rl.message, 'error');
+        return;
+      }
+    }
+
     var formData = {
       alias: byId('consultAlias').value.trim(),
       ageGroup: byId('consultAge').value,
@@ -274,6 +289,12 @@ function generateTrackingCode() {
     var consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
     consultations.push(formData);
     localStorage.setItem('bba_consultations', JSON.stringify(consultations));
+
+    /* Record this attempt */
+    if (window.BBA && window.BBA.RateLimiter) {
+      window.BBA.RateLimiter.record('consultation');
+    }
+
     byId('trackingCode').textContent = formData.trackingCode;
     byId('trackingContainer').classList.add('visible');
     form.reset();
@@ -359,8 +380,23 @@ function generateTrackingCode() {
     });
   }
 
+  /* Mount rate limit indicator once */
+  if (window.BBA && window.BBA.RateLimitIndicator) {
+    window.BBA.RateLimitIndicator.mount('volunteerRateLimitIndicator', 'volunteer_registration');
+  }
+
   form.addEventListener('submit', function(e) {
     e.preventDefault();
+
+    /* Rate limit check */
+    if (window.BBA && window.BBA.RateLimiter) {
+      var rl = window.BBA.RateLimiter.check('volunteer_registration');
+      if (!rl.allowed) {
+        showToast(rl.message, 'error');
+        return;
+      }
+    }
+
     var volunteer = {
       fullName: byId('volunteerName').value.trim(),
       email: byId('volunteerEmail').value.trim(),
@@ -396,6 +432,12 @@ function generateTrackingCode() {
     var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
     volunteers.push(volunteer);
     localStorage.setItem('bba_volunteers', JSON.stringify(volunteers));
+
+    /* Record this attempt */
+    if (window.BBA && window.BBA.RateLimiter) {
+      window.BBA.RateLimiter.record('volunteer_registration');
+    }
+
     form.reset();
     for (var m = 0; m < membershipOptions.length; m++) {
       membershipOptions[m].classList.remove('selected');

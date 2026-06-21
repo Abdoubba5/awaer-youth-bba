@@ -1,0 +1,621 @@
+/* ============================================================
+   🏛️ Aware Youth BBA — Visual Identity System
+   "Sanctuary of Awareness" (ملاذ الوعي)
+   Inspired by: Algerian High Plateaus, Zellige mosaic,
+   Berber weaving patterns, Lantern light, Sanctuary
+   ============================================================ */
+
+/* ----- Design Tokens ----- */
+:root {
+  /* Deep celestial palette */
+  --bg: #050712;
+  --bg-warm: #080C1A;
+  --surface: rgba(12, 17, 34, 0.88);
+  --surface-solid: #0C1122;
+  --surface-card: rgba(16, 22, 42, 0.92);
+
+  /* Signature gold — warm, aged, like hammered gold */
+  --gold: #C9A84C;
+  --gold-hover: #B8943E;
+  --gold-light: rgba(201, 168, 76, 0.10);
+  --gold-glow: rgba(201, 168, 76, 0.20);
+
+  /* Accent — teal for mental health calm */
+  --teal: #2DD4BF;
+  --teal-bg: rgba(45, 212, 191, 0.08);
+  --teal-glow: rgba(45, 212, 191, 0.15);
+
+  /* Warm accent — terracotta for community */
+  --terra: #C2644A;
+  --terra-bg: rgba(194, 100, 74, 0.08);
+
+  /* Text — warm, not pure white */
+  --text: #F5F0E8;
+  --text-secondary: #D1CEC6;
+  --text-dim: #9E9A94;
+  --text-muted: #7A7670;
+  --muted: #9E9A94;  /* compat alias for older page inline CSS */
+
+  /* Semantic */
+  --success: #34D399;
+  --success-bg: rgba(52, 211, 153, 0.10);
+  --danger: #F87171;
+  --danger-bg: rgba(248, 113, 113, 0.10);
+
+  /* Borders — fine, gold-tinted */
+  --border: rgba(201, 168, 76, 0.12);
+  --border-light: rgba(255, 255, 255, 0.04);
+  --border-gold: rgba(201, 168, 76, 0.25);
+
+  /* Radius — precise, architectural */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+
+  /* Shadows — deep, volumetric */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-gold: 0 8px 32px rgba(201, 168, 76, 0.10);
+  --shadow-gold-hover: 0 12px 40px rgba(201, 168, 76, 0.20);
+  --shadow-teal: 0 8px 32px rgba(45, 212, 191, 0.08);
+
+  /* Typography */
+  --font: 'Cairo', sans-serif;
+  --font-display: 'Amiri', serif;
+
+  /* Motion */
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Layout */
+  --nav-height: 72px;
+  --nav-height-mobile: 64px;
+  --container: 1200px;
+
+  /* Lantern glow — shared */
+  --lantern-glow: 0 0 60px rgba(201, 168, 76, 0.06), 0 0 120px rgba(201, 168, 76, 0.03);
+}
+
+/* ============================================================
+   SIGNATURE DECORATIVE ELEMENTS
+   ============================================================ */
+
+/* --- Lantern ornament (small decorative top accent for cards) --- */
+.lantern-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.lantern-ornament::before,
+.lantern-ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.lantern-ornament-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px var(--gold-glow);
+  animation: lanternPulse 3s ease-in-out infinite;
+}
+
+@keyframes lanternPulse {
+  0%, 100% { box-shadow: 0 0 8px var(--gold-glow); }
+  50% { box-shadow: 0 0 20px var(--gold-glow), 0 0 40px rgba(201, 168, 76, 0.08); }
+}
+
+/* --- Section divider — topographic mountain pattern --- */
+.section-divider {
+  position: relative;
+  height: 80px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.section-divider svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* --- Geometric lattice pattern (mashrabiya-inspired overlay) --- */
+.lattice-overlay {
+  position: relative;
+}
+
+.lattice-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.015;
+  background-image:
+    linear-gradient(45deg, var(--gold) 1px, transparent 1px),
+    linear-gradient(-45deg, var(--gold) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* --- Mountain silhouette divider --- */
+.mountain-divider {
+  position: relative;
+  height: 120px;
+  margin-top: -60px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.mountain-divider svg {
+  position: absolute;
+  width: 100%;
+  height: 120px;
+  bottom: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* ============================================================
+   SIGNATURE COMPONENTS
+   ============================================================ */
+
+/* --- Scroll-style card --- */
+.scroll-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.scroll-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.6;
+}
+
+.scroll-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+/* --- Mosaic stat tile --- */
+.mosaic-tile {
+  position: relative;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-align: center;
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.mosaic-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image:
+    linear-gradient(45deg, var(--gold) 1px, transparent 1px),
+    linear-gradient(-45deg, var(--gold) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+.mosaic-tile::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.3;
+  transition: opacity 0.4s ease;
+}
+
+.mosaic-tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+.mosaic-tile:hover::after {
+  opacity: 0.8;
+}
+
+.mosaic-tile-value {
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  line-height: 1.2;
+  text-shadow: 0 0 30px rgba(201, 168, 76, 0.1);
+}
+
+.mosaic-tile-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* Corner decorative dots for mosaic tiles */
+.mosaic-corner {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.2;
+  transition: opacity 0.4s ease;
+}
+
+.mosaic-tile:hover .mosaic-corner {
+  opacity: 0.5;
+}
+
+.mosaic-corner-tl { top: 8px; left: 8px; }
+.mosaic-corner-tr { top: 8px; right: 8px; }
+.mosaic-corner-bl { bottom: 8px; left: 8px; }
+.mosaic-corner-br { bottom: 8px; right: 8px; }
+
+/* --- Illuminated initial letter --- */
+.illuminated::first-letter {
+  font-size: 2.5em;
+  font-weight: 700;
+  color: var(--gold);
+  float: right;
+  line-height: 1;
+  margin-left: 0.5rem;
+  margin-top: 0.15rem;
+  text-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
+}
+
+/* --- Forge button (hammered metal style) --- */
+.btn-forge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius-xs);
+  font-family: var(--font);
+  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  outline: none;
+  white-space: nowrap;
+  position: relative;
+  letter-spacing: 0.02em;
+}
+
+.btn-forge-primary {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-hover) 100%);
+  color: var(--bg);
+  box-shadow: 0 4px 24px rgba(201, 168, 76, 0.15);
+}
+
+.btn-forge-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(201, 168, 76, 0.25);
+  color: var(--bg);
+}
+
+.btn-forge-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xs);
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.btn-forge-primary:hover::after {
+  opacity: 1;
+}
+
+.btn-forge-secondary {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+}
+
+.btn-forge-secondary:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  color: var(--gold);
+  border-color: var(--gold-hover);
+}
+
+.btn-forge-sm {
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+}
+
+/* --- Compass nav indicator --- */
+.compass-active {
+  position: relative;
+}
+
+.compass-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+/* --- Constellation dots for hero background --- */
+.constellation {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.constellation-dot {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.15;
+  animation: starTwinkle 4s ease-in-out infinite;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.5); }
+}
+
+/* --- Mountain layer for hero --- */
+.mountain-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mountain-layer svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes revealScale {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmerGold {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.reveal-up {
+  animation: revealUp 0.6s var(--bounce) forwards;
+}
+
+.reveal-scale {
+  animation: revealScale 0.5s var(--bounce) forwards;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .section-divider { height: 40px; }
+  .mountain-divider { height: 60px; margin-top: -30px; }
+  .mountain-divider svg { height: 60px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   ☀️ LIGHT THEME — Complete override for light mode
+   ============================================================ */
+[data-theme="light"] {
+  --bg: #f8f6f1;
+  --bg-warm: #f0ede7;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-solid: #f0ede7;
+  --surface-card: rgba(255, 255, 255, 0.95);
+  --text: #1a1a2e;
+  --text-secondary: #2d2d44;
+  --text-dim: #4b4a54;
+  --text-muted: #6b7280;
+  --muted: #6b7280;
+  --gold-light: rgba(201, 168, 76, 0.12);
+  --border: rgba(201, 168, 76, 0.2);
+  --border-light: rgba(0, 0, 0, 0.06);
+  --border-gold: rgba(201, 168, 76, 0.35);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.1);
+  --shadow-gold: 0 4px 24px rgba(201, 168, 76, 0.12);
+  --shadow-gold-hover: 0 8px 32px rgba(201, 168, 76, 0.2);
+  --shadow-teal: 0 4px 20px rgba(45, 212, 191, 0.08);
+  --lantern-glow: 0 0 60px rgba(201, 168, 76, 0.06);
+  --success-bg: rgba(52, 211, 153, 0.12);
+  --danger-bg: rgba(248, 113, 113, 0.10);
+  --teal-bg: rgba(45, 212, 191, 0.08);
+  --terra-bg: rgba(194, 100, 74, 0.08);
+}
+
+/* Light theme component overrides */
+[data-theme="light"] .nav {
+  background: rgba(255, 255, 255, 0.92);
+}
+[data-theme="light"] .nav-mobile {
+  background: rgba(240, 237, 231, 0.95);
+}
+[data-theme="light"] .sidebar {
+  background: rgba(255, 255, 255, 0.95);
+}
+[data-theme="light"] .admin-mobile-header {
+  background: rgba(255, 255, 255, 0.9);
+}
+[data-theme="light"] .portal-header {
+  background: rgba(255, 255, 255, 0.9);
+}
+[data-theme="light"] .psych-header {
+  background: rgba(255, 255, 255, 0.9);
+}
+[data-theme="light"] .footer {
+  background: rgba(255, 255, 255, 0.9);
+}
+[data-theme="light"] .lock-screen {
+  background: #f8f6f1;
+}
+[data-theme="light"] .scroll-card,
+[data-theme="light"] .mosaic-tile,
+[data-theme="light"] .admin-card,
+[data-theme="light"] .widget-card,
+[data-theme="light"] .setting-item,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .portal-card,
+[data-theme="light"] .portal-stat-card,
+[data-theme="light"] .consult-card,
+[data-theme="light"] .chart-card,
+[data-theme="light"] .article-card,
+[data-theme="light"] .announcement-card,
+[data-theme="light"] .testimonial-card,
+[data-theme="light"] .achieve-card,
+[data-theme="light"] .event-card,
+[data-theme="light"] .modal-content {
+  background: rgba(255, 255, 255, 0.9);
+}
+[data-theme="light"] .stat-card-value,
+[data-theme="light"] .mosaic-tile-value {
+  text-shadow: none;
+}
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group select,
+[data-theme="light"] .form-group textarea {
+  background: rgba(0, 0, 0, 0.03);
+  color: #1a1a2e;
+}
+[data-theme="light"] .form-group select option {
+  background: #f0ede7;
+  color: #1a1a2e;
+}
+[data-theme="light"] .form-group input::placeholder,
+[data-theme="light"] .form-group textarea::placeholder {
+  color: #9ca3af;
+}
+[data-theme="light"] .hero-badge {
+  background: rgba(201, 168, 76, 0.12);
+}
+[data-theme="light"] .badge-pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+[data-theme="light"] .badge-approved {
+  background: rgba(52, 211, 153, 0.12);
+  color: #047857;
+}
+[data-theme="light"] .badge-rejected {
+  background: rgba(248, 113, 113, 0.12);
+  color: #b91c1c;
+}
+[data-theme="light"] .membership-option.selected {
+  background: rgba(201, 168, 76, 0.12);
+}
+[data-theme="light"] .tracking-code-container {
+  background: rgba(201, 168, 76, 0.06);
+}
+[data-theme="light"] .hero-stat {
+  background: rgba(255, 255, 255, 0.85);
+}
+[data-theme="light"] .hero-stat-detail {
+  background: rgba(255, 255, 255, 0.95);
+}
+[data-theme="light"] .chart-container canvas {
+  filter: brightness(0.9);
+}
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #f0ede7;
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #C9A84C;
+}
+[data-theme="light"] .gold-accent {
+  background: linear-gradient(90deg, transparent, var(--gold-hover), transparent);
+}
+[data-theme="light"] .sidebar-nav a:hover,
+[data-theme="light"] .sidebar-nav a.active {
+  background: rgba(201, 168, 76, 0.1);
+}
+[data-theme="light"] .toast {
+  background: rgba(255, 255, 255, 0.95);
+}
+[data-theme="light"] .form-card {
+  background: rgba(255, 255, 255, 0.9);
+}
+[data-theme="light"] .skeleton {
+  background: linear-gradient(90deg, #f0ede7, #e5e2da, #f0ede7);
+}
+[data-theme="light"] .skeleton-line {
+  background: linear-gradient(90deg, rgba(0,0,0,0.04) 25%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 75%);
+}

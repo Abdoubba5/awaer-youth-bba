@@ -269,7 +269,7 @@
     console.log('🎬 === E2E FLOW DEMO COMPLETE ===');
     console.log('');
     console.log('🧪 To test in browser:');
-    console.log('   1. Open admin.html and login: admin@bba.dz / bba2026');
+    console.log('   1. Open sidou-da.html and login: admin@bba.dz / bba2026');
     console.log('   2. Go to المتطوعين section → approve the pending volunteer');
     console.log('   3. Go to النشاطات section → create an activity');
     console.log('   4. Go to الشهادات section → issue a certificate');

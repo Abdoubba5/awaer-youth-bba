@@ -17,17 +17,11 @@
 
     init: function() {
       var saved = localStorage.getItem(this.key);
-      if (saved === 'light' || saved === 'dark' || saved === 'auto') {
+      if (saved === 'light' || saved === 'dark') {
         this.current = saved;
       }
       this.apply();
       this.injectSwitcherStyles();
-      /* Listen for system changes if auto mode */
-      var self = this;
-      if (window.matchMedia) {
-        var mq = window.matchMedia('(prefers-color-scheme: light)');
-        mq.addListener(function() { if (self.current === 'auto') self.apply(); });
-      }
     },
 
     apply: function() {
@@ -54,10 +48,17 @@
     },
 
     toggle: function() {
-      var modes = ['dark', 'light', 'auto'];
-      var idx = modes.indexOf(this.current);
-      this.set(modes[(idx + 1) % modes.length]);
-      return this.current;
+      var newMode = this.current === 'dark' ? 'light' : 'dark';
+      this.set(newMode);
+      return newMode;
+    },
+
+    isDark: function() {
+      return this.current === 'dark';
+    },
+
+    isLight: function() {
+      return this.current === 'light';
     },
 
     injectSwitcherStyles: function() {
@@ -77,17 +78,30 @@
     createSwitcher: function(container) {
       if (!container) return;
       var self = this;
-      var iconMap = { dark: '\u{1F319}', light: '\u2600\uFE0F', auto: '\u{1F504}' };
       var btn = document.createElement('button');
       btn.className = 'theme-switcher';
       btn.setAttribute('aria-label', 'تبديل المظهر');
-      btn.setAttribute('title', 'تبديل المظهر: داكن / فاتح / تلقائي');
-      btn.innerHTML = '<span class="ts-icon">' + (iconMap[this.current] || '\u{1F319}') + '</span>';
+      btn.setAttribute('title', 'تبديل المظهر: داكن / فاتح');
+      self._updateButtonIcon(btn);
       btn.addEventListener('click', function() {
         var mode = self.toggle();
-        btn.querySelector('.ts-icon').textContent = iconMap[mode] || '\u{1F319}';
-        showPlatformToast('\u{1F3A8} تم التبديل إلى المظهر ' + (mode === 'dark' ? 'الداكن' : mode === 'light' ? 'الفاتح' : 'التلقائي'), 'info');
+        self._updateButtonIcon(btn);
+        showPlatformToast('\u{1F3A8} تم التبديل إلى المظهر ' + (mode === 'dark' ? 'الداكن' : 'الفاتح'), 'info');
       });
+      container.appendChild(btn);
+
+      /* Listen for external theme changes (e.g. from another tab) */
+      document.addEventListener('themeChanged', function() {
+        self._updateButtonIcon(btn);
+      });
+    },
+
+    _updateButtonIcon: function(btn) {
+      if (!btn) return;
+      var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      btn.innerHTML = isLight
+        ? '<span class="ts-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>'
+        : '<span class="ts-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>';
       container.appendChild(btn);
     }
   };

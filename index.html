@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://ouyqcyrbppkxvcknxtbn.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="منصة وعي الشباب BBA - منصة رقمية للتوعية بمخاطر المخدرات والمؤثرات العقلية وتعزيز الصحة النفسية لدى الشباب في ولاية برج بوعريريج">
   <meta name="theme-color" content="#06090e">
@@ -15,214 +16,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/identity.css">
+  <link rel="stylesheet" href="css/homepage.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23D4AF37'/%3E%3Ctext y='68' x='50' text-anchor='middle' font-size='50' fill='%2306090e' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="وعي BBA">
   <style>
-    :root{--bg:#06090e;--surface:rgba(11,16,27,0.75);--surface-solid:#0b101b;--gold:#D4AF37;--gold-hover:#B3922E;--gold-light:rgba(212,175,55,0.12);--success:#10b981;--success-bg:rgba(16,185,129,0.12);--danger:#ef4444;--danger-bg:rgba(239,68,68,0.12);--text:#ffffff;--text-secondary:#e2e8f0;--muted:#94a3b8;--border:rgba(212,175,55,0.15);--border-light:rgba(255,255,255,0.06);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--radius-xl:28px;--shadow-sm:0 2px 8px rgba(0,0,0,0.2);--shadow-md:0 4px 20px rgba(0,0,0,0.3);--shadow-lg:0 8px 40px rgba(0,0,0,0.4);--shadow-gold:0 4px 24px rgba(212,175,55,0.15);--shadow-gold-hover:0 8px 32px rgba(212,175,55,0.3);--font:'Cairo',sans-serif;--transition:all 0.35s cubic-bezier(0.4,0,0.2,1);--nav-height:72px;--nav-height-mobile:64px;--container:1200px}
+    /* Base styles only — component styles moved to css/homepage.css */
+    :root{--bg:#050712;--surface:rgba(12,17,34,0.88);--surface-solid:#0C1122;--surface-card:rgba(16,22,42,0.92);--gold:#C9A84C;--gold-hover:#B8943E;--gold-light:rgba(201,168,76,0.10);--gold-glow:rgba(201,168,76,0.20);--teal:#2DD4BF;--teal-bg:rgba(45,212,191,0.08);--terra:#C2644A;--terra-bg:rgba(194,100,74,0.08);--success:#34D399;--success-bg:rgba(52,211,153,0.10);--danger:#F87171;--danger-bg:rgba(248,113,113,0.10);--text:#F5F0E8;--text-secondary:#D1CEC6;--text-dim:#9E9A94;--text-muted:#7A7670;--border:rgba(201,168,76,0.12);--border-light:rgba(255,255,255,0.04);--border-gold:rgba(201,168,76,0.25);--radius-xs:4px;--radius-sm:6px;--radius-md:12px;--radius-lg:20px;--radius-xl:32px;--shadow-sm:0 2px 8px rgba(0,0,0,0.3);--shadow-md:0 8px 32px rgba(0,0,0,0.4);--shadow-lg:0 16px 48px rgba(0,0,0,0.5);--shadow-gold:0 8px 32px rgba(201,168,76,0.10);--shadow-gold-hover:0 12px 40px rgba(201,168,76,0.20);--font:'Cairo',sans-serif;--transition:all 0.4s cubic-bezier(0.4,0,0.2,1);--transition-slow:all 0.6s cubic-bezier(0.4,0,0.2,1);--bounce:cubic-bezier(0.34,1.56,0.64,1);--nav-height:72px;--nav-height-mobile:64px;--lantern-glow:0 0 60px rgba(201,168,76,0.06),0 0 120px rgba(201,168,76,0.03)}
     *,:before,:after{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth;scroll-padding-top:80px}
     body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;direction:rtl;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-    h1,h2,h3,h4{font-weight:700;line-height:1.4}
-    h1{font-size:clamp(1.75rem,4.5vw,3rem)}h2{font-size:clamp(1.5rem,3.5vw,2.25rem)}h3{font-size:clamp(1.25rem,2.5vw,1.5rem)}
-    p{color:var(--muted);font-size:clamp(0.9rem,1.2vw,1rem)}
-    a{color:var(--gold);text-decoration:none;transition:var(--transition)}
-    a:hover{color:var(--gold-hover)}ul{list-style:none}img{max-width:100%;height:auto;display:block}
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
-    .container{width:100%;max-width:var(--container);margin:0 auto;padding:0 clamp(1rem,3vw,2rem)}
-    .section{padding:clamp(3rem,8vw,6rem) 0}
-    .section-header{text-align:center;margin-bottom:clamp(2rem,5vw,3.5rem)}
-    .section-header p{max-width:600px;margin:0.75rem auto 0}
-    .gold-accent{display:inline-block;width:60px;height:3px;background:var(--gold);border-radius:2px;margin-top:0.75rem}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1.75rem;border-radius:var(--radius-sm);font-family:var(--font);font-size:clamp(0.85rem,1.1vw,0.95rem);font-weight:600;cursor:pointer;transition:var(--transition);border:none;outline:none;white-space:nowrap}
-    .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-hover));color:var(--bg);box-shadow:var(--shadow-gold)}
-    .btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-gold-hover);color:var(--bg)}
-    .btn-secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
-    .btn-secondary:hover{background:var(--gold-light);transform:translateY(-2px);color:var(--gold)}
-    .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}.btn-sm{padding:0.4rem 1rem;font-size:0.8rem}
-    .nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:var(--nav-height);transition:var(--transition)}
-    .nav-inner{max-width:var(--container);margin:0 auto;padding:0 clamp(1rem,3vw,2rem);height:100%;display:flex;align-items:center;justify-content:space-between}
-    .nav-logo{display:flex;align-items:center;gap:0.75rem;font-size:1.1rem;font-weight:700;color:var(--gold)}
-    .nav-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold-hover));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--bg);flex-shrink:0}
-    .nav-links{display:flex;align-items:center;gap:0.25rem}
-    .nav-links a{color:var(--muted);padding:0.5rem 1rem;border-radius:var(--radius-sm);font-size:0.9rem;font-weight:500;transition:var(--transition)}
-    .nav-links a:hover,.nav-links a.active{color:var(--gold);background:var(--gold-light)}
-    .nav-mobile{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;background:var(--surface-solid);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:0.5rem 0;height:var(--nav-height-mobile)}
-    .nav-mobile-inner{display:flex;justify-content:space-around;align-items:center;height:100%;padding:0 0.5rem}
-    .nav-mobile a{display:flex;flex-direction:column;align-items:center;gap:0.15rem;color:var(--muted);font-size:0.6rem;padding:0.3rem 0.5rem;border-radius:var(--radius-sm);transition:var(--transition);min-width:56px}
-    .nav-mobile a svg{width:22px;height:22px}
-    .nav-mobile a:hover,.nav-mobile a.active{color:var(--gold)}
-    /* ===== PARALLAX HERO ===== */
-    .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-top:var(--nav-height)}
-    .hero-bg{position:absolute;inset:0;z-index:-1}
-    .hero-bg:before{content:'';position:absolute;top:-30%;right:-20%;width:600px;height:600px;background:radial-gradient(circle,rgba(212,175,55,0.06) 0%,transparent 70%);border-radius:50%}
-    .hero-bg:after{content:'';position:absolute;bottom:-20%;left:-20%;width:500px;height:500px;background:radial-gradient(circle,rgba(212,175,55,0.04) 0%,transparent 70%);border-radius:50%}
-    /* Parallax floating shapes */
-    .hero-shapes{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-    .hero-shape{position:absolute;border-radius:50%;opacity:0.15;transition:transform 0.1s ease-out;will-change:transform}
-    .hero-shape-1{width:120px;height:120px;top:15%;right:10%;background:radial-gradient(circle,rgba(212,175,55,0.3),transparent);animation:floatShape 8s ease-in-out infinite}
-    .hero-shape-2{width:80px;height:80px;top:60%;right:25%;border:2px solid rgba(212,175,55,0.2);background:transparent;animation:floatShape 6s ease-in-out infinite reverse}
-    .hero-shape-3{width:160px;height:160px;bottom:10%;left:5%;background:radial-gradient(circle,rgba(212,175,55,0.12),transparent);animation:floatShape 10s ease-in-out infinite 1s}
-    .hero-shape-4{width:50px;height:50px;top:30%;left:20%;border:2px solid rgba(212,175,55,0.15);background:transparent;transform:rotate(45deg);border-radius:8px;animation:floatShape 7s ease-in-out infinite 0.5s}
-    .hero-shape-5{width:90px;height:90px;bottom:30%;right:40%;background:radial-gradient(circle,rgba(16,185,129,0.08),transparent);animation:floatShape 9s ease-in-out infinite 2s}
-    @keyframes floatShape{0%,100%{transform:translateY(0) scale(1)}25%{transform:translateY(-20px) scale(1.05)}50%{transform:translateY(-10px) scale(0.95)}75%{transform:translateY(-25px) scale(1.02)}}
-    .hero-content{max-width:700px;position:relative;z-index:1;transition:transform 0.1s ease-out}
-    .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.4rem 1rem;background:var(--gold-light);border:1px solid var(--border);border-radius:100px;font-size:0.8rem;color:var(--gold);margin-bottom:1.5rem;backdrop-filter:blur(8px)}
-    .hero h1{margin-bottom:1rem;background:linear-gradient(135deg,var(--text) 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .hero p{font-size:clamp(1rem,1.5vw,1.15rem);margin-bottom:2rem;max-width:560px}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:1rem}
-    /* Interactive Stat Cards */
-    .hero-stats{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2.5rem}
-    .hero-stat{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.25rem;background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);min-width:150px;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);cursor:pointer;position:relative;overflow:hidden}
-    .hero-stat:hover{transform:translateY(-4px);border-color:rgba(212,175,55,0.4);box-shadow:0 8px 24px rgba(212,175,55,0.15)}
-    .hero-stat:active{transform:translateY(-1px)}
-    .hero-stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform 0.4s ease;transform-origin:center}
-    .hero-stat:hover::after{transform:scaleX(1)}
-    .hero-stat-icon{font-size:1.5rem;flex-shrink:0;transition:transform 0.4s ease}
-    .hero-stat:hover .hero-stat-icon{transform:scale(1.15) rotate(5deg)}
-    .hero-stat-info{display:flex;flex-direction:column}
-    .hero-stat-value{font-size:1.25rem;font-weight:700;color:var(--gold);transition:color 0.3s ease}
-    .hero-stat-label{font-size:0.7rem;color:var(--muted)}
-    /* Stat progress ring */
-    .hero-stat-ring{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
-    .hero-stat-ring svg{width:100%;height:100%;opacity:0.15;transition:opacity 0.4s ease}
-    .hero-stat:hover .hero-stat-ring svg{opacity:0.3}
-    /* Stat detail popover */
-    .hero-stat-detail{position:absolute;top:calc(100% + 4px);right:0;min-width:160px;background:var(--surface-solid);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.6rem 0.75rem;font-size:0.7rem;color:var(--text-secondary);opacity:0;transform:translateY(-4px);pointer-events:none;transition:all 0.3s ease;z-index:10;box-shadow:var(--shadow-md)}
-    .hero-stat:hover .hero-stat-detail,.hero-stat.active .hero-stat-detail{opacity:1;transform:translateY(0);pointer-events:auto}
-    .hero-stat.active{border-color:rgba(212,175,55,0.4);box-shadow:0 4px 16px rgba(212,175,55,0.12)}
-    .hero-stat-detail-row{display:flex;justify-content:space-between;align-items:center;padding:0.2rem 0;border-bottom:1px solid var(--border-light)}
-    .hero-stat-detail-row:last-child{border-bottom:none}
-    .hero-stat-detail-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-left:0.35rem}
-    .hero-stat-progress{height:2px;background:var(--border-light);border-radius:2px;margin-top:0.3rem;overflow:hidden}
-    .hero-stat-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-hover));border-radius:2px;transition:width 0.6s ease}
-    @keyframes statPulse{0%{box-shadow:0 0 0 0 rgba(212,175,55,0.2)}70%{box-shadow:0 0 0 6px rgba(212,175,55,0)}100%{box-shadow:0 0 0 0 rgba(212,175,55,0)}}
-    .hero-stat.pulse{animation:statPulse 1s ease-out}
-    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:1rem;margin-bottom:2rem}
-    .stat-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;transition:var(--transition);text-align:center}
-    .stat-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
-    .stat-card-value{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:var(--gold)}
-    .stat-card-label{font-size:0.8rem;color:var(--muted);margin-top:0.25rem}
-    .impact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:2rem}
-    .impact-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;text-align:center;transition:var(--transition)}
-    .impact-card:hover{transform:translateY(-4px);border-color:rgba(212,175,55,0.3);box-shadow:var(--shadow-gold)}
-    .impact-icon{font-size:2.5rem;margin-bottom:0.75rem}
-    .impact-value{font-size:2rem;font-weight:700;color:var(--gold)}
-    .impact-label{font-size:0.85rem;color:var(--muted)}
-    .awareness-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:1.5rem}
-    .article-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;transition:var(--transition);cursor:pointer}
-    .article-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(212,175,55,0.25);border-color:rgba(212,175,55,0.3)}
-    .article-img{width:100%;height:200px;object-fit:cover;background:var(--surface-solid)}
-    .article-body{padding:1.25rem}
-    .article-category{display:inline-block;padding:0.2rem 0.75rem;background:var(--gold-light);color:var(--gold);border-radius:100px;font-size:0.75rem;font-weight:600;margin-bottom:0.75rem}
-    .article-body h3{font-size:clamp(1rem,1.5vw,1.15rem);margin-bottom:0.5rem}
-    .article-body p{font-size:0.85rem;margin-bottom:1rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-    .article-body .btn{padding:0.5rem 1.25rem;font-size:0.8rem}
-    .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:1.25rem}
-    .event-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;transition:var(--transition)}
-    .event-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
-    .event-card-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem}
-    .event-card-icon{font-size:1.75rem;flex-shrink:0}
-    .event-card-title{font-weight:600;color:var(--text);font-size:0.95rem}
-    .event-card-type{font-size:0.7rem;padding:0.15rem 0.5rem;background:var(--gold-light);border-radius:100px;color:var(--gold);display:inline-block}
-    .event-card-meta{display:flex;flex-wrap:wrap;gap:0.5rem;font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem}
-    .event-card-meta span{display:flex;align-items:center;gap:0.25rem}
-    .achieve-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.25rem}
-    .achieve-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;text-align:center;transition:var(--transition)}
-    .achieve-card:hover{transform:translateY(-2px);border-color:var(--gold)}
-    .achieve-icon{font-size:2.5rem;margin-bottom:0.5rem}
-    .achieve-title{font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:0.25rem}
-    .achieve-date{font-size:0.72rem;color:var(--muted)}
-    .form-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.5rem,4vw,2.5rem);max-width:680px;margin:0 auto}
-    .form-card h3{margin-bottom:0.5rem}.form-card>p{margin-bottom:1.5rem;font-size:0.9rem}
-    .form-group{margin-bottom:1.25rem}
-    .form-group label{display:block;font-size:0.85rem;font-weight:600;color:var(--text-secondary);margin-bottom:0.4rem}
-    .form-group input,.form-group select,.form-group textarea{width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.9rem;transition:var(--transition);direction:rtl}
-    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light);background:rgba(255,255,255,0.06)}
-    .form-group textarea{min-height:120px;resize:vertical}
-    .form-group select{cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 1rem center;padding-left:2.5rem}
-    .form-group select option{background:var(--surface-solid);color:var(--text)}
-    .membership-options{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
-    .membership-option{padding:1.25rem;background:rgba(255,255,255,0.03);border:2px solid var(--border-light);border-radius:var(--radius-md);text-align:center;cursor:pointer;transition:var(--transition)}
-    .membership-option:hover{border-color:var(--border);background:rgba(255,255,255,0.05)}
-    .membership-option.selected{border-color:var(--gold);background:var(--gold-light);box-shadow:0 0 20px rgba(212,175,55,0.15)}
-    .membership-option-icon{font-size:2rem;margin-bottom:0.5rem}
-    .membership-option-label{font-weight:600;font-size:0.9rem}
-    .membership-option-desc{font-size:0.75rem;color:var(--muted);margin-top:0.25rem}
-    .tracking-code-container{margin-top:1.5rem;padding:1.5rem;background:rgba(212,175,55,0.05);border:1px solid var(--gold);border-radius:var(--radius-md);box-shadow:0 0 20px rgba(212,175,55,0.1),inset 0 0 20px rgba(212,175,55,0.05);animation:glowPulse 2s ease-in-out infinite alternate;text-align:center;display:none}
-    .tracking-code-container.visible{display:block}
-    @keyframes glowPulse{0%{box-shadow:0 0 15px rgba(212,175,55,0.1),inset 0 0 15px rgba(212,175,55,0.03)}100%{box-shadow:0 0 30px rgba(212,175,55,0.25),inset 0 0 25px rgba(212,175,55,0.08)}}
-    .tracking-code{font-size:clamp(1.25rem,3vw,1.75rem);font-weight:700;color:var(--gold);letter-spacing:2px;direction:ltr;margin-bottom:0.75rem;font-family:'Courier New',monospace}
-    .toast-container{position:fixed;top:calc(var(--nav-height) + 1rem);left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:0.75rem;pointer-events:none}
-    .toast{display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1.5rem;background:var(--surface-solid);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);font-size:0.9rem;animation:toastSlideIn 0.4s cubic-bezier(0.4,0,0.2,1);pointer-events:auto;min-width:280px;direction:rtl}
-    .toast.toast-exit{animation:toastSlideOut 0.3s cubic-bezier(0.4,0,0.2,1) forwards}
-    .toast-success{border-right:3px solid var(--success)}.toast-error{border-right:3px solid var(--danger)}.toast-info{border-right:3px solid var(--gold)}
-    .toast-icon{flex-shrink:0}.toast-success .toast-icon{color:var(--success)}.toast-error .toast-icon{color:var(--danger)}.toast-info .toast-icon{color:var(--gold)}
-    @keyframes toastSlideIn{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
-    @keyframes toastSlideOut{from{transform:translateY(0);opacity:1}to{transform:translateY(-20px);opacity:0}}
-    .footer{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:2rem 0;text-align:center}
-    .footer p{font-size:0.85rem}.footer-gold{color:var(--gold);font-weight:600}
-    .footer-links{display:flex;justify-content:center;flex-wrap:wrap;gap:0.75rem;margin-top:1rem;font-size:0.82rem}
-    .footer-links a{color:var(--muted);padding:0.25rem 0.75rem;border-radius:100px;border:1px solid var(--border-light);transition:var(--transition)}
-    .footer-links a:hover{color:var(--gold);border-color:var(--gold)}
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:none;align-items:center;justify-content:center;padding:1rem}
-    .modal-overlay.active{display:flex}
-    .modal-content{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.5rem,3vw,2rem);max-width:660px;width:100%;max-height:90vh;overflow-y:auto;animation:fadeIn 0.3s ease}
-    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
-    .modal-header h3{font-size:1.15rem;color:var(--gold)}
-    .modal-close{background:none;border:none;color:var(--muted);cursor:pointer;padding:0.25rem;border-radius:var(--radius-sm);transition:var(--transition);font-size:1.25rem;line-height:1}
-    .modal-close:hover{color:var(--danger);background:var(--danger-bg)}
-    .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:100px;font-size:0.75rem;font-weight:600}
-    .badge-pending{background:var(--gold-light);color:var(--gold)}.badge-approved{background:var(--success-bg);color:var(--success)}.badge-rejected{background:var(--danger-bg);color:var(--danger)}
-    .detail-row{display:flex;padding:0.5rem 0;border-bottom:1px solid var(--border-light)}.detail-row:last-child{border-bottom:none}
-    .detail-label{flex:0 0 100px;color:var(--muted);font-size:0.85rem;font-weight:600}.detail-value{flex:1;color:var(--text);font-size:0.9rem}
-    .timeline{position:relative;padding-right:2rem;margin:1rem 0}
-    .timeline:before{content:'';position:absolute;right:7px;top:0;bottom:0;width:2px;background:var(--border-light)}
-    .timeline-item{position:relative;padding:0.75rem 0;padding-right:1.25rem}
-    .timeline-item:before{content:'';position:absolute;right:-14px;top:1.1rem;width:16px;height:16px;border-radius:50%;background:var(--surface-solid);border:2px solid var(--border)}
-    .timeline-item.active:before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 10px rgba(212,175,55,0.4)}
-    .timeline-item.done:before{background:var(--success);border-color:var(--success)}
-    .timeline-item-text{font-size:0.85rem;color:var(--text)}
-    .timeline-item-date{font-size:0.72rem;color:var(--muted)}
-    .contact-buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:1.5rem}
-    .contact-btn{display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:1.25rem;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:var(--transition);font-family:var(--font);color:var(--text)}
-    .contact-btn:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 4px 20px rgba(212,175,55,0.15)}
-    .contact-btn-icon{font-size:2rem}.contact-btn-label{font-weight:600;font-size:0.9rem}.contact-btn-desc{font-size:0.75rem;color:var(--muted)}
-    .testimonial-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:1.5rem}
-    .testimonial-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;transition:var(--transition);position:relative}
-    .testimonial-card:hover{transform:translateY(-2px);border-color:rgba(212,175,55,0.3)}
-    .testimonial-card:before{content:'\\201C';position:absolute;top:-0.25rem;right:1rem;font-size:4rem;color:var(--gold);opacity:0.15;font-weight:700;line-height:1}
-    .testimonial-text{font-size:0.88rem;color:var(--text-secondary);line-height:1.8;margin-bottom:1rem;font-style:italic}
-    .testimonial-author{display:flex;align-items:center;gap:0.75rem}
-    .testimonial-avatar{width:40px;height:40px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
-    .testimonial-name{font-size:0.85rem;font-weight:600;color:var(--gold)}
-    .testimonial-role{font-size:0.72rem;color:var(--muted)}
-    .announcement-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:1rem;transition:var(--transition)}
-    .announcement-card:hover{border-color:rgba(212,175,55,0.3)}
-    .announcement-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem}
-    .announcement-title{font-weight:600;color:var(--gold);font-size:0.95rem}
-    .announcement-date{font-size:0.72rem;color:var(--muted);white-space:nowrap}
-    .announcement-text{font-size:0.85rem;color:var(--text-secondary);line-height:1.7}
-    .quick-links{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.5rem;justify-content:center}
-    .quick-link-btn{display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition)}
-    .quick-link-btn:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:var(--shadow-gold);color:var(--gold)}
-    .chart-container{max-width:100%;height:350px;margin:0 auto}
-    .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-    .chart-card{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem}
-    .chart-card h3{font-size:0.95rem;margin-bottom:1rem;text-align:center;color:var(--gold)}
-    .verify-section{display:flex;gap:0.75rem;max-width:500px;margin:1.5rem auto 0}
-    .verify-section input{flex:1;padding:0.75rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:0.85rem;direction:ltr;text-align:center;font-family:monospace;letter-spacing:1px}
-    .verify-section input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light)}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .fade-in-up{animation:fadeInUp 0.6s ease forwards}
-    @media(max-width:1024px){.charts-grid{grid-template-columns:1fr}}
-    @media(max-width:768px){.nav{display:none}.nav-mobile{display:flex}body{padding-bottom:var(--nav-height-mobile)}.membership-options{grid-template-columns:1fr}.hero{min-height:90vh;padding-top:1rem}.contact-buttons{grid-template-columns:1fr}.hero-stats{flex-direction:column;align-items:stretch}}
-    @media(max-width:480px){.hero-actions{flex-direction:column}.hero-actions .btn{width:100%;justify-content:center}.verify-section{flex-direction:column}}
-    @media(min-width:1440px){:root{--container:1320px}.hero-content{max-width:800px}}
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+    h1,h2,h3,h4{font-weight:700;line-height:1.4}h1{font-size:clamp(1.75rem,4.5vw,3rem)}h2{font-size:clamp(1.5rem,3.5vw,2.25rem)}h3{font-size:clamp(1.25rem,2.5vw,1.5rem)}
+    p{color:var(--text-dim);font-size:clamp(0.9rem,1.2vw,1rem)}a{color:var(--gold);text-decoration:none;transition:all 0.3s ease}a:hover{color:var(--gold-hover)}ul{list-style:none}img{max-width:100%;height:auto;display:block}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
   </style>
 </head>
 <body>
@@ -297,6 +105,17 @@
   <!-- ===== HERO SECTION (Parallax) ===== -->
   <section id="hero" class="hero">
     <div class="hero-bg" aria-hidden="true"></div>
+    <!-- Constellation dots (generated by JS) -->
+    <div class="constellation" aria-hidden="true" id="constellationDots"></div>
+    <!-- Golden glow orbs -->
+    <div style="position:absolute;top:20%;left:15%;width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 15px var(--gold-glow),0 0 30px rgba(201,168,76,0.08);pointer-events:none;z-index:0;opacity:0.15"></div>
+    <div style="position:absolute;bottom:30%;right:20%;width:3px;height:3px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold-glow),0 0 25px rgba(201,168,76,0.06);pointer-events:none;z-index:0;opacity:0.1"></div>
+    <!-- Mountain silhouette base -->
+    <div class="mountain-layer" aria-hidden="true">
+      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.06">
+        <path fill="var(--gold)" d="M0,160 C180,100 360,180 540,120 C720,60 900,140 1080,80 C1260,20 1350,100 1440,60 L1440,200 L0,200 Z"/>
+      </svg>
+    </div>
     <!-- Parallax floating shapes -->
     <div class="hero-shapes" aria-hidden="true">
       <div class="hero-shape hero-shape-1" data-parallax="0.04"></div>
@@ -378,21 +197,30 @@
     </div>
   </section>
 
+  <!-- Mountain divider -->
+  <div class="mountain-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="var(--surface-solid)" d="M0,60 C120,100 240,20 480,40 C720,60 960,0 1200,30 C1320,45 1380,70 1440,60 L1440,120 L0,120 Z" opacity="0.5"/>
+      <path fill="var(--surface-solid)" d="M0,80 C200,40 400,100 600,70 C800,40 1000,90 1440,60 L1440,120 L0,120 Z" opacity="0.3"/>
+    </svg>
+  </div>
+
   <!-- ===== VOLUNTEER IMPACT SECTION ===== -->
-  <section id="impact" class="section">
+  <section id="impact" class="section lattice-overlay">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>أثر المتطوعين</h2>
         <p>إحصائيات حية تعكس حجم المشاركة المجتمعية والتأثير الإيجابي لبرنامج Dz Young Leaders</p>
         <div class="gold-accent"></div>
       </div>
       <div class="impact-grid" id="impactGrid">
-        <div class="impact-card"><div class="impact-icon">👥</div><div class="impact-value" id="impactVolunteers">0</div><div class="impact-label">إجمالي المتطوعين</div></div>
-        <div class="impact-card"><div class="impact-icon">✅</div><div class="impact-value" id="impactApproved">0</div><div class="impact-label">متطوع معتمد</div></div>
-        <div class="impact-card"><div class="impact-icon">📋</div><div class="impact-value" id="impactActivities">0</div><div class="impact-label">نشاط منجز</div></div>
-        <div class="impact-card"><div class="impact-icon">📜</div><div class="impact-value" id="impactCerts">0</div><div class="impact-label">شهادة مصدرة</div></div>
-        <div class="impact-card"><div class="impact-icon">📅</div><div class="impact-value" id="impactEvents">0</div><div class="impact-label">فعالية منفذة</div></div>
-        <div class="impact-card"><div class="impact-icon">🏛️</div><div class="impact-value" id="impactTeams">0</div><div class="impact-label">فريق بلدية</div></div>
+        <div class="mosaic-tile"><span class="mosaic-corner mosaic-corner-tl"></span><span class="mosaic-corner mosaic-corner-tr"></span><span class="mosaic-corner mosaic-corner-bl"></span><span class="mosaic-corner mosaic-corner-br"></span><div class="impact-icon">👥</div><span class="mosaic-tile-value" id="impactVolunteers">0</span><div class="mosaic-tile-label">إجمالي المتطوعين</div></div>
+        <div class="mosaic-tile"><span class="mosaic-corner mosaic-corner-tl"></span><span class="mosaic-corner mosaic-corner-tr"></span><span class="mosaic-corner mosaic-corner-bl"></span><span class="mosaic-corner mosaic-corner-br"></span><div class="impact-icon">✅</div><span class="mosaic-tile-value" id="impactApproved">0</span><div class="mosaic-tile-label">متطوع معتمد</div></div>
+        <div class="mosaic-tile"><span class="mosaic-corner mosaic-corner-tl"></span><span class="mosaic-corner mosaic-corner-tr"></span><span class="mosaic-corner mosaic-corner-bl"></span><span class="mosaic-corner mosaic-corner-br"></span><div class="impact-icon">📋</div><span class="mosaic-tile-value" id="impactActivities">0</span><div class="mosaic-tile-label">نشاط منجز</div></div>
+        <div class="mosaic-tile"><span class="mosaic-corner mosaic-corner-tl"></span><span class="mosaic-corner mosaic-corner-tr"></span><span class="mosaic-corner mosaic-corner-bl"></span><span class="mosaic-corner mosaic-corner-br"></span><div class="impact-icon">📜</div><span class="mosaic-tile-value" id="impactCerts">0</span><div class="mosaic-tile-label">شهادة مصدرة</div></div>
+        <div class="mosaic-tile"><span class="mosaic-corner mosaic-corner-tl"></span><span class="mosaic-corner mosaic-corner-tr"></span><span class="mosaic-corner mosaic-corner-bl"></span><span class="mosaic-corner mosaic-corner-br"></span><div class="impact-icon">📅</div><span class="mosaic-tile-value" id="impactEvents">0</span><div class="mosaic-tile-label">فعالية منفذة</div></div>
+        <div class="mosaic-tile"><span class="mosaic-corner mosaic-corner-tl"></span><span class="mosaic-corner mosaic-corner-tr"></span><span class="mosaic-corner mosaic-corner-bl"></span><span class="mosaic-corner mosaic-corner-br"></span><div class="impact-icon">🏛️</div><span class="mosaic-tile-value" id="impactTeams">0</span><div class="mosaic-tile-label">فريق بلدية</div></div>
       </div>
     </div>
   </section>
@@ -401,6 +229,7 @@
   <section id="events" class="section" style="background:var(--surface-solid)">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>الأنشطة والفعاليات القادمة</h2>
         <p>فعاليات توعوية وتدريبية ينظمها برنامج Dz Young Leaders - سجل الآن للمشاركة</p>
         <div class="gold-accent"></div>
@@ -411,10 +240,17 @@
     </div>
   </section>
 
+  <div class="section-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="var(--border)" d="M0,40 L60,30 L120,50 L180,20 L240,45 L300,35 L360,55 L420,25 L480,40 L540,30 L600,50 L660,20 L720,45 L780,35 L840,55 L900,25 L960,40 L1020,30 L1080,50 L1140,20 L1200,45 L1260,35 L1320,55 L1380,25 L1440,40 L1440,80 L0,80 Z" opacity="0.08"/>
+    </svg>
+  </div>
+
   <!-- ===== LATEST ACHIEVEMENTS SECTION ===== -->
-  <section id="achievements" class="section">
+  <section id="achievements" class="section lattice-overlay">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>آخر الإنجازات والشهادات</h2>
         <p>نحن فخورون بإنجازات متطوعينا المتميزين في برنامج Dz Young Leaders</p>
         <div class="gold-accent"></div>
@@ -427,6 +263,7 @@
   <section id="awareness" class="section" style="background:var(--surface-solid)">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>مركز التوعية</h2>
         <p>معلومات موثوقة وحقائق علمية حول الوقاية من المخدرات وتعزيز الصحة النفسية - اضغط على أي مقال لقراءته كاملاً</p>
         <div class="gold-accent"></div>
@@ -439,6 +276,7 @@
   <section id="consultation" class="section">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>الاستشارات النفسية</h2>
         <p>استشارات نفسية مجانية وسرية - يمكنك طلب استشارة جديدة أو متابعة استشارة سابقة</p>
         <div class="gold-accent"></div>
@@ -474,6 +312,7 @@
             <textarea id="consultMessage" placeholder="اكتب استشارتك هنا بتفصيل..." required maxlength="2000"></textarea>
           </div>
           <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">📨 إرسال الاستشارة</button>
+          <div id="consultRateLimitIndicator"></div>
         </form>
         <div id="trackingContainer" class="tracking-code-container">
           <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:1rem">
@@ -504,6 +343,7 @@
   <section id="stats" class="section" style="background:var(--surface-solid)">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>الإحصائيات العامة</h2>
         <p>إحصائيات حية حول توزيع المتطوعين والنشاطات حسب البلديات في ولاية برج بوعريريج</p>
         <div class="gold-accent"></div>
@@ -525,6 +365,7 @@
   <section id="testimonials" class="section">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>قصص وتجارب</h2>
         <p>قصص نجاح وتجارب ملهمة من متطوعينا ومستفيدينا في برنامج Dz Young Leaders</p>
         <div class="gold-accent"></div>
@@ -537,6 +378,7 @@
   <section id="faq" class="section">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>الأسئلة الشائعة</h2>
         <p>إجابات على أكثر الأسئلة شيوعاً حول منصة وعي الشباب BBA وبرنامج Dz Young Leaders</p>
         <div class="gold-accent"></div>
@@ -549,6 +391,7 @@
   <section id="partners" class="section" style="background:var(--surface-solid)">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>شركاؤنا</h2>
         <p>نفتخر بشراكاتنا مع المؤسسات والهيئات الداعمة لبرنامجنا التطوعي</p>
         <div class="gold-accent"></div>
@@ -561,6 +404,7 @@
   <section id="announcements" class="section" style="background:var(--surface-solid)">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>آخر الأخبار والإعلانات</h2>
         <p>أحدث الإعلانات والتحديثات من إدارة منصة وعي الشباب BBA</p>
         <div class="gold-accent"></div>
@@ -573,14 +417,15 @@
   <section id="quick-access" class="section">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>خدمات المنصة</h2>
         <p>اختر الخدمة التي تريدها من خلال الروابط السريعة</p>
         <div class="gold-accent"></div>
       </div>
       <div class="quick-links">
         <a href="portal.html" class="quick-link-btn" id="quickLinkPortal">👤 بوابة المتطوعين</a>
-        <a href="admin.html" class="quick-link-btn" id="quickLinkAdmin" style="display:none">🔐 لوحة الإدارة</a>
-        <a href="psychologist.html" class="quick-link-btn" id="quickLinkPsych" style="display:none">💬 لوحة المستشار النفسي</a>
+        <a href="sidou-da.html" class="quick-link-btn" id="quickLinkAdmin" style="display:none">🔐 لوحة الإدارة</a>
+        <a href="mushrif-dashboard.html" class="quick-link-btn" id="quickLinkPsych" style="display:none">💬 لوحة المستشار النفسي</a>
         <span class="quick-link-btn" id="verifyCertQuickBtn" style="cursor:pointer">✅ التحقق من الشهادات</span>
       </div>
       <!-- Certificate Verification -->
@@ -600,6 +445,7 @@
   <section id="volunteer" class="section" style="background:var(--surface-solid)">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>التطوع معنا</h2>
         <p>انضم إلى فريقنا التطوعي وساهم في بناء جيل واعٍ ومستقبل آمن لشباب ولاية برج بوعريريج</p>
         <div class="gold-accent"></div>
@@ -644,6 +490,7 @@
             <textarea id="volunteerMotivation" placeholder="ما هو دافعك للانضمام إلينا؟" maxlength="500"></textarea>
           </div>
           <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">👥 تسجيل المتطوع</button>
+          <div id="volunteerRateLimitIndicator"></div>
         </form>
       </div>
     </div>
@@ -653,6 +500,7 @@
   <section id="contact" class="section">
     <div class="container">
       <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
         <h2>تواصل معنا</h2>
         <p>للاستفسارات والاقتراحات، يمكنكم التواصل معنا عبر القنوات التالية</p>
         <div class="gold-accent"></div>
@@ -704,7 +552,7 @@
         <a href="about.html">📖 عن المشروع</a>
         <a href="target-audience.html">🎯 الفئة المستهدفة</a>
         <a href="portal.html" id="footerLinkPortal">👤 بوابة المتطوعين</a>
-        <a href="psychologist.html" id="footerLinkPsych" style="display:none">💬 لوحة المستشار</a>
+        <a href="mushrif-dashboard.html" id="footerLinkPsych" style="display:none">💬 لوحة المستشار</a>
         <a href="verify-certificate.html">✅ التحقق من الشهادات</a>
       </div>
     </div>
@@ -713,7 +561,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
   <script src="js/database.js"></script>
+  <script src="js/rate-limiter.js"></script>
+  <script src="js/rate-limit-indicator.js"></script>
   <script src="js/platform-core.js"></script>
+  <script src="js/homepage-experience.js"></script>
   <script src="js/app.js"></script>
   <script>
     /* ============================================================
@@ -1149,6 +1000,25 @@
      * CONSULTATION TABS
      * ============================================================ */
     /* ============================================================
+     * CONSTELLATION GENERATOR - Random star dots in hero
+     * ============================================================ */
+    (function initConstellation() {
+      var container = byId('constellationDots');
+      if (!container) return;
+      var count = 30;
+      for (var i = 0; i < count; i++) {
+        var dot = document.createElement('div');
+        dot.className = 'constellation-dot';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.top = Math.random() * 100 + '%';
+        dot.style.animationDelay = Math.random() * 5 + 's';
+        dot.style.animationDuration = (3 + Math.random() * 4) + 's';
+        dot.style.width = dot.style.height = (1 + Math.random() * 2) + 'px';
+        container.appendChild(dot);
+      }
+    })();
+
+    /* ============================================================
      * PARALLAX HERO - Mouse tracking + depth effect
      * ============================================================ */
     (function initHeroParallax() {
@@ -1200,6 +1070,30 @@
           }
         }, { passive: true });
       }
+    })();
+
+    /* ============================================================
+     * NAV SCROLL EFFECT - Toggle 'scrolled' class on navbar
+     * Uses .nav.scrolled styles from homepage.css (darker bg + shadow)
+     * ============================================================ */
+    (function initNavScroll() {
+      var nav = document.querySelector('.nav');
+      var hero = document.querySelector('.hero');
+      if (!nav || !hero) return;
+
+      function updateNav() {
+        var threshold = hero.offsetHeight * 0.85;
+        if (window.scrollY > threshold) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+
+      /* Run once on load (in case page loads mid-scroll) */
+      updateNav();
+
+      window.addEventListener('scroll', updateNav, { passive: true });
     })();
 
     /* ============================================================

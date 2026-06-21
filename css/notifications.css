@@ -1,0 +1,604 @@
+/* ============================================================
+   منصة وعي الشباب BBA - Notification System Styles
+   Bell · Dropdown · History · Modal
+   Version: 1.0.0
+   ============================================================ */
+
+/* ============================================================
+ * NOTIFICATION BELL
+ * ============================================================ */
+.notif-bell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 1.15rem;
+  outline: none;
+}
+
+.notif-bell:hover {
+  background: var(--gold-light);
+  color: var(--gold);
+}
+
+.notif-bell:focus-visible {
+  box-shadow: 0 0 0 2px var(--gold);
+}
+
+.notif-bell-icon {
+  line-height: 1;
+  transition: var(--transition);
+}
+
+.notif-bell:hover .notif-bell-icon {
+  animation: notifBellShake 0.4s ease;
+}
+
+.notif-bell-count {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, var(--danger), #dc2626);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+  animation: notifBadgePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes notifBadgePop {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes notifBellShake {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(12deg); }
+  50% { transform: rotate(-12deg); }
+  75% { transform: rotate(6deg); }
+}
+
+/* ============================================================
+ * NOTIFICATION DROPDOWN
+ * ============================================================ */
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: auto;
+  right: 0;
+  width: 380px;
+  max-width: calc(100vw - 2rem);
+  max-height: 480px;
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  overflow: hidden;
+  animation: notifDropdownSlide 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes notifDropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notif-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.notif-dropdown-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.notif-dropdown-action {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.notif-dropdown-action:hover {
+  background: var(--gold-light);
+}
+
+.notif-dropdown-list {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Custom scrollbar */
+.notif-dropdown-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notif-dropdown-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notif-dropdown-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.notif-dropdown-footer {
+  padding: 0.6rem 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.notif-show-all-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  width: 100%;
+}
+
+.notif-show-all-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-light);
+}
+
+/* ============================================================
+ * NOTIFICATION ITEM (Dropdown)
+ * ============================================================ */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
+}
+
+.notif-item:last-child {
+  border-bottom: none;
+}
+
+.notif-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.notif-item-unread {
+  background: rgba(212, 175, 55, 0.04);
+  border-right: 3px solid var(--gold);
+}
+
+.notif-item-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  background: var(--gold-light);
+  border-radius: 50%;
+}
+
+.notif-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-item-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 0.15rem;
+}
+
+.notif-item-message {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 0.15rem;
+}
+
+.notif-item-time {
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+
+.notif-item-mark-read {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  margin-top: 0.2rem;
+}
+
+.notif-item-mark-read:hover {
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.notif-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ============================================================
+ * NOTIFICATION HISTORY (Full Page)
+ * ============================================================ */
+.notif-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.notif-history-header h3 {
+  font-size: 1rem;
+  color: var(--gold);
+  margin: 0;
+}
+
+.notif-history-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.notif-history-group {
+  margin-bottom: 1.25rem;
+}
+
+.notif-history-date {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.notif-history-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  margin-bottom: 0.5rem;
+  transition: var(--transition);
+  position: relative;
+}
+
+.notif-history-item:hover {
+  border-color: rgba(212, 175, 55, 0.25);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.notif-history-item-unread {
+  border-right: 3px solid var(--gold);
+  background: rgba(212, 175, 55, 0.03);
+}
+
+.notif-history-item-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  background: var(--gold-light);
+  border-radius: 50%;
+}
+
+.notif-history-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-history-item-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.notif-urgent-badge {
+  font-size: 0.6rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 100px;
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.notif-history-item-message {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.35rem;
+}
+
+.notif-history-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.7rem;
+}
+
+.notif-history-item-time {
+  color: var(--muted);
+}
+
+.notif-history-item-link {
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.notif-history-item-link:hover {
+  text-decoration: underline;
+}
+
+.notif-history-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.notif-history-mark-read {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.notif-history-mark-read:hover {
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.notif-empty-state {
+  text-align: center;
+  padding: 2.5rem 1rem;
+}
+
+.notif-history-summary {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: var(--gold);
+  font-weight: 600;
+  background: var(--gold-light);
+  border-radius: var(--radius-sm);
+  margin-top: 0.5rem;
+}
+
+/* ============================================================
+ * NOTIFICATION HISTORY SECTION (In Portal/Dashboard)
+ * ============================================================ */
+#notificationsHistory {
+  margin-top: 1rem;
+}
+
+#notificationsHistory .notif-history-header h3 {
+  font-size: 1.1rem;
+}
+
+/* If placed inside a card widget */
+.widget-card #notificationsHistory {
+  margin-top: 0;
+}
+
+/* ============================================================
+ * RESPONSIVE
+ * ============================================================ */
+@media (max-width: 768px) {
+  .notif-dropdown {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    border: none;
+    animation: notifDropdownMobile 0.25s ease;
+  }
+
+  @keyframes notifDropdownMobile {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .notif-dropdown-header {
+    padding: 1rem;
+    padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+  }
+
+  .notif-dropdown-title {
+    font-size: 1rem;
+  }
+
+  .notif-item {
+    padding: 0.85rem 1rem;
+  }
+
+  .notif-history-actions {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .notif-history-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .notif-dropdown {
+    max-height: 100%;
+  }
+
+  .notif-history-item {
+    flex-direction: column;
+  }
+
+  .notif-history-item-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+/* ============================================================
+ * ACCESSIBILITY
+ * ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .notif-bell-icon,
+  .notif-bell-count,
+  .notif-dropdown {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .notif-item {
+    transition: none !important;
+  }
+
+  .notif-history-item {
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+ * TOAST NOTIFICATION STYLES (for urgent in-app alerts)
+ * ============================================================ */
+.notif-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: notifToastSlideIn 0.3s ease;
+  max-width: 400px;
+  direction: rtl;
+}
+
+.notif-toast-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.notif-toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-toast-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+}
+
+.notif-toast-message {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+@keyframes notifToastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

@@ -766,6 +766,8 @@
     /* Login with Supabase Auth */
     login: async function(email, password) {
       if (!isConnected || !supabaseClient) {
+        /* Audit failure even when offline */
+        logAuditEvent('login_failure', email, '', 'supabase offline');
         return { error: 'Supabase غير متصل' };
       }
 
@@ -775,7 +777,11 @@
           password: password
         });
 
-        if (error) throw error;
+        if (error) {
+          /* Audit login failure */
+          logAuditEvent('login_failure', email, '', error.message);
+          throw error;
+        }
 
         /* Store session */
         this._currentUser = data.user;
@@ -787,17 +793,32 @@
         /* Fetch role from user_roles table */
         await this._loadRole();
 
+        /* Audit login success */
+        logAuditEvent('login_success', email, this._currentRole, '');
+
         return { success: true, user: data.user, role: this._currentRole };
       } catch (err) {
+        /* Already audited above if Supabase error; audit remaining cases */
+        if (err.message && err.message.indexOf('Invalid login credentials') !== -1) {
+          logAuditEvent('login_failure', email, '', 'wrong credentials');
+        }
         return { error: err.message };
       }
     },
 
     /* Logout */
     logout: async function() {
+      var email = '';
+      var user = this.getUser();
+      if (user) email = user.email || '';
+
       if (isConnected && supabaseClient) {
         try { await supabaseClient.auth.signOut(); } catch(e) {}
       }
+
+      /* Audit logout before clearing session */
+      logAuditEvent('logout', email, this._currentRole || '', '');
+
       this._currentUser = null;
       this._currentRole = null;
       this._currentRoleData = null;
@@ -908,11 +929,30 @@
   };
 
   /* ============================================================
+   * AUDIT LOG HELPER
+   * Safe wrapper around BBA.Audit.log that handles module not loaded yet
+   * ============================================================ */
+  function logAuditEvent(eventType, email, role, extra) {
+    try {
+      if (window.BBA && window.BBA.Audit && typeof window.BBA.Audit.log === 'function') {
+        window.BBA.Audit.log(eventType, 'auth', email, email, { role: role, extra: extra });
+      }
+    } catch(e) {
+      /* Silently fail - audit should never block normal operation */
+    }
+  }
+
+  /* ============================================================
    * EXPOSE API
    * ============================================================ */
   window.BBA = window.BBA || {};
   window.BBA.DB = DB;
   window.BBA.Auth = Auth;
+
+  /* Expose Supabase client for other modules (e.g. audit) */
+  if (supabaseClient) {
+    window.__bba_supabase_client = supabaseClient;
+  }
 
   /* Auto-initialize on DOM ready */
   if (document.readyState === 'loading') {

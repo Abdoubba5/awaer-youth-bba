@@ -367,9 +367,17 @@ window.showToast = showToast;
             allVolunteers[idx].volunteerId = 'VOL-BBA-2026-' + String(Math.floor(Math.random() * 9999)).padStart(4, '0');
           }
           showToast('تم قبول المتطوع بنجاح ✓ - المعرف: ' + allVolunteers[idx].volunteerId, 'success');
+          /* Send notification */
+          if (window.Notif && window.Notif.volunteerApproved) {
+            window.Notif.volunteerApproved(allVolunteers[idx]);
+          }
         } else if (action === 'reject') {
           allVolunteers[idx].status = 'rejected';
           showToast('تم رفض المتطوع', 'info');
+          /* Send notification */
+          if (window.Notif && window.Notif.volunteerRejected) {
+            window.Notif.volunteerRejected(allVolunteers[idx]);
+          }
         } else if (action === 'suspend') {
           allVolunteers[idx].suspended = true;
           showToast('تم تعليق المتطوع', 'info');
@@ -1395,6 +1403,10 @@ window.showToast = showToast;
       localStorage.setItem('bba_certificates', JSON.stringify(data));
       form.reset();
       showToast('📜 تم إصدار الشهادة بنجاح ✓ - رقم: ' + certNumber, 'success');
+          /* Send notification */
+          if (window.Notif && window.Notif.certificateIssued) {
+            window.Notif.certificateIssued(data[data.length - 1]);
+          }
       renderCertificates();
       populateVolunteers();
     });

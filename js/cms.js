@@ -236,7 +236,7 @@
   };
 
   /* ============================================================
-   * ADMIN CMS RENDERERS - Called from admin.html
+   * ADMIN CMS RENDERERS - Called from sidou-da.html
    * ============================================================ */
   if (!byId('cmsHeroForm')) return; // Not on admin page
 
