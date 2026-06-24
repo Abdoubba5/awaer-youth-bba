@@ -84,8 +84,10 @@ window.showToast = showToast;
       }
       var email = byId('loginEmail').value.trim();
       var password = byId('loginPassword').value;
-      /* @deprecated Legacy fallback - Supabase Auth is primary */
-      if (email === 'admin@bba.dz' && password === 'bba2026') {
+      /* @deprecated Legacy fallback - Supabase Auth is primary (credentials in config.js) */
+      /* Use config.js DEV_CREDENTIALS as fallback */
+      var devCreds = window.BBA && window.BBA.Config ? window.BBA.Config : { devAdminEmail: 'admin@bba.dz', devAdminPassword: 'bba2026' };
+      if (email === devCreds.devAdminEmail && password === devCreds.devAdminPassword) {
         /* Reset login attempts on success */
         loginAttempts = 0;
         loginLockedUntil = 0;
@@ -1135,38 +1137,38 @@ window.showToast = showToast;
     var qrUrl = qrDataUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(verifyUrl);
     return '<div dir="rtl" style="width:297mm;height:210mm;background:#0b101b;padding:0;position:relative;font-family:\'Cairo\',sans-serif;overflow:hidden">' +
       /* Outer gold border */
-      '<div style="position:absolute;inset:8px;border:2.5px solid #D4AF37;border-radius:14px;pointer-events:none"></div>' +
+      '<div style="position:absolute;inset:8px;border:2.5px solid #C9A84C;border-radius:14px;pointer-events:none"></div>' +
       '<div style="position:absolute;inset:14px;border:1px solid rgba(212,175,55,0.25);border-radius:10px;pointer-events:none"></div>' +
       /* Gold decorative corners - larger */
-      '<div style="position:absolute;top:16px;right:16px;width:50px;height:50px;border-top:3px solid #D4AF37;border-right:3px solid #D4AF37;border-radius:0 8px 0 0"></div>' +
-      '<div style="position:absolute;top:16px;left:16px;width:50px;height:50px;border-top:3px solid #D4AF37;border-left:3px solid #D4AF37;border-radius:8px 0 0 0"></div>' +
-      '<div style="position:absolute;bottom:16px;right:16px;width:50px;height:50px;border-bottom:3px solid #D4AF37;border-right:3px solid #D4AF37;border-radius:0 0 8px 0"></div>' +
-      '<div style="position:absolute;bottom:16px;left:16px;width:50px;height:50px;border-bottom:3px solid #D4AF37;border-left:3px solid #D4AF37;border-radius:0 0 0 8px"></div>' +
+      '<div style="position:absolute;top:16px;right:16px;width:50px;height:50px;border-top:3px solid #C9A84C;border-right:3px solid #C9A84C;border-radius:0 8px 0 0"></div>' +
+      '<div style="position:absolute;top:16px;left:16px;width:50px;height:50px;border-top:3px solid #C9A84C;border-left:3px solid #C9A84C;border-radius:8px 0 0 0"></div>' +
+      '<div style="position:absolute;bottom:16px;right:16px;width:50px;height:50px;border-bottom:3px solid #C9A84C;border-right:3px solid #C9A84C;border-radius:0 0 8px 0"></div>' +
+      '<div style="position:absolute;bottom:16px;left:16px;width:50px;height:50px;border-bottom:3px solid #C9A84C;border-left:3px solid #C9A84C;border-radius:0 0 0 8px"></div>' +
       /* Top gold accent line */
-      '<div style="position:absolute;top:40px;left:100px;right:100px;height:1px;background:linear-gradient(90deg,transparent,#D4AF37,transparent)"></div>' +
+      '<div style="position:absolute;top:40px;left:100px;right:100px;height:1px;background:linear-gradient(90deg,transparent,#C9A84C,transparent)"></div>' +
       /* ===== HEADER ===== Right side: Logo + Title */
       '<div style="position:absolute;top:52px;left:60px;right:60px;display:flex;align-items:center;justify-content:space-between">' +
       /* Logo + Title (right side - RTL) */
       '<div style="display:flex;align-items:center;gap:12px">' +
-      '<div style="width:48px;height:48px;background:linear-gradient(135deg,#D4AF37,#B3922E);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#06090e;font-weight:700;flex-shrink:0">وعي</div>' +
-      '<div><h1 style="color:#D4AF37;font-size:20px;font-weight:700;margin:0;letter-spacing:1px;line-height:1.2">شهادة تقدير ومشاركة</h1>' +
+      '<div style="width:48px;height:48px;background:linear-gradient(135deg,#C9A84C,#B3922E);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#06090e;font-weight:700;flex-shrink:0">وعي</div>' +
+      '<div><h1 style="color:#C9A84C;font-size:20px;font-weight:700;margin:0;letter-spacing:1px;line-height:1.2">شهادة تقدير ومشاركة</h1>' +
       '<p style="color:#94a3b8;font-size:11px;margin:2px 0 0">برنامج Dz Young Leaders</p></div>' +
       '</div>' +
       /* Certificate number badge */
       '<div style="background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);border-radius:8px;padding:6px 14px;text-align:center">' +
       '<div style="font-size:7px;color:#94a3b8;margin-bottom:2px">رقم الشهادة</div>' +
-      '<div style="font-size:10px;color:#D4AF37;font-weight:700;font-family:monospace;direction:ltr">' + certNum + '</div>' +
+      '<div style="font-size:10px;color:#C9A84C;font-weight:700;font-family:monospace;direction:ltr">' + certNum + '</div>' +
       '</div>' +
       '</div>' +
       /* ===== MAIN BODY ===== */
       '<div style="position:absolute;top:95px;left:280px;right:60px;bottom:80px;display:flex;flex-direction:column;justify-content:center">' +
       /* Certificate text */
       '<p style="color:#e2e8f0;font-size:12px;line-height:2;margin:0 0 12px;text-align:center">' +
-      'تشهد منصة <strong style="color:#D4AF37">وعي الشباب BBA</strong> التابعة لبرنامج <strong style="color:#D4AF37">Dz Young Leaders</strong> بأن:' +
+      'تشهد منصة <strong style="color:#C9A84C">وعي الشباب BBA</strong> التابعة لبرنامج <strong style="color:#C9A84C">Dz Young Leaders</strong> بأن:' +
       '</p>' +
       /* Volunteer name - large elegant */ +
       '<div style="background:rgba(212,175,55,0.05);border:1px solid rgba(212,175,55,0.15);border-radius:12px;padding:14px 20px;margin:0 auto 12px;max-width:360px;text-align:center">' +
-      '<h2 style="color:#D4AF37;font-size:24px;font-weight:700;margin:0;letter-spacing:1px;line-height:1.3">' + escapeHtml(volName) + '</h2>' +
+      '<h2 style="color:#C9A84C;font-size:24px;font-weight:700;margin:0;letter-spacing:1px;line-height:1.3">' + escapeHtml(volName) + '</h2>' +
       '</div>' +
       '<p style="color:#cbd5e1;font-size:11px;line-height:1.9;margin:0 auto;max-width:440px;text-align:center">' +
       'قد شارك بفعالية في الأنشطة والمبادرات التوعوية الخاصة بالمنصة، وأظهر التزاماً ومسؤولية وروحاً تطوعية متميزة.\n\nوتقديراً لجهوده ومساهماته الفعالة تمنح له هذه الشهادة.' +
@@ -1175,30 +1177,30 @@ window.showToast = showToast;
       '</div>' +
       /* ===== LEFT SIDE: Department Name ===== */
       '<div style="position:absolute;top:120px;right:30px;width:220px;text-align:center">' +
-      '<p style="color:#D4AF37;font-size:11px;font-weight:600;margin:0;line-height:1.6">منصة وعي الشباب BBA</p>' +
+      '<p style="color:#C9A84C;font-size:11px;font-weight:600;margin:0;line-height:1.6">منصة وعي الشباب BBA</p>' +
       '<p style="color:#94a3b8;font-size:9px;margin:2px 0">برنامج Dz Young Leaders</p>' +
       '<p style="color:#94a3b8;font-size:8px;margin:0">ولاية برج بوعريريج، الجزائر</p>' +
       /* Decorative vertical line */
-      '<div style="width:1px;height:60px;background:linear-gradient(180deg,#D4AF37,transparent);margin:14px auto"></div>' +
+      '<div style="width:1px;height:60px;background:linear-gradient(180deg,#C9A84C,transparent);margin:14px auto"></div>' +
       '</div>' +
       /* ===== BOTTOM SECTION ===== */
       '<div style="position:absolute;bottom:50px;left:60px;right:60px;display:flex;align-items:flex-end;justify-content:space-between">' +
       /* QR Code */
       '<div style="text-align:center">' +
-      '<img src="' + qrUrl + '" alt="QR" style="width:70px;height:70px;border:2px solid #D4AF37;border-radius:8px;display:block;margin:0 auto 4px" crossorigin="anonymous" onerror="this.style.display=\'none\'">' +
+      '<img src="' + qrUrl + '" alt="QR" style="width:70px;height:70px;border:2px solid #C9A84C;border-radius:8px;display:block;margin:0 auto 4px" crossorigin="anonymous" onerror="this.style.display=\'none\'">' +
       '<div style="font-size:7px;color:#94a3b8">مسح للتحقق</div>' +
       '</div>' +
       /* Circular Seal/Stamp */ +
       '<div style="text-align:center;position:relative">' +
-      '<div style="width:95px;height:95px;border:3px solid #D4AF37;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(212,175,55,0.04);margin:0 auto">' +
-      '<div style="font-size:8px;color:#D4AF37;font-weight:700;line-height:1.3;text-align:center">منصة وعي\nالشباب BBA</div>' +
+      '<div style="width:95px;height:95px;border:3px solid #C9A84C;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(212,175,55,0.04);margin:0 auto">' +
+      '<div style="font-size:8px;color:#C9A84C;font-weight:700;line-height:1.3;text-align:center">منصة وعي\nالشباب BBA</div>' +
       '<div style="font-size:6px;color:#94a3b8;line-height:1.2;margin-top:2px;text-align:center">Dz Young Leaders\nOfficial</div>' +
       '</div>' +
       '</div>' +
       /* Signature block */ +
       '<div style="text-align:center">' +
-      '<div style="border-top:2px solid #D4AF37;width:170px;margin:0 auto 6px;padding-top:6px">' +
-      '<p style="color:#D4AF37;font-size:12px;font-weight:600;margin:0;line-height:1.5">Sidiali Abdelilah</p>' +
+      '<div style="border-top:2px solid #C9A84C;width:170px;margin:0 auto 6px;padding-top:6px">' +
+      '<p style="color:#C9A84C;font-size:12px;font-weight:600;margin:0;line-height:1.5">Sidiali Abdelilah</p>' +
       '<p style="color:#e2e8f0;font-size:10px;margin:0" dir="rtl">سيدي علي عبد الإله</p>' +
       '</div>' +
       '<p style="color:#94a3b8;font-size:8px;margin:0;max-width:170px;line-height:1.5">قائد برنامج Dz Young Leaders\nومؤسس منصة وعي الشباب BBA</p>' +
@@ -1211,7 +1213,7 @@ window.showToast = showToast;
       '<span style="direction:ltr;font-family:monospace">👤 ' + volId + '</span>' +
       '<span>📅 ' + issueDateStr + '</span>' +
       '</div>' +
-      '<a href="' + verifyUrl + '" target="_blank" style="color:#D4AF37;font-size:8px;text-decoration:none">تحقق من صحة الشهادة 🔍</a>' +
+      '<a href="' + verifyUrl + '" target="_blank" style="color:#C9A84C;font-size:8px;text-decoration:none">تحقق من صحة الشهادة 🔍</a>' +
       '</div>' +
       '</div>';
   }
@@ -1432,14 +1434,14 @@ function updateCharts() {
   if (volunteersChart) { volunteersChart.destroy(); }
   var ctx = canvas.getContext('2d');
   var gradient = ctx.createLinearGradient(0, 0, 0, 300);
-  gradient.addColorStop(0, 'rgba(212, 175, 55, 0.6)');
-  gradient.addColorStop(1, 'rgba(212, 175, 55, 0.1)');
+  gradient.addColorStop(0, 'rgba(201, 168, 76, 0.6)');
+  gradient.addColorStop(1, 'rgba(201, 168, 76, 0.1)');
   volunteersChart = new Chart(ctx, {
     type: 'bar',
-    data: { labels: labels, datasets: [{ label: 'عدد المتطوعين', data: data, backgroundColor: gradient, borderColor: 'rgba(212, 175, 55, 0.8)', borderWidth: 1, borderRadius: 4, barPercentage: 0.7 }] },
+    data: { labels: labels, datasets: [{ label: 'عدد المتطوعين', data: data, backgroundColor: gradient, borderColor: 'rgba(201, 168, 76, 0.8)', borderWidth: 1, borderRadius: 4, barPercentage: 0.7 }] },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#D4AF37', bodyColor: '#fff', borderColor: 'rgba(212, 175, 55, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8, displayColors: false, rtl: true } },
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#C9A84C', bodyColor: '#fff', borderColor: 'rgba(201, 168, 76, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8, displayColors: false, rtl: true } },
       scales: { x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 11 }, maxRotation: 45 } }, y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 11 }, stepSize: 1 } } },
       animation: { duration: 1000, easing: 'easeOutQuart' }
     }
@@ -1877,27 +1879,27 @@ if (typeof Chart !== 'undefined') { setTimeout(updateCharts, 300); }
 
     return '<div dir="rtl" style="width:210mm;min-height:297mm;background:#0b101b;padding:15mm 10mm;font-family:\'Cairo\',sans-serif;color:#ffffff">' +
       '<div style="text-align:center;margin-bottom:10mm">' +
-      '<div style="width:60px;height:60px;background:linear-gradient(135deg,#D4AF37,#B3922E);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5mm;font-size:1.5rem;color:#06090e;font-weight:700">وعي</div>' +
-      '<h1 style="color:#D4AF37;font-size:22px;margin:0;letter-spacing:1px">التقرير ' + periodText + '</h1>' +
+      '<div style="width:60px;height:60px;background:linear-gradient(135deg,#C9A84C,#B3922E);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5mm;font-size:1.5rem;color:#06090e;font-weight:700">وعي</div>' +
+      '<h1 style="color:#C9A84C;font-size:22px;margin:0;letter-spacing:1px">التقرير ' + periodText + '</h1>' +
       '<p style="color:#94a3b8;font-size:11px;margin:3px 0 0">منصة وعي الشباب BBA - Dz Young Leaders</p>' +
       '<p style="color:#64748b;font-size:9px;margin:2px 0">تاريخ التقرير: ' + dateStr + '</p>' +
-      '<div style="width:60px;height:2px;background:#D4AF37;margin:6mm auto"></div>' +
+      '<div style="width:60px;height:2px;background:#C9A84C;margin:6mm auto"></div>' +
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-bottom:6mm">' +
-      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#D4AF37">' + totalV + '</div><div style="font-size:8px;color:#94a3b8">إجمالي المتطوعين</div></div>' +
-      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#D4AF37">' + approvedV + '</div><div style="font-size:8px;color:#94a3b8">المتطوعون المقبولون</div></div>' +
-      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#D4AF37">' + totalC + '</div><div style="font-size:8px;color:#94a3b8">الاستشارات</div></div>' +
-      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#D4AF37">' + answeredC + '</div><div style="font-size:8px;color:#94a3b8">الاستشارات المجاب عنها</div></div>' +
-      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#D4AF37">' + totalAct + '</div><div style="font-size:8px;color:#94a3b8">النشاطات</div></div>' +
-      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#D4AF37">' + totalPts + '</div><div style="font-size:8px;color:#94a3b8">إجمالي النقاط</div></div>' +
-      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#D4AF37">' + totalCert + '</div><div style="font-size:8px;color:#94a3b8">الشهادات المصدرة</div></div>' +
-      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#D4AF37">' + completedEvents + '</div><div style="font-size:8px;color:#94a3b8">الفعاليات المنفذة</div></div>' +
+      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#C9A84C">' + totalV + '</div><div style="font-size:8px;color:#94a3b8">إجمالي المتطوعين</div></div>' +
+      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#C9A84C">' + approvedV + '</div><div style="font-size:8px;color:#94a3b8">المتطوعون المقبولون</div></div>' +
+      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#C9A84C">' + totalC + '</div><div style="font-size:8px;color:#94a3b8">الاستشارات</div></div>' +
+      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#C9A84C">' + answeredC + '</div><div style="font-size:8px;color:#94a3b8">الاستشارات المجاب عنها</div></div>' +
+      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#C9A84C">' + totalAct + '</div><div style="font-size:8px;color:#94a3b8">النشاطات</div></div>' +
+      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#C9A84C">' + totalPts + '</div><div style="font-size:8px;color:#94a3b8">إجمالي النقاط</div></div>' +
+      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#C9A84C">' + totalCert + '</div><div style="font-size:8px;color:#94a3b8">الشهادات المصدرة</div></div>' +
+      '<div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:4px;padding:3mm;text-align:center"><div style="font-size:18px;font-weight:700;color:#C9A84C">' + completedEvents + '</div><div style="font-size:8px;color:#94a3b8">الفعاليات المنفذة</div></div>' +
       '</div>' +
       '<div style="margin-bottom:6mm">' +
-      '<h3 style="color:#D4AF37;font-size:14px;margin:0 0 3mm">🏛️ البلديات الأكثر نشاطاً</h3>' +
+      '<h3 style="color:#C9A84C;font-size:14px;margin:0 0 3mm">🏛️ البلديات الأكثر نشاطاً</h3>' +
       '<div>';
     for (var mi = 0; mi < topMuns.length; mi++) {
-      html += '<div style="display:flex;justify-content:space-between;padding:1mm 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:9px"><span style="color:#e2e8f0">' + escapeHtml(topMuns[mi][0]) + '</span><span style="color:#D4AF37;font-weight:600">' + topMuns[mi][1] + ' متطوع</span></div>';
+      html += '<div style="display:flex;justify-content:space-between;padding:1mm 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:9px"><span style="color:#e2e8f0">' + escapeHtml(topMuns[mi][0]) + '</span><span style="color:#C9A84C;font-weight:600">' + topMuns[mi][1] + ' متطوع</span></div>';
     }
     html += '</div></div></div>';
     return html;
@@ -2041,7 +2043,8 @@ if (typeof Chart !== 'undefined') { setTimeout(updateCharts, 300); }
           localStorage.setItem('bba_notifications', newVal);
           showToast(newVal === 'enabled' ? '🔔 تم تفعيل الإشعارات' : '🔕 تم إيقاف الإشعارات', 'success');
         } else if (header.indexOf('بيانات المسؤول') !== -1) {
-          var newEmail = prompt('أدخل البريد الإلكتروني الجديد:', 'admin@bba.dz');
+          var defaultEmail = window.BBA && window.BBA.Config ? window.BBA.Config.devAdminEmail : 'admin@bba.dz';
+          var newEmail = prompt('أدخل البريد الإلكتروني الجديد:', defaultEmail);
           if (newEmail && newEmail.trim()) {
             var newPass = prompt('أدخل كلمة المرور الجديدة (اترك فارغاً لعدم التغيير):');
             var msg = '✅ تم تحديث البيانات';
@@ -2095,6 +2098,221 @@ if (typeof Chart !== 'undefined') { setTimeout(updateCharts, 300); }
       });
     })(settingBtns[i]);
   }
+})();
+
+
+/* ============================================================
+ * ACADEMY MANAGEMENT
+ * Admin CRUD for courses and training programs
+ * ============================================================ */
+(function loadAcademy() {
+  var form = byId('academyForm');
+  var list = byId('academyList');
+  var filter = byId('academyFilter');
+  var _editingAcademyIdx = -1;
+  if (!list) return;
+
+  function getCourses() { return JSON.parse(localStorage.getItem('bba_academy_courses') || '[]'); }
+  function saveCourses(d) { localStorage.setItem('bba_academy_courses', JSON.stringify(d)); }
+
+  function renderCourses() {
+    var data = getCourses();
+    var filterVal = filter ? filter.value : '';
+    if (data.length === 0) {
+      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem">لا توجد دورات تدريبية بعد. أضف دورة جديدة!</div>';
+      return;
+    }
+    var html = '';
+    var statusIcons = { open: '🟢', in_progress: '🟡', completed: '✅', cancelled: '🔴' };
+    var statusTexts = { open: 'مفتوح للتسجيل', in_progress: 'قيد التنفيذ', completed: 'مكتمل', cancelled: 'ملغى' };
+    for (var i = data.length - 1; i >= 0; i--) {
+      var c = data[i];
+      if (filterVal && c.status !== filterVal) continue;
+      html += '<div style="padding:0.85rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.6rem;background:rgba(212,175,55,0.02)">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<div style="flex:1;min-width:0">' +
+        '<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">' +
+        '<span style="font-size:0.85rem">🎓</span>' +
+        '<span style="font-weight:600;color:var(--gold);font-size:0.9rem">' + escapeHtml(c.title) + '</span>' +
+        '<span style="font-size:0.7rem;padding:0.15rem 0.5rem;background:rgba(212,175,55,0.1);border-radius:100px;color:var(--gold)">' + (statusIcons[c.status] || '🟢') + ' ' + (statusTexts[c.status] || c.status) + '</span>' +
+        '</div>' +
+        (c.description ? '<div style="font-size:0.8rem;color:var(--muted);margin-top:0.2rem">' + escapeHtml(c.description) + '</div>' : '') +
+        '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.3rem;font-size:0.75rem">' +
+        (c.instructor ? '<span style="color:var(--text-secondary)">👨‍🏫 ' + escapeHtml(c.instructor) + '</span>' : '') +
+        (c.duration ? '<span style="color:var(--muted)">⏱ ' + escapeHtml(c.duration) + ' ساعة</span>' : '') +
+        (c.startDate ? '<span style="color:var(--muted)">📅 ' + new Date(c.startDate).toLocaleDateString('ar-DZ') + '</span>' : '') +
+        (c.endDate ? '<span style="color:var(--muted)">➡ ' + new Date(c.endDate).toLocaleDateString('ar-DZ') + '</span>' : '') +
+        '</div></div>' +
+        '<div style="display:flex;gap:0.3rem;flex-shrink:0;margin-right:0.5rem">' +
+        '<button class="btn btn-sm academy-edit-btn" style="background:transparent;color:var(--gold);border:1px solid var(--gold);padding:0.25rem 0.5rem;font-size:0.65rem;border-radius:6px;cursor:pointer;font-family:var(--font)" data-aci="' + i + '">✏️</button>' +
+        '<button class="btn btn-sm academy-delete-btn" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.25rem 0.5rem;font-size:0.65rem;border-radius:6px;cursor:pointer;font-family:var(--font)" data-aci="' + i + '">🗑️</button>' +
+        '</div></div></div>';
+    }
+    list.innerHTML = html || '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem">لا توجد نتائج تطابق الفلتر</div>';
+    list.querySelectorAll('.academy-edit-btn').forEach(function(b){b.onclick=function(){editCourse(parseInt(this.getAttribute('data-aci')));}});
+    list.querySelectorAll('.academy-delete-btn').forEach(function(b){b.onclick=function(){if(!confirm('حذف هذه الدورة؟'))return;var d=getCourses();var i=parseInt(this.getAttribute('data-aci'));d.splice(i,1);saveCourses(d);renderCourses();showToast('تم حذف الدورة','info');}});
+  }
+
+  window.editCourse = function(idx) {
+    var data = getCourses();
+    if (idx < 0 || idx >= data.length) return;
+    _editingAcademyIdx = idx;
+    var c = data[idx];
+    byId('academyTitle').value = c.title || '';
+    byId('academyDesc').value = c.description || '';
+    byId('academyInstructor').value = c.instructor || '';
+    byId('academyDuration').value = c.duration || '';
+    byId('academyStartDate').value = c.startDate || '';
+    byId('academyEndDate').value = c.endDate || '';
+    byId('academyStatus').value = c.status || 'open';
+    byId('academyTitle').focus();
+    showToast('✏️ تم تحميل بيانات الدورة للتعديل', 'info');
+  };
+
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var title = byId('academyTitle').value.trim();
+      var desc = byId('academyDesc').value.trim();
+      var instructor = byId('academyInstructor').value.trim();
+      var duration = byId('academyDuration').value.trim();
+      var startDate = byId('academyStartDate').value;
+      var endDate = byId('academyEndDate').value;
+      var status = byId('academyStatus').value;
+      if (!title) { showToast('عنوان الدورة مطلوب', 'error'); return; }
+      var data = getCourses();
+      if (_editingAcademyIdx >= 0) {
+        data[_editingAcademyIdx] = { title: title, description: desc, instructor: instructor, duration: duration, startDate: startDate, endDate: endDate, status: status, createdAt: data[_editingAcademyIdx].createdAt };
+        _editingAcademyIdx = -1;
+        showToast('🎓 تم تحديث الدورة بنجاح ✓', 'success');
+      } else {
+        data.push({ title: title, description: desc, instructor: instructor, duration: duration, startDate: startDate, endDate: endDate, status: status, createdAt: new Date().toISOString() });
+        showToast('🎓 تم إضافة الدورة بنجاح ✓', 'success');
+      }
+      saveCourses(data);
+      form.reset();
+      byId('academyStatus').value = 'open';
+      renderCourses();
+    });
+  }
+
+  if (filter) filter.addEventListener('change', renderCourses);
+  renderCourses();
+})();
+
+/* ============================================================
+ * MEDIA MANAGEMENT
+ * Admin CRUD for press coverage and media mentions
+ * ============================================================ */
+(function loadMedia() {
+  var form = byId('mediaForm');
+  var list = byId('mediaList');
+  var filter = byId('mediaFilter');
+  var _editingMediaIdx = -1;
+  if (!list) return;
+
+  function getCoverage() { return JSON.parse(localStorage.getItem('bba_media_coverage') || '[]'); }
+  function saveCoverage(d) { localStorage.setItem('bba_media_coverage', JSON.stringify(d)); }
+
+  var typeIcons = { article: '📰', interview: '🎤', report: '📋', video: '🎬', social: '📱', other: '📌' };
+  var typeTexts = { article: 'مقال', interview: 'مقابلة', report: 'تقرير', video: 'فيديو', social: 'وسائل التواصل', other: 'أخرى' };
+
+  function renderCoverage() {
+    var data = getCoverage();
+    var filterVal = filter ? filter.value : '';
+    if (data.length === 0) {
+      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem">لا توجد تغطيات إعلامية بعد. أضف تغطية جديدة!</div>';
+      return;
+    }
+    var html = '';
+    for (var i = data.length - 1; i >= 0; i--) {
+      var m = data[i];
+      if (filterVal && m.source !== filterVal) continue;
+      html += '<div style="padding:0.85rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.6rem;background:rgba(212,175,55,0.02)">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<div style="flex:1;min-width:0">' +
+        '<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">' +
+        '<span style="font-size:0.85rem">' + (typeIcons[m.type] || '📌') + '</span>' +
+        '<span style="font-weight:600;color:var(--gold);font-size:0.9rem">' + escapeHtml(m.title) + '</span>' +
+        '<span style="font-size:0.7rem;padding:0.15rem 0.5rem;background:rgba(212,175,55,0.1);border-radius:100px;color:var(--gold)">' + escapeHtml(m.source) + '</span>' +
+        '<span style="font-size:0.7rem;padding:0.15rem 0.5rem;background:rgba(148,163,184,0.1);border-radius:100px;color:var(--muted)">' + escapeHtml(m.sourceName) + '</span>' +
+        '</div>' +
+        (m.description ? '<div style="font-size:0.8rem;color:var(--muted);margin-top:0.2rem">' + escapeHtml(m.description) + '</div>' : '') +
+        '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.3rem;font-size:0.75rem">' +
+        '<span style="color:var(--text-secondary)">' + (typeIcons[m.type] || '📌') + ' ' + (typeTexts[m.type] || m.type) + '</span>' +
+        (m.date ? '<span style="color:var(--muted)">📅 ' + new Date(m.date).toLocaleDateString('ar-DZ') + '</span>' : '') +
+        (m.url ? '<a href="' + escapeHtml(m.url) + '" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:600">🔗 رابط</a>' : '') +
+        '</div></div>' +
+        '<div style="display:flex;gap:0.3rem;flex-shrink:0;margin-right:0.5rem">' +
+        '<button class="btn btn-sm media-edit-btn" style="background:transparent;color:var(--gold);border:1px solid var(--gold);padding:0.25rem 0.5rem;font-size:0.65rem;border-radius:6px;cursor:pointer;font-family:var(--font)" data-mci="' + i + '">✏️</button>' +
+        '<button class="btn btn-sm media-delete-btn" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.25rem 0.5rem;font-size:0.65rem;border-radius:6px;cursor:pointer;font-family:var(--font)" data-mci="' + i + '">🗑️</button>' +
+        '</div></div></div>';
+    }
+    list.innerHTML = html || '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem">لا توجد نتائج تطابق الفلتر</div>';
+    list.querySelectorAll('.media-edit-btn').forEach(function(b){b.onclick=function(){editMedia(parseInt(this.getAttribute('data-mci')));}});
+    list.querySelectorAll('.media-delete-btn').forEach(function(b){b.onclick=function(){if(!confirm('حذف هذه التغطية؟'))return;var d=getCoverage();var i=parseInt(this.getAttribute('data-mci'));d.splice(i,1);saveCoverage(d);renderCoverage();showToast('تم حذف التغطية','info');}});
+  }
+
+  function populateFilter() {
+    if (!filter) return;
+    var data = getCoverage();
+    var sources = {};
+    for (var i = 0; i < data.length; i++) { sources[data[i].source] = true; }
+    var opts = '<option value="">جميع المصادر</option>';
+    for (var s in sources) { opts += '<option value="' + s + '">' + s + '</option>'; }
+    filter.innerHTML = opts;
+  }
+
+  window.editMedia = function(idx) {
+    var data = getCoverage();
+    if (idx < 0 || idx >= data.length) return;
+    _editingMediaIdx = idx;
+    var m = data[idx];
+    byId('mediaTitle').value = m.title || '';
+    byId('mediaDesc').value = m.description || '';
+    byId('mediaSource').value = m.source || '';
+    byId('mediaSourceName').value = m.sourceName || '';
+    byId('mediaUrl').value = m.url || '';
+    byId('mediaDate').value = m.date || '';
+    byId('mediaType').value = m.type || 'article';
+    byId('mediaTitle').focus();
+    showToast('✏️ تم تحميل بيانات التغطية للتعديل', 'info');
+  };
+
+  if (form) {
+    var dateInput = form.querySelector('#mediaDate');
+    if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var title = byId('mediaTitle').value.trim();
+      var desc = byId('mediaDesc').value.trim();
+      var source = byId('mediaSource').value;
+      var sourceName = byId('mediaSourceName').value.trim();
+      var url = byId('mediaUrl').value.trim();
+      var date = byId('mediaDate').value;
+      var type = byId('mediaType').value;
+      if (!title || !source) { showToast('العنوان والمصدر مطلوبان', 'error'); return; }
+      var data = getCoverage();
+      if (_editingMediaIdx >= 0) {
+        data[_editingMediaIdx] = { title: title, description: desc, source: source, sourceName: sourceName, url: url, date: date, type: type, createdAt: data[_editingMediaIdx].createdAt };
+        _editingMediaIdx = -1;
+        showToast('📺 تم تحديث التغطية الإعلامية بنجاح ✓', 'success');
+      } else {
+        data.push({ title: title, description: desc, source: source, sourceName: sourceName, url: url, date: date, type: type, createdAt: new Date().toISOString() });
+        showToast('📺 تم إضافة التغطية الإعلامية بنجاح ✓', 'success');
+      }
+      saveCoverage(data);
+      form.reset();
+      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+      renderCoverage();
+      populateFilter();
+    });
+  }
+
+  if (filter) filter.addEventListener('change', renderCoverage);
+  populateFilter();
+  renderCoverage();
 })();
 
 console.log('✅ منصة وعي الشباب BBA Admin v3.0 loaded successfully');

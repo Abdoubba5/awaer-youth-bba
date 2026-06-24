@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://ouyqcyrbppkxvcknxtbn.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://ouyqcyrbppkxvcknxtbn.supabase.co wss://ouyqcyrbppkxvcknxtbn.supabase.co https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="منصة وعي الشباب BBA - منصة رقمية للتوعية بمخاطر المخدرات والمؤثرات العقلية وتعزيز الصحة النفسية لدى الشباب في ولاية برج بوعريريج">
   <meta name="theme-color" content="#06090e">
@@ -38,7 +38,7 @@
   <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Notice Bar -->
-  <div id="noticeBar" style="display:none;background:linear-gradient(135deg,#D4AF37,#B3922E);padding:0.5rem 0;text-align:center;font-size:0.82rem;font-weight:600;color:#06090e;position:relative;z-index:999;cursor:pointer" onclick="this.style.display='none'">
+  <div id="noticeBar" style="display:none;background:linear-gradient(135deg,#C9A84C,#B8943E);padding:0.5rem 0;text-align:center;font-size:0.82rem;font-weight:600;color:#06090e;position:relative;z-index:999;cursor:pointer" onclick="this.style.display='none'">
     <span id="noticeBarText"></span>
     <span style="margin-right:0.75rem;opacity:0.6">✕</span>
   </div>
@@ -63,12 +63,13 @@
       <div class="nav-links">
         <a href="#hero" class="active">الرئيسية</a>
         <a href="about.html">عن المشروع</a>
-        <a href="target-audience.html">الفئة المستهدفة</a>
-        <a href="#impact">الأثر</a>
-        <a href="#events">الفعاليات</a>
+        <a href="club.html">نادي الشباب</a>
+        <a href="activities.html">النشاطات</a>
+        <a href="academy.html">الأكاديمية</a>
+        <a href="media-center.html">المركز الإعلامي</a>
+        <a href="dz-young-leaders.html">DZ Leaders</a>
         <a href="#awareness">التوعية</a>
         <a href="#consultation">الاستشارات</a>
-        <a href="#stats">الإحصائيات</a>
         <a href="#contact">تواصل</a>
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem">
@@ -550,9 +551,14 @@
       <p>        © 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | تحت إشراف <span class="footer-gold">برنامج Dz Young Leaders</span> | جميع الحقوق محفوظة</p>
       <div class="footer-links">
         <a href="about.html">📖 عن المشروع</a>
-        <a href="target-audience.html">🎯 الفئة المستهدفة</a>
+        <a href="club.html">⭐ نادي الشباب</a>
+        <a href="team.html">👥 فريق العمل</a>
+        <a href="activities.html">📋 النشاطات</a>
+        <a href="partners.html">🤝 الشركاء</a>
+        <a href="media-center.html">📺 المركز الإعلامي</a>
+        <a href="academy.html">🎓 الأكاديمية</a>
+        <a href="dz-young-leaders.html">🇩🇿 DZ Leaders</a>
         <a href="portal.html" id="footerLinkPortal">👤 بوابة المتطوعين</a>
-        <a href="mushrif-dashboard.html" id="footerLinkPsych" style="display:none">💬 لوحة المستشار</a>
         <a href="verify-certificate.html">✅ التحقق من الشهادات</a>
       </div>
     </div>
@@ -904,7 +910,7 @@
           type: 'bar',
           data: { labels: labels, datasets: [{ label: 'عدد المتطوعين', data: data, backgroundColor: gradient, borderColor: 'rgba(212, 175, 55, 0.8)', borderWidth: 1, borderRadius: 4 }] },
           options: { responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#D4AF37', bodyColor: '#fff', borderColor: 'rgba(212, 175, 55, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8, rtl: true } },
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#C9A84C', bodyColor: '#fff', borderColor: 'rgba(212, 175, 55, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8, rtl: true } },
             scales: { x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 11 }, maxRotation: 45 } }, y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 10 } } } },
             animation: { duration: 1000, easing: 'easeOutQuart' } }
         });
@@ -927,7 +933,7 @@
           },
           options: { responsive: true, maintainAspectRatio: false,
             plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Cairo', size: 11 }, padding: 12, usePointStyle: true } },
-              tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#D4AF37', bodyColor: '#fff', borderColor: 'rgba(212, 175, 55, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8, rtl: true } },
+              tooltip: { backgroundColor: 'rgba(11, 16, 27, 0.95)', titleColor: '#C9A84C', bodyColor: '#fff', borderColor: 'rgba(212, 175, 55, 0.3)', borderWidth: 1, padding: 12, cornerRadius: 8, rtl: true } },
             cutout: '60%',
             animation: { duration: 1000, easing: 'easeOutQuart' } }
         });

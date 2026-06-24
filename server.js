@@ -166,7 +166,7 @@ var server = http.createServer(function onRequest(req, res) {
 /* ---- Error helper ---- */
 function sendError(res, statusCode, message) {
   var body = '<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>' + statusCode + ' ' + message + '</title>'
-    + '<style>body{font-family:sans-serif;background:#06090e;color:#D4AF37;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center}'
+    + '<style>body{font-family:sans-serif;background:#06090e;color:#C9A84C;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center}'
     + 'h1{font-size:3rem;margin-bottom:0.5rem}p{color:#94a3b8}</style></head>'
     + '<body><div><h1>' + statusCode + '</h1><p>' + message + '</p></div></body></html>';
   res.writeHead(statusCode, { 'Content-Type': 'text/html; charset=utf-8' });

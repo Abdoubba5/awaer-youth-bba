@@ -37,7 +37,7 @@
               text: text,
               width: size,
               height: size,
-              colorDark: '#D4AF37',
+              colorDark: '#C9A84C',
               colorLight: '#0b101b',
               correctLevel: QRCode.CorrectLevel.H
             });

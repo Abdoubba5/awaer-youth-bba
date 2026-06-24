@@ -65,11 +65,11 @@
     /* If still empty, try legacy admin session */
     if (!info.email) {
       if (sessionStorage.getItem('bba_admin_auth') === 'true') {
-        info.email = 'admin@bba.dz';
+        info.email = window.BBA && window.BBA.Config ? window.BBA.Config.devAdminEmail : 'admin@bba.dz';
         info.role = 'admin';
       }
       if (sessionStorage.getItem('bba_psych_auth') === 'true') {
-        info.email = 'psychologist@bba.dz';
+        info.email = window.BBA && window.BBA.Config ? window.BBA.Config.devPsychologistEmail : 'psychologist@bba.dz';
         info.role = 'psychologist';
       }
     }

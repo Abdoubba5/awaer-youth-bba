@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://ouyqcyrbppkxvcknxtbn.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://ouyqcyrbppkxvcknxtbn.supabase.co wss://ouyqcyrbppkxvcknxtbn.supabase.co https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="لوحة المستشار النفسي - منصة وعي الشباب BBA">
   <meta name="theme-color" content="#06090e">
@@ -378,7 +378,7 @@
       if (!c) return;
       var t = document.createElement('div');
       t.className = 't';
-      var color = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#D4AF37';
+      var color = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#C9A84C';
       var icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
       t.style.borderRight = '3px solid ' + color;
       t.innerHTML = '<span style="color:' + color + ';font-weight:700;margin-left:0.5rem">' + icon + '</span><span>' + msg + '</span>';
@@ -498,7 +498,7 @@
       }
 
       function legacyLogin(email, pass) {
-        if (email === 'psychologist@bba.dz' && pass === 'bba2026') {
+        if (email === (window.BBA && window.BBA.Config ? window.BBA.Config.devPsychologistEmail : 'psychologist@bba.dz') && pass === (window.BBA && window.BBA.Config ? window.BBA.Config.devPsychologistPassword : 'bba2026')) {
           sessionStorage.setItem('bba_psych_auth', 'true');
           errorDiv.classList.remove('visible');
           form.reset();

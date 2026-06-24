@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://ouyqcyrbppkxvcknxtbn.supabase.co wss://ouyqcyrbppkxvcknxtbn.supabase.co https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="المركز الإعلامي لمنصة وعي الشباب BBA - التغطيات الإعلامية، الصور، الفيديوهات">
+  <meta name="theme-color" content="#06090e">
+  <title>المركز الإعلامي | منصة وعي الشباب BBA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/identity.css">
+  <link rel="stylesheet" href="css/homepage.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23C9A84C'/%3E%3Ctext y='68' x='50' text-anchor='middle' font-size='50' fill='%2306090e' font-weight='700' font-family='Cairo'%3Eوعي%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    :root{--bg:#050712;--surface:rgba(12,17,34,0.88);--surface-solid:#0C1122;--surface-card:rgba(16,22,42,0.92);--gold:#C9A84C;--gold-hover:#B8943E;--gold-light:rgba(201,168,76,0.10);--gold-glow:rgba(201,168,76,0.20);--teal:#2DD4BF;--teal-bg:rgba(45,212,191,0.08);--success:#34D399;--success-bg:rgba(52,211,153,0.10);--danger:#F87171;--danger-bg:rgba(248,113,113,0.10);--text:#F5F0E8;--text-secondary:#D1CEC6;--text-dim:#9E9A94;--text-muted:#7A7670;--border:rgba(201,168,76,0.12);--border-light:rgba(255,255,255,0.04);--border-gold:rgba(201,168,76,0.25);--radius-xs:4px;--radius-sm:6px;--radius-md:12px;--radius-lg:20px;--radius-xl:32px;--shadow-sm:0 2px 8px rgba(0,0,0,0.3);--shadow-md:0 8px 32px rgba(0,0,0,0.4);--shadow-lg:0 16px 48px rgba(0,0,0,0.5);--shadow-gold:0 8px 32px rgba(201,168,76,0.10);--shadow-gold-hover:0 12px 40px rgba(201,168,76,0.20);--font:'Cairo',sans-serif;--transition:all 0.4s cubic-bezier(0.4,0,0.2,1);--nav-height:72px;--nav-height-mobile:64px}
+    *,:before,:after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:80px}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;direction:rtl;min-height:100vh}
+    h1{font-size:clamp(1.75rem,4.5vw,3rem)}h2{font-size:clamp(1.5rem,3.5vw,2.25rem)}h3{font-size:clamp(1.25rem,2.5vw,1.5rem)}h1,h2,h3,h4{font-weight:700;line-height:1.4}
+    p{color:var(--text-dim);font-size:clamp(0.9rem,1.2vw,1rem)}a{color:var(--gold);text-decoration:none;transition:all 0.3s ease}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+    .media-card{padding:1.35rem;border-radius:var(--radius-md);background:var(--surface);border:1px solid var(--border);transition:var(--transition)}
+    .media-card:hover{transform:translateY(-3px);border-color:var(--border-gold);box-shadow:var(--shadow-gold)}
+    .youtube-embed{position:relative;width:100%;padding-bottom:56.25%;margin-bottom:0.75rem;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface-solid)}
+    .youtube-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+  </style>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="القائمة الرئيسية">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="nav-logo-icon">وعي</span><span>منصة وعي الشباب BBA</span></a>
+      <div class="nav-links">
+        <a href="index.html">الرئيسية</a>
+        <a href="about.html">عن المشروع</a>
+        <a href="media-center.html" class="active">المركز الإعلامي</a>
+        <a href="activities.html">النشاطات</a>
+        <a href="academy.html">الأكاديمية</a>
+        <a href="dz-young-leaders.html">Dz Young Leaders</a>
+        <a href="index.html#contact">تواصل</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem"><div id="mediaThemeSwitcher"></div></div>
+    </div>
+  </nav>
+
+  <nav class="nav-mobile">
+    <div class="nav-mobile-inner">
+      <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+      <a href="media-center.html" class="active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg><span>الإعلام</span></a>
+      <a href="activities.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>النشاطات</span></a>
+      <a href="academy.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M12 6v7"/><path d="M9 9h6"/></svg><span>الأكاديمية</span></a>
+      <a href="index.html#contact"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span>تواصل</span></a>
+    </div>
+  </nav>
+
+  <section class="section" style="padding-top:calc(var(--nav-height) + 2rem)">
+    <div class="container">
+      <div class="section-header">
+        <div class="hero-badge" style="margin-bottom:1rem">📺 المركز الإعلامي</div>
+        <h2>المركز الإعلامي لمنصة وعي الشباب</h2>
+        <p>تغطيات إعلامية، صور، فيديوهات، وكل ما ينشر عن المنصة في وسائل الإعلام</p>
+        <span class="gold-accent"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <h3 style="color:var(--gold);margin-bottom:1.5rem;text-align:center">📰 التغطيات الإعلامية</h3>
+      <div id="mediaCoverageGrid" class="awareness-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--bg-warm)">
+    <div class="container">
+      <div class="section-header">
+        <h3 style="color:var(--gold)">🎬 الفيديوهات</h3>
+        <span class="gold-accent"></span>
+      </div>
+      <div id="videosGrid" class="events-grid" style="margin-top:2rem"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h3 style="color:var(--gold)">🖼️ معرض الصور</h3>
+        <span class="gold-accent"></span>
+      </div>
+      <div id="galleryGrid" class="events-grid" style="margin-top:2rem"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | جميع الحقوق محفوظة</p>
+      <div class="footer-links">
+        <a href="about.html">📖 عن المشروع</a>
+        <a href="team.html">👥 فريق العمل</a>
+        <a href="partners.html">🤝 الشركاء</a>
+        <a href="club.html">⭐ نادي الشباب</a>
+        <a href="academy.html">🎓 الأكاديمية</a>
+        <a href="portal.html">👤 بوابة المتطوعين</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/platform-core.js"></script>
+  <script src="js/cms.js"></script>
+  <script>
+    (function() {
+      var ts = document.getElementById('mediaThemeSwitcher');
+      if (ts && window.BBA && window.BBA.Theme) window.BBA.Theme.createSwitcher(ts);
+      function esc(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+      /* Media coverage */
+      function renderCoverage() {
+        var grid = document.getElementById('mediaCoverageGrid');
+        if (!grid) return;
+        var data = JSON.parse(localStorage.getItem('bba_media_coverage') || '[]');
+        if (data.length === 0) {
+          grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted);grid-column:1/-1"><div style="font-size:3rem;margin-bottom:1rem">📰</div><p>لا توجد تغطيات إعلامية بعد</p></div>';
+          return;
+        }
+        var html = '';
+        for (var i = data.length - 1; i >= 0; i--) {
+          var m = data[i];
+          html += '<div class="article-card"><div class="article-body">' +
+            '<span class="article-category">' + esc(m.source || '') + '</span>' +
+            '<h3>' + esc(m.title || '') + '</h3>' +
+            (m.description ? '<p>' + esc(m.description).substring(0,150) + '</p>' : '') +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem;font-size:0.75rem;color:var(--muted)">' +
+            '<span>' + esc(m.sourceName || '') + '</span>' +
+            (m.url ? '<a href="' + esc(m.url) + '" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600">🔗 قراءة المزيد</a>' : '') +
+            '</div></div></div>';
+        }
+        grid.innerHTML = html;
+      }
+
+      /* Videos */
+      function renderVideos() {
+        var grid = document.getElementById('videosGrid');
+        if (!grid) return;
+        var data = window.CMS ? window.CMS.getVideos() : [];
+        data = data.filter(function(v) { return v.published !== false; });
+        if (data.length === 0) {
+          grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted);grid-column:1/-1"><div style="font-size:3rem;margin-bottom:1rem">🎬</div><p>لا توجد فيديوهات بعد</p></div>';
+          return;
+        }
+        var html = '';
+        for (var i = data.length - 1; i >= 0; i--) {
+          var v = data[i];
+          var embedUrl = '';
+          if (v.url) {
+            var match = v.url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+            if (match) embedUrl = 'https://www.youtube.com/embed/' + match[1];
+          }
+          html += '<div class="media-card">' +
+            (embedUrl ? '<div class="youtube-embed"><iframe src="' + embedUrl + '" allowfullscreen loading="lazy"></iframe></div>' : '<div style="font-size:3rem;text-align:center;padding:1rem">🎬</div>') +
+            '<h4 style="color:var(--gold);font-size:0.9rem;margin-bottom:0.3rem">' + esc(v.title) + '</h4>' +
+            (v.category ? '<span style="font-size:0.75rem;color:var(--muted)">' + esc(v.category) + '</span>' : '') +
+            (v.featured ? '<span style="margin-right:0.5rem;font-size:0.7rem;color:var(--gold)">⭐ مميز</span>' : '') +
+            '</div>';
+        }
+        grid.innerHTML = html;
+      }
+
+      /* Gallery */
+      function renderGallery() {
+        var grid = document.getElementById('galleryGrid');
+        if (!grid) return;
+        var data = window.CMS ? window.CMS.getGallery() : [];
+        data = data.filter(function(g) { return g.published !== false; });
+        if (data.length === 0) {
+          grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted);grid-column:1/-1"><div style="font-size:3rem;margin-bottom:1rem">🖼️</div><p>لا توجد ألبومات صور بعد</p></div>';
+          return;
+        }
+        var html = '';
+        for (var i = 0; i < data.length; i++) {
+          var g = data[i];
+          var imgs = g.images || [];
+          html += '<div class="scroll-card" style="padding:1.35rem">' +
+            '<div class="lantern-ornament" style="margin-bottom:0.75rem"><span class="lantern-ornament-dot"></span></div>' +
+            '<h4 style="color:var(--gold);margin-bottom:0.5rem">🖼️ ' + esc(g.name || '') + '</h4>' +
+            '<div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.75rem">' + imgs.length + ' صورة</div>' +
+            (imgs.length > 0 ? '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:var(--radius-sm);overflow:hidden">' +
+              imgs.slice(0, 6).map(function(img) { return '<div style="aspect-ratio:1;background:var(--surface-solid);border-radius:4px;overflow:hidden"><img src="' + esc(img) + '" alt="" style="width:100%;height:100%;object-fit:cover" onerror="var p=this.parentElement;if(p){p.innerHTML='\uD83D\uDDBC\uFE0F';p.style.display='flex';p.style.alignItems='center';p.style.justifyContent='center';p.style.fontSize='1.5rem';p.style.background='var(--gold-light)'}"></div>'; }).join('') +
+              '</div>' : '') +
+            '</div>';
+        }
+        grid.innerHTML = html;
+      }
+
+      renderCoverage();
+      renderVideos();
+      renderGallery();
+    })();
+  </script>
+</body>
+</html>

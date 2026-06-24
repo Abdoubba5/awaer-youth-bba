@@ -69,6 +69,12 @@
       return this.getBaseUrl() + '/verify-certificate.html?id=' + encodeURIComponent(certNumber);
     },
 
+    /* --- DEV-ONLY Credentials (Local fallback when Supabase is unavailable) --- */
+    devAdminEmail: getEnv('DEV_ADMIN_EMAIL', 'admin@bba.dz'),
+    devAdminPassword: getEnv('DEV_ADMIN_PASSWORD', 'bba2026'),
+    devPsychologistEmail: getEnv('DEV_PSYCHOLOGIST_EMAIL', 'psychologist@bba.dz'),
+    devPsychologistPassword: getEnv('DEV_PSYCHOLOGIST_PASSWORD', 'bba2026'),
+
     /* Check if we're in development mode */
     isDev: function() {
       return window.location.hostname === 'localhost' ||
