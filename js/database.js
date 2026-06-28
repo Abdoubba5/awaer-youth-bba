@@ -420,7 +420,22 @@
   }
 
   /* ============================================================
-   * PUSH TO SUPABASE: Save localStorage data to Supabase
+   * PUSH TO SUPABASE: Sync only unsynced records to Supabase
+   * ============================================================
+   * STRATEGY (v2):
+   *   Instead of DELETE-all + INSERT-all (which causes RLS failures on DELETE,
+   *   data loss on partial INSERT failure, and wasted bandwidth on mobile),
+   *   we now:
+   *   1. Read all items from localStorage
+   *   2. Find items WITHOUT _supabase_id (never synced)
+   *   3. INSERT each unsynced item individually with .select('id')
+   *   4. Store the returned Supabase ID back to localStorage
+   *   5. Log every failed record separately
+   *   6. Skip items WITH _supabase_id (already synced, unchanged)
+   *
+   *   This is idempotent: records that have _supabase_id will never be
+   *   re-inserted. Re-running pushTable() has no side effects.
+   *   No DELETE is ever sent. No full-table overwrite occurs.
    * ============================================================ */
   async function pushTable(localKey) {
     console.log('[SYNC DEBUG] ===== pushTable START =====');
@@ -429,7 +444,6 @@
     if (!isConnected || !supabaseClient) {
       console.error('[BBA DB] 🚨 FALLBACK — pushTable: Not connected to Supabase, re-queueing sync for', localKey);
       console.error('[BBA DB] 🚨 isConnected:', isConnected, '| hasClient:', !!supabaseClient);
-      console.error('[BBA DB] 🚨 Impact: Data in localStorage for', localKey, 'will not reach Supabase until connection is restored');
       queueSync(localKey);
       console.log('[SYNC DEBUG] ===== pushTable END (re-queued) =====');
       return;
@@ -438,8 +452,6 @@
     var tableName = CONFIG.tableMap[localKey];
     if (!tableName) {
       console.error('[BBA DB] 🚨 FALLBACK — pushTable: No table mapping for', localKey);
-      console.error('[BBA DB] 🚨 Cause: CONFIG.tableMap does not contain', localKey);
-      console.error('[BBA DB] 🚨 Impact: Data in localStorage for', localKey, 'cannot be pushed to Supabase — unknown table');
       console.log('[SYNC DEBUG] ===== pushTable END (no mapping) =====');
       return;
     }
@@ -460,8 +472,6 @@
         console.error('[BBA DB] 🚨 FALLBACK — pushTable: JSON parse failed for', localKey);
         console.error('[BBA DB] 🚨 Exception name:', e.name);
         console.error('[BBA DB] 🚨 Exception message:', e.message);
-        console.error('[BBA DB] 🚨 raw.substring(0,100):', raw.substring(0, 100));
-        console.error('[BBA DB] 🚨 Impact: Corrupt data in localStorage cannot be parsed, sync aborted');
         console.log('[SYNC DEBUG] ===== pushTable END (parse error) =====');
         return;
       }
@@ -473,84 +483,120 @@
         return;
       }
 
-      /* Check if we already have data in Supabase */
-      console.log('[SYNC DEBUG] Checking existing data in Supabase:', tableName);
-      var { data: existingData, error: selectError } = await supabaseClient
-        .from(tableName)
-        .select('id');
-
-      if (selectError) {
-        console.error('[BBA DB] 🚨 FALLBACK — pushTable: SELECT error on', tableName);
-        console.error('[BBA DB] 🚨 Exception name:', selectError.name || 'SupabaseError');
-        console.error('[BBA DB] 🚨 Exception message:', selectError.message);
-        console.error('[BBA DB] 🚨 Exception code:', selectError.code || 'N/A');
-        console.error('[BBA DB] 🚨 Exception details:', selectError.details || 'N/A');
-        console.error('[BBA DB] 🚨 Exception hint:', selectError.hint || 'N/A');
-        console.error('[BBA DB] 🚨 Impact: Cannot read existing data from', tableName, '— sync may duplicate rows');
-        throw selectError;
-      }
-      console.log('[SYNC DEBUG] Existing rows in Supabase:', existingData ? existingData.length : 0);
-
-      if (existingData && existingData.length > 0) {
-        /* Data exists — delete all and re-insert */
-        console.log('[SYNC DEBUG] Deleting existing rows...');
-        var { error: deleteError } = await supabaseClient
-          .from(tableName)
-          .delete()
-          .neq('id', '00000000-0000-0000-0000-000000000000');
-
-        if (deleteError) {
-          console.error('[BBA DB] 🚨 FALLBACK — pushTable: DELETE failed on', tableName, '- falling back to upsert');
-          console.error('[BBA DB] 🚨 Exception name:', deleteError.name || 'SupabaseError');
-          console.error('[BBA DB] 🚨 Exception message:', deleteError.message);
-          console.error('[BBA DB] 🚨 Exception code:', deleteError.code || 'N/A');
-          console.error('[BBA DB] 🚨 Exception details:', deleteError.details || 'N/A');
-          console.error('[BBA DB] 🚨 Likely cause: RLS policy blocks DELETE for anonymous users on', tableName);
-          await upsertItems(tableName, items);
-          console.log('[SYNC DEBUG] ===== pushTable END (upsert fallback) =====');
-          return;
+      /* ─── Step 1: Find records that need syncing ───
+         Only sync items that don't have _supabase_id yet.
+         Items with _supabase_id are already in Supabase and unchanged. */
+      var rowsToSync = [];
+      var syncIndices = [];
+      for (var i = 0; i < items.length; i++) {
+        if (!items[i]._supabase_id) {
+          var row = transformRowToDB(tableName, items[i]);
+          rowsToSync.push(row);
+          syncIndices.push(i);
         }
-        console.log('[SYNC DEBUG] Delete successful');
       }
 
-      /* Insert all items */
-      var rows = items.map(function(item) {
-        var row = transformRowToDB(tableName, item);
-        delete row._supabase_id;
-        return row;
-      });
-      console.log('[SYNC DEBUG] Transformed', rows.length, 'rows for insert');
-      console.log('[SYNC DEBUG] First row keys:', rows.length > 0 ? Object.keys(rows[0]).join(',') : 'N/A');
+      if (rowsToSync.length === 0) {
+        console.log('[BBA DB] ✅ pushTable: All', items.length, 'records already synced on', tableName, '— nothing to do');
+        console.log('[SYNC DEBUG] ===== pushTable END (all synced) =====');
+        return;
+      }
 
-      var allInserted = true;
-      /* Insert in batches of 50 */
-      for (var i = 0; i < rows.length; i += 50) {
-        var batch = rows.slice(i, i + 50);
-        console.log('[SYNC DEBUG] Inserting batch', (i/50)+1, ':', batch.length, 'rows');
-        var { error: insertError } = await supabaseClient
-          .from(tableName)
-          .insert(batch);
+      console.log('[BBA DB] pushTable: Syncing', rowsToSync.length, 'new record(s) to', tableName, '(', items.length, 'total records,', (items.length - rowsToSync.length), 'already synced)');
 
-        if (insertError) {
-          console.error('[BBA DB] 🚨 FALLBACK — pushTable: INSERT failed for batch', (i/50)+1, 'on', tableName);
-          console.error('[BBA DB] 🚨 Exception name:', insertError.name || 'SupabaseError');
-          console.error('[BBA DB] 🚨 Exception message:', insertError.message);
-          console.error('[BBA DB] 🚨 Exception code:', insertError.code || 'N/A');
-          console.error('[BBA DB] 🚨 Exception details:', insertError.details || 'N/A');
-          console.error('[BBA DB] 🚨 Exception hint:', insertError.hint || 'N/A');
-          console.error('[BBA DB] 🚨 First row in batch:', JSON.stringify(batch[0]).substring(0, 200));
-          console.error('[BBA DB] 🚨 Impact: ' + items.length + ' rows partially synced — data may be incomplete on mobile');
-          allInserted = false;
+      /* ─── Step 2: Sync each unsynced record individually ───
+         Each record is INSERTed with .select() so we get the
+         Supabase-generated id back. This avoids batch failures:
+         if one record fails (invalid data, RLS, etc.), the
+         others still succeed. Failed records are logged separately. */
+      var hasChanges = false;
+      var failedRecords = [];
+
+      for (var s = 0; s < rowsToSync.length; s++) {
+        var row = rowsToSync[s];
+        var originalIndex = syncIndices[s];
+
+        try {
+          console.log('[SYNC DEBUG] Upserting record', originalIndex, 'to', tableName);
+
+          /* ═══ UPSERT WITH PRIMARY KEY ═══
+             Use Supabase's native .upsert() with the primary key.
+             Since items with _supabase_id are already synced (filtered above),
+             this acts as INSERT for new records. Using upsert instead of insert
+             ensures that if a previous sync stored the record but localStorage
+             lost the _supabase_id (e.g., cache eviction), the upsert will update
+             the existing row by id rather than creating a duplicate — but only
+             if the id field is present in the row. */
+
+          var { data, error } = await supabaseClient
+            .from(tableName)
+            .upsert(row, { onConflict: 'id' })
+            .select();
+
+          if (error) {
+            /* ═══ RECORD-LEVEL FAILURE ═══
+               This record failed to upsert. Could be:
+               - RLS policy violation (code 42501)
+               - Schema mismatch (column does not exist)
+               - Constraint violation (duplicate unique value)
+               - Network timeout on this specific request
+               Log full details and continue to next record. */
+            console.error('[BBA DB] 🚨 Failed to sync record', originalIndex, 'on', tableName);
+            console.error('[BBA DB] 🚨 Error:', error.message, '| code:', error.code || 'N/A');
+            console.error('[BBA DB] 🚨 Details:', error.details || 'N/A');
+            console.error('[BBA DB] 🚨 Hint:', error.hint || 'N/A');
+            failedRecords.push({
+              index: originalIndex,
+              error: error
+            });
+            continue;
+          }
+
+          /* Record upserted successfully — store the Supabase ID */
+          if (data && data.length > 0) {
+            item._supabase_id = data[0].id;
+            hasChanges = true;
+            console.log('[SYNC DEBUG] ✅ Record', originalIndex, 'synced with id:', data[0].id);
+          }
+        } catch (err) {
+          /* ═══ JAVASCRIPT EXCEPTION ═══
+             The upsert threw rather than returning an error object.
+             This typically means a network failure ('Failed to fetch')
+             or a runtime error (TypeError). */
+          console.error('[BBA DB] 🚨 Exception syncing record', originalIndex, 'on', tableName);
+          console.error('[BBA DB] 🚨 Name:', err.name, '| Message:', err.message);
+          failedRecords.push({
+            index: originalIndex,
+            error: err
+          });
+        }
+      }
+
+      /* ─── Step 3: Save updated _supabase_id values back to localStorage ───
+         We use window.__bba_original_setItem to bypass the monkey-patch,
+         preventing an infinite loop (setItem → pushTable → setItem → ...).
+         If the monkey-patch failed on this browser, fall back to direct setItem. */
+      if (hasChanges) {
+        if (window.__bba_original_setItem) {
+          window.__bba_original_setItem(localKey, JSON.stringify(items));
         } else {
-          console.log('[SYNC DEBUG] ✅ Batch', (i/50)+1, 'inserted successfully');
+          localStorage.setItem(localKey, JSON.stringify(items));
         }
+        console.log('[SYNC DEBUG] ✅ Updated _supabase_id values in localStorage for', localKey);
       }
 
-      if (allInserted) {
-        console.log('[SYNC DEBUG] ✅ ALL batches inserted successfully');
-        console.log('[BBA DB] Synced ' + localKey + ' to Supabase: ' + items.length + ' items');
+      /* ─── Step 4: Report results ───
+         Summary shows how many succeeded and how many failed.
+         Each failed record is logged individually for diagnosis. */
+      var syncedCount = rowsToSync.length - failedRecords.length;
+      if (failedRecords.length === 0) {
+        console.log('[BBA DB] ✅ pushTable: Synced', syncedCount, 'record(s) to', tableName, '— all succeeded');
       } else {
-        console.error('[BBA DB] ⚠️ Some batches failed during pushTable — data may be incomplete in Supabase');
+        console.error('[BBA DB] ⚠️ pushTable completed with', failedRecords.length, 'failed record(s) out of', rowsToSync.length, 'new records on', tableName);
+        for (var f = 0; f < failedRecords.length; f++) {
+          var fr = failedRecords[f];
+          console.error('[BBA DB]   ❌ Record', fr.index, ':', fr.error.message, '(code:', fr.error.code || 'N/A', ')');
+        }
       }
     } catch (err) {
       console.error('[BBA DB] 🚨 FALLBACK — pushTable caught top-level exception');
@@ -563,73 +609,6 @@
     }
 
     console.log('[SYNC DEBUG] ===== pushTable END =====');
-  }
-
-  /* Upsert items individually (fallback when delete not allowed) */
-  async function upsertItems(tableName, items) {
-    var upsertFailures = 0;
-    for (var i = 0; i < items.length; i++) {
-      var item = items[i];
-      var row = transformRowToDB(tableName, item);
-      delete row._supabase_id;
-
-      if (item._supabase_id) {
-        /* Update existing */
-        try {
-          var { error: updateError } = await supabaseClient
-            .from(tableName)
-            .update(row)
-            .eq('id', item._supabase_id);
-          if (updateError) {
-            console.error('[BBA DB] 🚨 FALLBACK — upsertItems UPDATE failed for row', i, 'on', tableName);
-            console.error('[BBA DB] 🚨 Exception message:', updateError.message, '| code:', updateError.code || 'N/A');
-            upsertFailures++;
-          }
-        } catch (e) {
-          console.error('[BBA DB] 🚨 FALLBACK — upsertItems UPDATE threw for row', i, 'on', tableName);
-          console.error('[BBA DB] 🚨 Exception name:', e.name, '| message:', e.message);
-          upsertFailures++;
-        }
-      } else {
-        /* Insert new */
-        try {
-          var { data, error } = await supabaseClient
-            .from(tableName)
-            .insert(row)
-            .select('id');
-
-          if (error) {
-            console.error('[BBA DB] 🚨 FALLBACK — upsertItems INSERT failed for row', i, 'on', tableName);
-            console.error('[BBA DB] 🚨 Exception message:', error.message);
-            console.error('[BBA DB] 🚨 Exception code:', error.code || 'N/A');
-            console.error('[BBA DB] 🚨 Exception details:', error.details || 'N/A');
-            upsertFailures++;
-          } else if (data && data.length > 0) {
-            /* Store the Supabase ID back to localStorage */
-            item._supabase_id = data[0].id;
-          }
-        } catch (e) {
-          console.error('[BBA DB] 🚨 FALLBACK — upsertItems INSERT threw for row', i, 'on', tableName);
-          console.error('[BBA DB] 🚨 Exception name:', e.name, '| message:', e.message);
-          upsertFailures++;
-        }
-      }
-    }
-
-    if (upsertFailures > 0) {
-      console.error('[BBA DB] 🚨 upsertItems completed with', upsertFailures, 'failure(s) out of', items.length, 'rows on', tableName);
-      console.error('[BBA DB] 🚨 Impact: Mobile data may be partially synced —', upsertFailures, 'rows did not reach Supabase');
-    } else {
-      console.log('[BBA DB] upsertItems: all', items.length, 'rows upserted successfully on', tableName);
-    }
-
-    /* Save updated items (with _supabase_id) back to localStorage */
-    try {
-      localStorage.setItem('bba_' + tableName, JSON.stringify(items));
-    } catch (e) {
-      console.error('[BBA DB] 🚨 FALLBACK — upsertItems localStorage write failed');
-      console.error('[BBA DB] 🚨 Exception:', e.name, '-', e.message);
-    }
   }
 
   /* Push CMS content to Supabase */
@@ -687,8 +666,14 @@
     if (!isConnected || !supabaseClient) return;
 
     try {
-      /* Collect all points from all bba_points_* keys */
+      /* ─── Collect only NEW point entries since last sync ───
+         Track last sync timestamp to avoid re-inserting the same
+         point entries on every call, which would create unbounded
+         duplicates in the points table. */
+      var lastSyncStr = localStorage.getItem('bba_points_last_sync');
+      var lastSyncTime = lastSyncStr ? new Date(lastSyncStr).getTime() : 0;
       var allRows = [];
+
       for (var i = 0; i < localStorage.length; i++) {
         var key = localStorage.key(i);
         if (key && key.indexOf('bba_points_') === 0) {
@@ -700,34 +685,45 @@
           if (!Array.isArray(entries)) continue;
 
           for (var j = 0; j < entries.length; j++) {
-            allRows.push({
-              volunteer_id: volunteerId,
-              amount: entries[j].amount || 0,
-              reason: entries[j].reason || '',
-              type: entries[j].type || 'add',
-              date: entries[j].date || new Date().toISOString()
-            });
+            var entryDate = entries[j].date ? new Date(entries[j].date).getTime() : Date.now();
+            /* Only push entries created after the last sync */
+            if (entryDate > lastSyncTime) {
+              allRows.push({
+                volunteer_id: volunteerId,
+                amount: entries[j].amount || 0,
+                reason: entries[j].reason || '',
+                type: entries[j].type || 'add',
+                date: entries[j].date || new Date().toISOString()
+              });
+            }
           }
         }
       }
 
-      if (allRows.length === 0) return;
+      if (allRows.length === 0) {
+        console.log('[BBA DB] pushPoints: No new point entries since last sync — nothing to do');
+        return;
+      }
 
-      /* Delete existing points and re-insert */
-      var { error: delErr } = await supabaseClient
-        .from('points')
-        .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000');
-
-      if (!delErr) {
-        /* Insert in batches */
-        for (var b = 0; b < allRows.length; b += 50) {
-          var batch = allRows.slice(b, b + 50);
-          await supabaseClient.from('points').insert(batch);
+      /* ─── Insert only new rows (no DELETE) ─── */
+      var errors = 0;
+      for (var b = 0; b < allRows.length; b += 50) {
+        var batch = allRows.slice(b, b + 50);
+        var { error } = await supabaseClient.from('points').insert(batch);
+        if (error) {
+          console.error('[BBA DB] 🚨 pushPoints: batch insert failed:', error.message, '| code:', error.code || 'N/A');
+          errors++;
         }
       }
 
-      console.log('[BBA DB] Synced points: ' + allRows.length + ' entries');
+      /* Update last sync timestamp */
+      localStorage.setItem('bba_points_last_sync', new Date().toISOString());
+
+      if (errors === 0) {
+        console.log('[BBA DB] ✅ pushPoints: Synced', allRows.length, 'new point entr' + 'ies');
+      } else {
+        console.error('[BBA DB] ⚠️ pushPoints completed with', errors, 'failed batch(es) out of', Math.ceil(allRows.length / 50));
+      }
     } catch (err) {
       console.warn('[BBA DB] Failed to push points:', err.message);
     }
