@@ -94,6 +94,10 @@
       return;
     }
 
+    /* Expose the original setItem so online-first insert methods can write
+       localStorage cache without triggering the monkey-patch double-sync. */
+    window.__bba_original_setItem = originalSet;
+
     try {
       /* In strict mode, some mobile browsers (iOS Safari, Samsung Internet) may
          throw if localStorage.setItem is non-writable. Try-catch ensures the
@@ -763,6 +767,147 @@
       return points;
     },
 
+    /* ============================================================
+     * ONLINE-FIRST INSERT: Insert a volunteer directly to Supabase.
+     * Falls back to localStorage if offline. Returns { success, source, data }.
+     * ============================================================ */
+    insertVolunteer: async function(formData) {
+      var tableName = 'volunteers';
+      var localKey = 'bba_volunteers';
+      console.log('[BBA DB] insertVolunteer: starting, isConnected=' + isConnected);
+
+      /* Try Supabase first */
+      if (isConnected && supabaseClient) {
+        try {
+          var row = transformRowToDB(tableName, formData);
+          console.log('[BBA DB] insertVolunteer: transformed row keys:', Object.keys(row).join(','));
+
+          var { data, error } = await supabaseClient
+            .from(tableName)
+            .insert(row)
+            .select();
+
+          if (error) {
+            console.warn('[BBA DB] insertVolunteer: Supabase insert failed:', error.message);
+            throw error;
+          }
+
+          console.log('[BBA DB] insertVolunteer: ✅ Supabase insert succeeded');
+
+          /* Sync localStorage as cache — use original setItem to avoid double-sync */
+          if (data && data.length > 0) {
+            var cached = transformRowFromDB(tableName, data[0]);
+            var all = [];
+            try { all = JSON.parse(localStorage.getItem(localKey) || '[]'); } catch(e) {}
+            all.push(cached);
+            if (window.__bba_original_setItem) {
+              window.__bba_original_setItem(localKey, JSON.stringify(all));
+            } else {
+              localStorage.setItem(localKey, JSON.stringify(all));
+            }
+            console.log('[BBA DB] insertVolunteer: localStorage cache updated');
+            return { success: true, source: 'supabase', insertedId: data[0].id };
+          }
+
+          return { success: true, source: 'supabase' };
+        } catch (err) {
+          console.warn('[BBA DB] insertVolunteer: Supabase failed, falling back to localStorage:', err.message);
+          /* Fall through to localStorage fallback */
+        }
+      } else {
+        console.log('[BBA DB] insertVolunteer: Supabase offline, using localStorage');
+      }
+
+      /* Offline fallback — save to localStorage (triggers monkey-patch sync later) */
+      return this._saveToLocalAndQueueSync(localKey, formData);
+    },
+
+    /* ============================================================
+     * ONLINE-FIRST INSERT: Insert a consultation directly to Supabase.
+     * Falls back to localStorage if offline. Returns { success, source, data }.
+     * ============================================================ */
+    insertConsultation: async function(formData) {
+      var tableName = 'consultations';
+      var localKey = 'bba_consultations';
+      console.log('[BBA DB] insertConsultation: starting, isConnected=' + isConnected);
+
+      /* Try Supabase first */
+      if (isConnected && supabaseClient) {
+        try {
+          var row = transformRowToDB(tableName, formData);
+          console.log('[BBA DB] insertConsultation: transformed row keys:', Object.keys(row).join(','));
+
+          var { data, error } = await supabaseClient
+            .from(tableName)
+            .insert(row)
+            .select();
+
+          if (error) {
+            console.warn('[BBA DB] insertConsultation: Supabase insert failed:', error.message);
+            throw error;
+          }
+
+          console.log('[BBA DB] insertConsultation: ✅ Supabase insert succeeded');
+
+          /* Sync localStorage as cache */
+          if (data && data.length > 0) {
+            var cached = transformRowFromDB(tableName, data[0]);
+            var all = [];
+            try { all = JSON.parse(localStorage.getItem(localKey) || '[]'); } catch(e) {}
+            all.push(cached);
+            if (window.__bba_original_setItem) {
+              window.__bba_original_setItem(localKey, JSON.stringify(all));
+            } else {
+              localStorage.setItem(localKey, JSON.stringify(all));
+            }
+            console.log('[BBA DB] insertConsultation: localStorage cache updated');
+            return { success: true, source: 'supabase', insertedId: data[0].id };
+          }
+
+          return { success: true, source: 'supabase' };
+        } catch (err) {
+          console.warn('[BBA DB] insertConsultation: Supabase failed, falling back to localStorage:', err.message);
+        }
+      } else {
+        console.log('[BBA DB] insertConsultation: Supabase offline, using localStorage');
+      }
+
+      /* Offline fallback */
+      return this._saveToLocalAndQueueSync(localKey, formData);
+    },
+
+    /* ============================================================
+     * OFFLINE FALLBACK: Save to localStorage and queue sync for later.
+     * Used when Supabase is unavailable or the insert fails.
+     * ============================================================ */
+    _saveToLocalAndQueueSync: function(localKey, formData) {
+      console.log('[BBA DB] _saveToLocalAndQueueSync: saving ' + localKey + ' to localStorage');
+      var all = [];
+      try {
+        all = JSON.parse(localStorage.getItem(localKey) || '[]');
+      } catch(e) {}
+      all.push(formData);
+
+      try {
+        localStorage.setItem(localKey, JSON.stringify(all));
+        console.log('[BBA DB] _saveToLocalAndQueueSync: ✅ saved to localStorage');
+      } catch (e) {
+        console.error('[BBA DB] _saveToLocalAndQueueSync: localStorage setItem FAILED:', e.message);
+        return { success: false, source: 'localStorage', error: e.message };
+      }
+
+      /* Queue sync for later — the monkey-patch on localStorage.setItem handles this
+         automatically, but we also call syncNow explicitly in case the monkey-patch
+         failed (mobile strict mode). */
+      if (window.BBA && window.BBA.DB && window.BBA.DB.syncNow) {
+        setTimeout(function() {
+          window.BBA.DB.syncNow(localKey);
+        }, 100);
+      }
+
+      return { success: true, source: 'localStorage', offline: true };
+    },
+
     /* Check if data exists in both localStorage and Supabase */
     verifySync: async function() {
       if (!isConnected) return { connected: false, message: 'Supabase غير متصل' };
@@ -994,6 +1139,39 @@
   if (supabaseClient) {
     window.__bba_supabase_client = supabaseClient;
   }
+
+  /* ============================================================
+   * AUTO-SYNC ON RECONNECT
+   * When the browser detects that the network is back, flush
+   * all queued localStorage writes to Supabase.
+   * This handles the case where forms were submitted offline.
+   * ============================================================ */
+  window.addEventListener('online', function() {
+    console.log('[BBA DB] 🌐 Network connection restored — flushing queued syncs');
+    if (isConnected && supabaseClient) {
+      /* Queue sync for all BBA data keys that have data in localStorage */
+      for (var key in BBA_SYNC_KEYS) {
+        if (BBA_SYNC_KEYS.hasOwnProperty(key)) {
+          try {
+            var raw = localStorage.getItem(key);
+            if (raw && raw.length > 2) {
+              queueSync(key);
+              console.log('[BBA DB] Auto-sync queued:', key);
+            }
+          } catch(e) {}
+        }
+      }
+      /* Also sync CMS content */
+      for (var i = 0; i < localStorage.length; i++) {
+        var lsKey = localStorage.key(i);
+        if (lsKey && lsKey.indexOf('bba_cms_') === 0) {
+          queueSync(lsKey);
+        }
+      }
+      /* Also push pending points */
+      pushPoints();
+    }
+  });
 
   /* Auto-initialize on DOM ready */
   if (document.readyState === 'loading') {

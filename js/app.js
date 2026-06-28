@@ -269,7 +269,7 @@ function generateTrackingCode() {
     console.warn('[FORM DEBUG] RateLimitIndicator not available');
   }
 
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', async function(e) {
     console.log('[FORM DEBUG] 🟢 CONSULTATION FORM SUBMIT TRIGGERED');
     console.log('[FORM DEBUG] Event type:', e.type);
     console.log('[FORM DEBUG] Event target:', e.target.id);
@@ -337,22 +337,52 @@ function generateTrackingCode() {
     formData.trackingCode = generateTrackingCode();
     console.log('[FORM DEBUG] Tracking code generated:', formData.trackingCode);
 
-    /* Save to localStorage */
-    var consultations = [];
-    try {
-      consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
-      console.log('[FORM DEBUG] Loaded existing consultations from localStorage: ' + consultations.length + ' items');
-    } catch (e) {
-      console.error('[FORM DEBUG] Failed to parse existing consultations:', e);
-    }
-    consultations.push(formData);
-    console.log('[FORM DEBUG] Pushing to localStorage, total will be: ' + consultations.length);
+    /* ONLINE-FIRST INSERT: Try Supabase first, fall back to localStorage */
+    console.log('[FORM DEBUG] Calling DB.insertConsultation()');
+    var insertResult;
 
-    try {
-      localStorage.setItem('bba_consultations', JSON.stringify(consultations));
-      console.log('[FORM DEBUG] ✅ SAVED to localStorage: bba_consultations');
-    } catch (e) {
-      console.error('[FORM DEBUG] ❌ localStorage.setItem FAILED:', e.message);
+    if (window.BBA && window.BBA.DB && window.BBA.DB.insertConsultation) {
+      try {
+        insertResult = await window.BBA.DB.insertConsultation(formData);
+        console.log('[FORM DEBUG] insertConsultation result:', insertResult);
+      } catch (e) {
+        console.error('[FORM DEBUG] insertConsultation THREW:', e.message);
+        /* Emergency fallback — direct localStorage write */
+        try {
+          var emergency = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+          emergency.push(formData);
+          localStorage.setItem('bba_consultations', JSON.stringify(emergency));
+          insertResult = { success: true, source: 'localStorage_emergency' };
+          console.log('[FORM DEBUG] Emergency localStorage save succeeded');
+        } catch (e2) {
+          console.error('[FORM DEBUG] ❌ Emergency localStorage save FAILED:', e2.message);
+          showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
+          return;
+        }
+      }
+    } else {
+      /* DB module not loaded — direct localStorage fallback */
+      console.warn('[FORM DEBUG] BBA.DB.insertConsultation not available, using direct localStorage');
+      try {
+        var fallback = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+        fallback.push(formData);
+        localStorage.setItem('bba_consultations', JSON.stringify(fallback));
+        insertResult = { success: true, source: 'localStorage_direct' };
+      } catch (e) {
+        console.error('[FORM DEBUG] ❌ Direct localStorage save FAILED:', e.message);
+        showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
+        return;
+      }
+    }
+
+    if (insertResult && insertResult.source === 'supabase') {
+      console.log('[FORM DEBUG] ✅ Saved DIRECTLY to Supabase (volunteers table)');
+    } else if (insertResult && insertResult.source === 'localStorage') {
+      console.log('[FORM DEBUG] ⏳ Saved to localStorage (offline queue). Will sync when online.');
+    }
+
+    if (!insertResult || !insertResult.success) {
+      console.error('[FORM DEBUG] ❌ All save methods failed');
       showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
       return;
     }
@@ -489,7 +519,7 @@ function generateTrackingCode() {
     console.warn('[FORM DEBUG] RateLimitIndicator not available');
   }
 
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', async function(e) {
     console.log('[FORM DEBUG] 🟢 VOLUNTEER FORM SUBMIT TRIGGERED');
     console.log('[FORM DEBUG] Event type:', e.type);
     console.log('[FORM DEBUG] Event target:', e.target.id);
@@ -570,22 +600,52 @@ function generateTrackingCode() {
     }
     console.log('[FORM DEBUG] Validation PASSED');
 
-    /* Save to localStorage */
-    var volunteers = [];
-    try {
-      volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
-      console.log('[FORM DEBUG] Loaded existing volunteers from localStorage: ' + volunteers.length + ' items');
-    } catch (e) {
-      console.error('[FORM DEBUG] Failed to parse existing volunteers:', e);
-    }
-    volunteers.push(volunteer);
-    console.log('[FORM DEBUG] Pushing to localStorage, total will be: ' + volunteers.length);
+    /* ONLINE-FIRST INSERT: Try Supabase first, fall back to localStorage */
+    console.log('[FORM DEBUG] Calling DB.insertVolunteer()');
+    var insertResult;
 
-    try {
-      localStorage.setItem('bba_volunteers', JSON.stringify(volunteers));
-      console.log('[FORM DEBUG] ✅ SAVED to localStorage: bba_volunteers');
-    } catch (e) {
-      console.error('[FORM DEBUG] ❌ localStorage.setItem FAILED:', e.message);
+    if (window.BBA && window.BBA.DB && window.BBA.DB.insertVolunteer) {
+      try {
+        insertResult = await window.BBA.DB.insertVolunteer(volunteer);
+        console.log('[FORM DEBUG] insertVolunteer result:', insertResult);
+      } catch (e) {
+        console.error('[FORM DEBUG] insertVolunteer THREW:', e.message);
+        /* Emergency fallback — direct localStorage write */
+        try {
+          var emergency = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+          emergency.push(volunteer);
+          localStorage.setItem('bba_volunteers', JSON.stringify(emergency));
+          insertResult = { success: true, source: 'localStorage_emergency' };
+          console.log('[FORM DEBUG] Emergency localStorage save succeeded');
+        } catch (e2) {
+          console.error('[FORM DEBUG] ❌ Emergency localStorage save FAILED:', e2.message);
+          showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
+          return;
+        }
+      }
+    } else {
+      /* DB module not loaded — direct localStorage fallback */
+      console.warn('[FORM DEBUG] BBA.DB.insertVolunteer not available, using direct localStorage');
+      try {
+        var fallback = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+        fallback.push(volunteer);
+        localStorage.setItem('bba_volunteers', JSON.stringify(fallback));
+        insertResult = { success: true, source: 'localStorage_direct' };
+      } catch (e) {
+        console.error('[FORM DEBUG] ❌ Direct localStorage save FAILED:', e.message);
+        showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
+        return;
+      }
+    }
+
+    if (insertResult && insertResult.source === 'supabase') {
+      console.log('[FORM DEBUG] ✅ Saved DIRECTLY to Supabase (volunteers table)');
+    } else if (insertResult && insertResult.source === 'localStorage') {
+      console.log('[FORM DEBUG] ⏳ Saved to localStorage (offline queue). Will sync when online.');
+    }
+
+    if (!insertResult || !insertResult.success) {
+      console.error('[FORM DEBUG] ❌ All save methods failed');
       showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
       return;
     }
