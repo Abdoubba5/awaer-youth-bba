@@ -337,7 +337,14 @@ function generateTrackingCode() {
     formData.trackingCode = generateTrackingCode();
     console.log('[FORM DEBUG] Tracking code generated:', formData.trackingCode);
 
-    /* ONLINE-FIRST INSERT: Try Supabase first, fall back to localStorage */
+    /* ════════════════════════════════════════
+       ONLINE-FIRST INSERT: Supabase only
+       ════════════════════════════════════════
+       Submit directly to Supabase via DB module.
+       Success toast only when Supabase confirms.
+       Real Supabase error shown when online.
+       localStorage fallback only when offline.
+       No emergency localStorage fallback. */
     console.log('[FORM DEBUG] Calling DB.insertConsultation()');
     var insertResult;
 
@@ -347,27 +354,24 @@ function generateTrackingCode() {
         console.log('[FORM DEBUG] insertConsultation result:', insertResult);
       } catch (e) {
         console.error('[FORM DEBUG] insertConsultation THREW:', e.message);
-        /* Emergency fallback — direct localStorage write */
-        try {
-          var emergency = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
-          emergency.push(formData);
-          localStorage.setItem('bba_consultations', JSON.stringify(emergency));
-          insertResult = { success: true, source: 'localStorage_emergency' };
-          console.log('[FORM DEBUG] Emergency localStorage save succeeded');
-        } catch (e2) {
-          console.error('[FORM DEBUG] ❌ Emergency localStorage save FAILED:', e2.message);
-          showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
-          return;
-        }
+        showToast('خطأ في النظام: ' + e.message, 'error');
+        return;
       }
     } else {
-      /* DB module not loaded — direct localStorage fallback */
-      console.warn('[FORM DEBUG] BBA.DB.insertConsultation not available, using direct localStorage');
+      /* DB module not loaded */
+      var isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+      if (isOnline) {
+        console.error('[FORM DEBUG] DB module not loaded but device is online — cannot submit');
+        showToast('تعذر الاتصال بقاعدة البيانات. يرجى تحديث الصفحة.', 'error');
+        return;
+      }
+      /* True offline — use direct localStorage as last resort */
+      console.warn('[FORM DEBUG] Offline and DB not available — saving to localStorage directly');
       try {
         var fallback = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
         fallback.push(formData);
         localStorage.setItem('bba_consultations', JSON.stringify(fallback));
-        insertResult = { success: true, source: 'localStorage_direct' };
+        insertResult = { success: true, source: 'localStorage', offline: true };
       } catch (e) {
         console.error('[FORM DEBUG] ❌ Direct localStorage save FAILED:', e.message);
         showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
@@ -380,69 +384,42 @@ function generateTrackingCode() {
        ════════════════════════════════════════ */
     if (insertResult && insertResult.source === 'supabase') {
       console.log('[FORM DEBUG] ✅ Saved DIRECTLY to Supabase (consultations table)');
-
-      /* Only show success toast when Supabase confirmed the insert */
       showToast('تم إرسال استشارتك بنجاح! رمز المتابعة الخاص بك:', 'success');
 
-      /* Record this attempt in rate limiter */
       if (window.BBA && window.BBA.RateLimiter) {
         window.BBA.RateLimiter.record('consultation');
-        console.log('[FORM DEBUG] Rate limit recorded');
       }
 
-      /* Update UI */
       var tcEl = byId('trackingCode');
-      if (tcEl) {
-        tcEl.textContent = formData.trackingCode;
-        console.log('[FORM DEBUG] Tracking code displayed');
-      } else {
-        console.warn('[FORM DEBUG] trackingCode element not found');
-      }
+      if (tcEl) { tcEl.textContent = formData.trackingCode; }
       var tCont = byId('trackingContainer');
-      if (tCont) {
-        tCont.classList.add('visible');
-        console.log('[FORM DEBUG] Tracking container shown');
-      }
-
-      try {
-        form.reset();
-        console.log('[FORM DEBUG] Form reset');
-      } catch (e) {
-        console.warn('[FORM DEBUG] form.reset() error:', e);
-      }
-
-      console.log('[FORM DEBUG] 🟢 CONSULTATION FORM SUBMIT COMPLETE — SAVED TO SUPABASE ✅');
-
-    } else if (insertResult && insertResult.success) {
-      /* LocalStorage fallback — show the real error reason */
-      var supabaseErrMsg = insertResult.supabaseError || '';
-      console.log('[FORM DEBUG] ⚠️ Saved to localStorage ONLY. Supabase insert failed:', supabaseErrMsg || 'reason unknown');
-
-      /* Show the actual Supabase error to the user */
-      if (supabaseErrMsg) {
-        showToast('تعذر الحفظ في قاعدة البيانات: ' + supabaseErrMsg + '. تم حفظ طلبك محلياً وسيتم المزامنة عند الاتصال.', 'error');
-      } else {
-        showToast('تم حفظ طلبك محلياً. سيتم المزامنة مع قاعدة البيانات عند توفر الاتصال.', 'info');
-      }
-
-      /* Still show tracking code (data is saved locally) */
-      var tcEl = byId('trackingCode');
-      if (tcEl) {
-        tcEl.textContent = formData.trackingCode;
-      }
-      var tCont = byId('trackingContainer');
-      if (tCont) {
-        tCont.classList.add('visible');
-      }
+      if (tCont) { tCont.classList.add('visible'); }
 
       try { form.reset(); } catch (e) {}
+      console.log('[FORM DEBUG] 🟢 CONSULTATION FORM SUBMIT COMPLETE ✅');
 
-      console.log('[FORM DEBUG] 🟡 CONSULTATION FORM SUBMIT COMPLETE — SAVED LOCALLY ONLY ⚠️');
+    } else if (insertResult && insertResult.offline) {
+      /* Offline fallback — saved to localStorage, will retry */
+      console.log('[FORM DEBUG] 💾 Saved offline — will sync when connection returns');
+      showToast('تم حفظ طلبك محلياً. سيتم إرساله تلقائياً عند توفر الاتصال.', 'info');
+
+      var tcEl = byId('trackingCode');
+      if (tcEl) { tcEl.textContent = formData.trackingCode; }
+      var tCont = byId('trackingContainer');
+      if (tCont) { tCont.classList.add('visible'); }
+
+      try { form.reset(); } catch (e) {}
+      console.log('[FORM DEBUG] 🟡 CONSULTATION — SAVED OFFLINE ⚠️');
+
+    } else if (insertResult && insertResult.supabaseError) {
+      /* Supabase returned an error — show the real error message */
+      console.error('[FORM DEBUG] ❌ Supabase error:', insertResult.supabaseError);
+      showToast('تعذر إرسال الاستشارة: ' + insertResult.supabaseError, 'error');
+      return;
 
     } else {
-      /* All save methods failed */
-      console.error('[FORM DEBUG] ❌ All save methods failed');
-      showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
+      console.error('[FORM DEBUG] ❌ Submission failed');
+      showToast('فشل في إرسال الاستشارة. يرجى المحاولة مرة أخرى.', 'error');
       return;
     }
   });
@@ -629,7 +606,14 @@ function generateTrackingCode() {
     }
     console.log('[FORM DEBUG] Validation PASSED');
 
-    /* ONLINE-FIRST INSERT: Try Supabase first, fall back to localStorage */
+    /* ════════════════════════════════════════
+       ONLINE-FIRST INSERT: Supabase only
+       ════════════════════════════════════════
+       Submit directly to Supabase via DB module.
+       Success toast only when Supabase confirms.
+       Real Supabase error shown when online.
+       localStorage fallback only when offline.
+       No emergency localStorage fallback. */
     console.log('[FORM DEBUG] Calling DB.insertVolunteer()');
     var insertResult;
 
@@ -639,27 +623,22 @@ function generateTrackingCode() {
         console.log('[FORM DEBUG] insertVolunteer result:', insertResult);
       } catch (e) {
         console.error('[FORM DEBUG] insertVolunteer THREW:', e.message);
-        /* Emergency fallback — direct localStorage write */
-        try {
-          var emergency = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
-          emergency.push(volunteer);
-          localStorage.setItem('bba_volunteers', JSON.stringify(emergency));
-          insertResult = { success: true, source: 'localStorage_emergency' };
-          console.log('[FORM DEBUG] Emergency localStorage save succeeded');
-        } catch (e2) {
-          console.error('[FORM DEBUG] ❌ Emergency localStorage save FAILED:', e2.message);
-          showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
-          return;
-        }
+        showToast('خطأ في النظام: ' + e.message, 'error');
+        return;
       }
     } else {
-      /* DB module not loaded — direct localStorage fallback */
-      console.warn('[FORM DEBUG] BBA.DB.insertVolunteer not available, using direct localStorage');
+      var isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+      if (isOnline) {
+        console.error('[FORM DEBUG] DB module not loaded but device is online — cannot submit');
+        showToast('تعذر الاتصال بقاعدة البيانات. يرجى تحديث الصفحة.', 'error');
+        return;
+      }
+      console.warn('[FORM DEBUG] Offline and DB not available — saving to localStorage directly');
       try {
         var fallback = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
         fallback.push(volunteer);
         localStorage.setItem('bba_volunteers', JSON.stringify(fallback));
-        insertResult = { success: true, source: 'localStorage_direct' };
+        insertResult = { success: true, source: 'localStorage', offline: true };
       } catch (e) {
         console.error('[FORM DEBUG] ❌ Direct localStorage save FAILED:', e.message);
         showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
@@ -672,56 +651,38 @@ function generateTrackingCode() {
        ════════════════════════════════════════ */
     if (insertResult && insertResult.source === 'supabase') {
       console.log('[FORM DEBUG] ✅ Saved DIRECTLY to Supabase (volunteers table)');
-
-      /* Only show success toast when Supabase confirmed the insert */
       showToast('تم تسجيلك كمتطوع بنجاح! سنتواصل معك قريباً ✓', 'success');
 
-      /* Record this attempt */
       if (window.BBA && window.BBA.RateLimiter) {
         window.BBA.RateLimiter.record('volunteer_registration');
-        console.log('[FORM DEBUG] Rate limit recorded');
       }
 
-      /* Reset form */
-      try {
-        form.reset();
-        console.log('[FORM DEBUG] Form reset');
-      } catch (e) {
-        console.warn('[FORM DEBUG] form.reset() error:', e);
-      }
+      try { form.reset(); } catch (e) {}
       for (var m = 0; m < membershipOptions.length; m++) {
         membershipOptions[m].classList.remove('selected');
       }
       selectedMembership = null;
+      console.log('[FORM DEBUG] 🟢 VOLUNTEER FORM SUBMIT COMPLETE ✅');
 
-      console.log('[FORM DEBUG] 🟢 VOLUNTEER FORM SUBMIT COMPLETE — SAVED TO SUPABASE ✅');
+    } else if (insertResult && insertResult.offline) {
+      console.log('[FORM DEBUG] 💾 Saved offline — will sync when connection returns');
+      showToast('تم حفظ طلبك محلياً. سيتم إرساله تلقائياً عند توفر الاتصال.', 'info');
 
-    } else if (insertResult && insertResult.success) {
-      /* LocalStorage fallback — show the real error reason */
-      var supabaseErrMsg = insertResult.supabaseError || '';
-      console.log('[FORM DEBUG] ⚠️ Saved to localStorage ONLY. Supabase insert failed:', supabaseErrMsg || 'reason unknown');
-
-      /* Show the actual Supabase error to the user */
-      if (supabaseErrMsg) {
-        showToast('تعذر الحفظ في قاعدة البيانات: ' + supabaseErrMsg + '. تم حفظ طلبك محلياً وسيتم المزامنة عند الاتصال.', 'error');
-      } else {
-        showToast('تم حفظ طلبك محلياً. سيتم المزامنة مع قاعدة البيانات عند توفر الاتصال.', 'info');
-      }
-
-      try {
-        form.reset();
-      } catch (e) {}
+      try { form.reset(); } catch (e) {}
       for (var m = 0; m < membershipOptions.length; m++) {
         membershipOptions[m].classList.remove('selected');
       }
       selectedMembership = null;
+      console.log('[FORM DEBUG] 🟡 VOLUNTEER — SAVED OFFLINE ⚠️');
 
-      console.log('[FORM DEBUG] 🟡 VOLUNTEER FORM SUBMIT COMPLETE — SAVED LOCALLY ONLY ⚠️');
+    } else if (insertResult && insertResult.supabaseError) {
+      console.error('[FORM DEBUG] ❌ Supabase error:', insertResult.supabaseError);
+      showToast('تعذر التسجيل: ' + insertResult.supabaseError, 'error');
+      return;
 
     } else {
-      /* All save methods failed */
-      console.error('[FORM DEBUG] ❌ All save methods failed');
-      showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
+      console.error('[FORM DEBUG] ❌ Submission failed');
+      showToast('فشل في التسجيل. يرجى المحاولة مرة أخرى.', 'error');
       return;
     }
   });

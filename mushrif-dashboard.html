@@ -532,10 +532,20 @@
     }
 
     function saveConsultations(data) {
+      /* Save to localStorage — monkey-patch triggers sync to Supabase */
       localStorage.setItem('bba_consultations', JSON.stringify(data));
     }
 
-    function loadConsultations() {
+    async function loadConsultations() {
+      /* ═══ ONLINE-FIRST: Pull fresh consultation data from Supabase ═══ */
+      try {
+        if (window.BBA && window.BBA.DB) {
+          await window.BBA.DB.init();
+          await window.BBA.DB.pullFromServer('bba_consultations');
+        }
+      } catch(e) {
+        console.warn('[Psych] Supabase pull failed, using cached data:', e.message);
+      }
       allPsychConsultations = getConsultations();
       renderPsychConsultations();
     }

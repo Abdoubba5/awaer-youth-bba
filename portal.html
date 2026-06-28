@@ -609,7 +609,7 @@
           window.BBA.RateLimitIndicator.mount('portalLoginRateLimitIndicator', 'portal_login');
         }
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
           e.preventDefault();
 
           /* Rate limit check */
@@ -631,8 +631,20 @@
             return;
           }
 
+          /* ═══ ONLINE-FIRST: Try to find volunteer from Supabase first ═══ */
           var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
           var found = null;
+
+          try {
+            if (window.BBA && window.BBA.DB && window.BBA.DB.isOnline()) {
+              await window.BBA.DB.pullFromServer('bba_volunteers');
+              /* Re-read after Supabase pull */
+              volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+            }
+          } catch(e) {
+            console.warn('[Portal] Supabase pull failed, checking localStorage:', e.message);
+          }
+
           for (var i = 0; i < volunteers.length; i++) {
             if (volunteers[i].volunteerId === inputId) {
               found = volunteers[i];
