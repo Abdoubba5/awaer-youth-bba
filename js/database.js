@@ -927,8 +927,11 @@
 
           return { success: true, source: 'supabase' };
         } catch (err) {
-          console.warn('[BBA DB] insertVolunteer: Supabase failed, falling back to localStorage:', err.message);
-          /* Fall through to localStorage fallback */
+          console.warn('[BBA DB] insertVolunteer: Supabase insert FAILED:', err.message);
+          if (err.details) console.warn('[BBA DB] insertVolunteer: Error details:', err.details);
+          /* Fall through to localStorage fallback — pass the actual error so caller can show it */
+          var fallbackResult = this._saveToLocalAndQueueSync(localKey, formData, err.message);
+          return fallbackResult;
         }
       } else {
         console.log('[BBA DB] insertVolunteer: Supabase offline, using localStorage');
@@ -982,7 +985,11 @@
 
           return { success: true, source: 'supabase' };
         } catch (err) {
-          console.warn('[BBA DB] insertConsultation: Supabase failed, falling back to localStorage:', err.message);
+          console.warn('[BBA DB] insertConsultation: Supabase insert FAILED:', err.message);
+          if (err.details) console.warn('[BBA DB] insertConsultation: Error details:', err.details);
+          /* Fall through to localStorage fallback — pass the actual error so caller can show it */
+          var fallbackResult = this._saveToLocalAndQueueSync(localKey, formData, err.message);
+          return fallbackResult;
         }
       } else {
         console.log('[BBA DB] insertConsultation: Supabase offline, using localStorage');
@@ -996,8 +1003,11 @@
      * OFFLINE FALLBACK: Save to localStorage and queue sync for later.
      * Used when Supabase is unavailable or the insert fails.
      * ============================================================ */
-    _saveToLocalAndQueueSync: function(localKey, formData) {
+    _saveToLocalAndQueueSync: function(localKey, formData, supabaseError) {
       console.log('[BBA DB] _saveToLocalAndQueueSync: saving ' + localKey + ' to localStorage');
+      if (supabaseError) {
+        console.log('[BBA DB] _saveToLocalAndQueueSync: Supabase reason:', supabaseError);
+      }
       var all = [];
       try {
         all = JSON.parse(localStorage.getItem(localKey) || '[]');
@@ -1009,7 +1019,7 @@
         console.log('[BBA DB] _saveToLocalAndQueueSync: ✅ saved to localStorage');
       } catch (e) {
         console.error('[BBA DB] _saveToLocalAndQueueSync: localStorage setItem FAILED:', e.message);
-        return { success: false, source: 'localStorage', error: e.message };
+        return { success: false, source: 'localStorage_error', error: e.message, supabaseError: supabaseError || null };
       }
 
       /* Queue sync for later — the monkey-patch on localStorage.setItem handles this
@@ -1021,7 +1031,7 @@
         }, 100);
       }
 
-      return { success: true, source: 'localStorage', offline: true };
+      return { success: true, source: 'localStorage', offline: true, supabaseError: supabaseError || null };
     },
 
     /* Check if data exists in both localStorage and Supabase */

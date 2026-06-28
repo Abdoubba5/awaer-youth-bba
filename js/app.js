@@ -375,47 +375,76 @@ function generateTrackingCode() {
       }
     }
 
+    /* ════════════════════════════════════════
+       SHOW SUCCESS ONLY WHEN SUPABASE CONFIRMS
+       ════════════════════════════════════════ */
     if (insertResult && insertResult.source === 'supabase') {
-      console.log('[FORM DEBUG] ✅ Saved DIRECTLY to Supabase (volunteers table)');
-    } else if (insertResult && insertResult.source === 'localStorage') {
-      console.log('[FORM DEBUG] ⏳ Saved to localStorage (offline queue). Will sync when online.');
-    }
+      console.log('[FORM DEBUG] ✅ Saved DIRECTLY to Supabase (consultations table)');
 
-    if (!insertResult || !insertResult.success) {
+      /* Only show success toast when Supabase confirmed the insert */
+      showToast('تم إرسال استشارتك بنجاح! رمز المتابعة الخاص بك:', 'success');
+
+      /* Record this attempt in rate limiter */
+      if (window.BBA && window.BBA.RateLimiter) {
+        window.BBA.RateLimiter.record('consultation');
+        console.log('[FORM DEBUG] Rate limit recorded');
+      }
+
+      /* Update UI */
+      var tcEl = byId('trackingCode');
+      if (tcEl) {
+        tcEl.textContent = formData.trackingCode;
+        console.log('[FORM DEBUG] Tracking code displayed');
+      } else {
+        console.warn('[FORM DEBUG] trackingCode element not found');
+      }
+      var tCont = byId('trackingContainer');
+      if (tCont) {
+        tCont.classList.add('visible');
+        console.log('[FORM DEBUG] Tracking container shown');
+      }
+
+      try {
+        form.reset();
+        console.log('[FORM DEBUG] Form reset');
+      } catch (e) {
+        console.warn('[FORM DEBUG] form.reset() error:', e);
+      }
+
+      console.log('[FORM DEBUG] 🟢 CONSULTATION FORM SUBMIT COMPLETE — SAVED TO SUPABASE ✅');
+
+    } else if (insertResult && insertResult.success) {
+      /* LocalStorage fallback — show the real error reason */
+      var supabaseErrMsg = insertResult.supabaseError || '';
+      console.log('[FORM DEBUG] ⚠️ Saved to localStorage ONLY. Supabase insert failed:', supabaseErrMsg || 'reason unknown');
+
+      /* Show the actual Supabase error to the user */
+      if (supabaseErrMsg) {
+        showToast('تعذر الحفظ في قاعدة البيانات: ' + supabaseErrMsg + '. تم حفظ طلبك محلياً وسيتم المزامنة عند الاتصال.', 'error');
+      } else {
+        showToast('تم حفظ طلبك محلياً. سيتم المزامنة مع قاعدة البيانات عند توفر الاتصال.', 'info');
+      }
+
+      /* Still show tracking code (data is saved locally) */
+      var tcEl = byId('trackingCode');
+      if (tcEl) {
+        tcEl.textContent = formData.trackingCode;
+      }
+      var tCont = byId('trackingContainer');
+      if (tCont) {
+        tCont.classList.add('visible');
+      }
+
+      try { form.reset(); } catch (e) {}
+
+      console.log('[FORM DEBUG] 🟡 CONSULTATION FORM SUBMIT COMPLETE — SAVED LOCALLY ONLY ⚠️');
+
+    } else {
+      /* All save methods failed */
       console.error('[FORM DEBUG] ❌ All save methods failed');
       showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
       return;
     }
-
-    /* Record this attempt in rate limiter */
-    if (window.BBA && window.BBA.RateLimiter) {
-      window.BBA.RateLimiter.record('consultation');
-      console.log('[FORM DEBUG] Rate limit recorded');
-    }
-
-    /* Update UI */
-    var tcEl = byId('trackingCode');
-    if (tcEl) {
-      tcEl.textContent = formData.trackingCode;
-      console.log('[FORM DEBUG] Tracking code displayed');
-    } else {
-      console.warn('[FORM DEBUG] trackingCode element not found');
-    }
-    var tCont = byId('trackingContainer');
-    if (tCont) {
-      tCont.classList.add('visible');
-      console.log('[FORM DEBUG] Tracking container shown');
-    }
-
-    try {
-      form.reset();
-      console.log('[FORM DEBUG] Form reset');
-    } catch (e) {
-      console.warn('[FORM DEBUG] form.reset() error:', e);
-    }
-
-    showToast('تم إرسال استشارتك بنجاح! رمز المتابعة الخاص بك:', 'success');
-    console.log('[FORM DEBUG] 🟢 CONSULTATION FORM SUBMIT COMPLETE — SUCCESS');
   });
 
   console.log('[FORM DEBUG] Consultation form submit listener attached');
@@ -638,38 +667,63 @@ function generateTrackingCode() {
       }
     }
 
+    /* ════════════════════════════════════════
+       SHOW SUCCESS ONLY WHEN SUPABASE CONFIRMS
+       ════════════════════════════════════════ */
     if (insertResult && insertResult.source === 'supabase') {
       console.log('[FORM DEBUG] ✅ Saved DIRECTLY to Supabase (volunteers table)');
-    } else if (insertResult && insertResult.source === 'localStorage') {
-      console.log('[FORM DEBUG] ⏳ Saved to localStorage (offline queue). Will sync when online.');
-    }
 
-    if (!insertResult || !insertResult.success) {
+      /* Only show success toast when Supabase confirmed the insert */
+      showToast('تم تسجيلك كمتطوع بنجاح! سنتواصل معك قريباً ✓', 'success');
+
+      /* Record this attempt */
+      if (window.BBA && window.BBA.RateLimiter) {
+        window.BBA.RateLimiter.record('volunteer_registration');
+        console.log('[FORM DEBUG] Rate limit recorded');
+      }
+
+      /* Reset form */
+      try {
+        form.reset();
+        console.log('[FORM DEBUG] Form reset');
+      } catch (e) {
+        console.warn('[FORM DEBUG] form.reset() error:', e);
+      }
+      for (var m = 0; m < membershipOptions.length; m++) {
+        membershipOptions[m].classList.remove('selected');
+      }
+      selectedMembership = null;
+
+      console.log('[FORM DEBUG] 🟢 VOLUNTEER FORM SUBMIT COMPLETE — SAVED TO SUPABASE ✅');
+
+    } else if (insertResult && insertResult.success) {
+      /* LocalStorage fallback — show the real error reason */
+      var supabaseErrMsg = insertResult.supabaseError || '';
+      console.log('[FORM DEBUG] ⚠️ Saved to localStorage ONLY. Supabase insert failed:', supabaseErrMsg || 'reason unknown');
+
+      /* Show the actual Supabase error to the user */
+      if (supabaseErrMsg) {
+        showToast('تعذر الحفظ في قاعدة البيانات: ' + supabaseErrMsg + '. تم حفظ طلبك محلياً وسيتم المزامنة عند الاتصال.', 'error');
+      } else {
+        showToast('تم حفظ طلبك محلياً. سيتم المزامنة مع قاعدة البيانات عند توفر الاتصال.', 'info');
+      }
+
+      try {
+        form.reset();
+      } catch (e) {}
+      for (var m = 0; m < membershipOptions.length; m++) {
+        membershipOptions[m].classList.remove('selected');
+      }
+      selectedMembership = null;
+
+      console.log('[FORM DEBUG] 🟡 VOLUNTEER FORM SUBMIT COMPLETE — SAVED LOCALLY ONLY ⚠️');
+
+    } else {
+      /* All save methods failed */
       console.error('[FORM DEBUG] ❌ All save methods failed');
       showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
       return;
     }
-
-    /* Record this attempt */
-    if (window.BBA && window.BBA.RateLimiter) {
-      window.BBA.RateLimiter.record('volunteer_registration');
-      console.log('[FORM DEBUG] Rate limit recorded');
-    }
-
-    /* Reset form */
-    try {
-      form.reset();
-      console.log('[FORM DEBUG] Form reset');
-    } catch (e) {
-      console.warn('[FORM DEBUG] form.reset() error:', e);
-    }
-    for (var m = 0; m < membershipOptions.length; m++) {
-      membershipOptions[m].classList.remove('selected');
-    }
-    selectedMembership = null;
-
-    showToast('تم تسجيلك كمتطوع بنجاح! سنتواصل معك قريباً ✓', 'success');
-    console.log('[FORM DEBUG] 🟢 VOLUNTEER FORM SUBMIT COMPLETE — SUCCESS');
   });
 
   console.log('[FORM DEBUG] Volunteer form submit listener attached');
