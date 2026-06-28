@@ -179,7 +179,14 @@ window.showToast = showToast;
 /* ============================================================
  * DASHBOARD STATISTICS + OVERVIEW WIDGETS
  * ============================================================ */
-(function loadDashboardOverview() {
+(async function loadDashboardOverview() {
+  /* ONLINE-FIRST: Pull fresh data from Supabase before rendering */
+  try {
+    await window.BBA.DB.init();
+    await window.BBA.DB.pullFromServer('bba_volunteers');
+    await window.BBA.DB.pullFromServer('bba_consultations');
+  } catch(e) { console.warn('[Admin] Supabase pull failed, using cached data:', e.message); }
+
   var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
   var consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
   var tasks = JSON.parse(localStorage.getItem('bba_tasks') || '[]');
@@ -283,10 +290,16 @@ window.showToast = showToast;
 /* ============================================================
  * VOLUNTEER MANAGEMENT
  * ============================================================ */
-(function loadVolunteersTable() {
+(async function loadVolunteersTable() {
   var tbody = document.querySelector('#volunteersTable tbody');
   var empty = byId('volunteersEmpty');
   if (!tbody) return;
+
+  /* ONLINE-FIRST: Pull fresh volunteer data from Supabase */
+  try {
+    await window.BBA.DB.init();
+    await window.BBA.DB.pullFromServer('bba_volunteers');
+  } catch(e) { console.warn('[Admin] Supabase volunteer pull failed:', e.message); }
 
   var allVolunteers = [];
   var tableCard = tbody.closest('.admin-card');
@@ -661,10 +674,16 @@ window.showToast = showToast;
  * CONSULTATION MANAGEMENT
  * Full CRUD with status update, specialist response, extra notes
  * ============================================================ */
-(function loadConsultationsTable() {
+(async function loadConsultationsTable() {
   var tbody = document.querySelector('#consultationsTable tbody');
   var empty = byId('consultationsEmpty');
   if (!tbody) return;
+
+  /* ONLINE-FIRST: Pull fresh consultation data from Supabase */
+  try {
+    await window.BBA.DB.init();
+    await window.BBA.DB.pullFromServer('bba_consultations');
+  } catch(e) { console.warn('[Admin] Supabase consultation pull failed:', e.message); }
 
   var allConsultations = [];
   var tableCard = tbody.closest('.admin-card');

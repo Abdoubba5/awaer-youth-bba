@@ -184,24 +184,48 @@
        fall back to localStorage forever — even if the CDN script arrived
        200ms later.
        
-       Now we POLL every 100ms for up to 5 seconds, waiting for
+       Now we POLL every 100ms for up to 10 seconds, waiting for
        window.supabase.createClient to become available. This gives the
        CDN script enough time to load on mobile networks.
-       Only fall to offline mode after 50 failed retries (5 seconds). */
+       Only fall to offline mode after 100 failed retries (10 seconds).
+       
+       ═══ CDN FALLBACK ═══
+       If jsDelivr hasn't loaded after 4 seconds, dynamically inject
+       a fallback script tag from unpkg.com. This handles the case
+       where jsDelivr CDN is down or slow. */
 
     initPromise = new Promise(function(resolve) {
-      var MAX_RETRY_MS = 5000;
+      var MAX_RETRY_MS = 10000;
       var RETRY_INTERVAL_MS = 100;
-      var MAX_RETRIES = Math.floor(MAX_RETRY_MS / RETRY_INTERVAL_MS); /* 50 */
+      var MAX_RETRIES = Math.floor(MAX_RETRY_MS / RETRY_INTERVAL_MS); /* 100 */
+      var CDN_FALLBACK_MS = 4000; /* Inject fallback CDN after 4s */
+      var fallbackInjected = false;
       var startTime = Date.now();
       var retryCount = 0;
 
       function attemptInit() {
         var elapsed = Date.now() - startTime;
 
+        /* ═══ CDN FALLBACK: If jsDelivr hasn't loaded after 4s, inject unpkg ═══ */
+        if (!fallbackInjected && elapsed >= CDN_FALLBACK_MS) {
+          fallbackInjected = true;
+          if (typeof window.supabase === 'undefined' || typeof window.supabase.createClient !== 'function') {
+            console.warn('[BBA DB] ⚠️ jsDelivr CDN not loaded after ' + CDN_FALLBACK_MS + 'ms — injecting unpkg fallback');
+            var fallbackScript = document.createElement('script');
+            fallbackScript.src = 'https://unpkg.com/@supabase/supabase-js@2';
+            fallbackScript.onload = function() {
+              console.log('[BBA DB] ✅ unpkg fallback CDN loaded successfully');
+            };
+            fallbackScript.onerror = function() {
+              console.error('[BBA DB] 🚨 unpkg fallback CDN also failed to load');
+            };
+            document.head.appendChild(fallbackScript);
+          }
+        }
+
         if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
           /* ✅ Success — Supabase JS library is available after waiting */
-          console.log('[BBA DB] ✅ Supabase JS library detected after ' + elapsed + 'ms (' + retryCount + ' retries)');
+          console.log('[BBA DB] ✅ Supabase JS library detected after ' + elapsed + 'ms (' + retryCount + ' retries)' + (fallbackInjected ? ' (via fallback CDN)' : ''));
 
           try {
             supabaseClient = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey, {
