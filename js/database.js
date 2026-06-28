@@ -85,31 +85,54 @@
   };
 
   (function patchLocalStorage() {
-    var originalSet = localStorage.setItem.bind(localStorage);
-    localStorage.setItem = function(key, value) {
-      originalSet(key, value);
-      /* Check if this is a BBA data key that should be synced */
-      /* Skip sync during initial pull to avoid re-syncing data just pulled from Supabase */
-      if (IS_INITIAL_PULLING) return;
+    var originalSet;
+    try {
+      originalSet = localStorage.setItem.bind(localStorage);
+    } catch (e) {
+      /* Mobile Safari (iOS private browsing) may block localStorage.setItem binding */
+      console.warn('[BBA DB] Cannot bind localStorage.setItem — sync disabled:', e.message);
+      return;
+    }
 
-      if (BBA_SYNC_KEYS[key] || key.indexOf('bba_points_') === 0 || key.indexOf('bba_cms_') === 0) {
-        /* Use a micro-task delay so BBA.DB is initialized */
-        setTimeout(function() {
-          if (window.BBA && window.BBA.DB) {
-            if (key.indexOf('bba_points_') === 0) {
-              /* Points need special handling via pushPoints */
-              /* We call syncNow with the key, but processSyncQueue ignores unknown keys */
-              /* So we directly call pushPoints */
-              if (typeof pushPoints === 'function') {
-                pushPoints();
+    try {
+      /* In strict mode, some mobile browsers (iOS Safari, Samsung Internet) may
+         throw if localStorage.setItem is non-writable. Try-catch ensures the
+         entire app doesn't break when this fails. */
+      var patched = function(key, value) {
+        try {
+          originalSet(key, value);
+        } catch (e) {
+          /* Mobile private browsing may throw on setItem entirely */
+          console.warn('[BBA DB] localStorage.setItem threw:', e.message);
+          return;
+        }
+
+        /* Skip sync during initial pull */
+        if (IS_INITIAL_PULLING) return;
+
+        if (BBA_SYNC_KEYS[key] || key.indexOf('bba_points_') === 0 || key.indexOf('bba_cms_') === 0) {
+          setTimeout(function() {
+            if (window.BBA && window.BBA.DB) {
+              if (key.indexOf('bba_points_') === 0) {
+                if (typeof pushPoints === 'function') {
+                  pushPoints();
+                }
+              } else {
+                window.BBA.DB.syncNow(key);
               }
-            } else {
-              window.BBA.DB.syncNow(key);
             }
-          }
-        }, 10);
-      }
-    };
+          }, 10);
+        }
+      };
+
+      localStorage.setItem = patched;
+      console.log('[BBA DB] localStorage.setItem patched successfully');
+    } catch (e) {
+      /* On mobile browsers where localStorage.setItem is non-configurable,
+         this throws in strict mode. We catch silently — the app works
+         without Supabase sync, just localStorage. */
+      console.log('[BBA DB] localStorage.setItem patch failed (mobile browser):', e.message);
+    }
   })();
 
   /* ============================================================

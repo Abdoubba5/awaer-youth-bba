@@ -740,6 +740,8 @@
   font-size: 0.9rem;
   transition: all 0.3s ease;
   direction: rtl;
+  /* Mobile: eliminate 300ms tap delay, prevent double-tap zoom on form controls */
+  touch-action: manipulation;
 }
 
 .form-group input:focus,
@@ -796,6 +798,7 @@
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  touch-action: manipulation;
 }
 
 .membership-option:hover {

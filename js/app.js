@@ -226,8 +226,19 @@ window.showToast = showToast;
  * ============================================================ */
 function generateTrackingCode() {
   var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  var randomValues = new Uint8Array(8);
-  window.crypto.getRandomValues(randomValues);
+  var randomValues;
+  try {
+    randomValues = new Uint8Array(8);
+    window.crypto.getRandomValues(randomValues);
+    console.log('[FORM DEBUG] Tracking code: crypto.getRandomValues succeeded');
+  } catch (e) {
+    /* Fallback for mobile browsers without crypto.getRandomValues */
+    console.warn('[FORM DEBUG] crypto.getRandomValues failed on mobile, using Math.random fallback:', e.message);
+    randomValues = new Uint8Array(8);
+    for (var fi = 0; fi < 8; fi++) {
+      randomValues[fi] = Math.floor(Math.random() * 256);
+    }
+  }
   var part1 = '';
   var part2 = '';
   for (var i = 0; i < 4; i++) {
@@ -242,64 +253,142 @@ function generateTrackingCode() {
  * CONSULTATION FORM
  * ============================================================ */
 (function initConsultationForm() {
+  console.log('[FORM DEBUG] initConsultationForm: starting');
   var form = byId('consultationForm');
-  if (!form) return;
+  if (!form) {
+    console.warn('[FORM DEBUG] initConsultationForm: form element #consultationForm not found');
+    return;
+  }
+  console.log('[FORM DEBUG] initConsultationForm: form found, mounting rate limiter');
 
   /* Mount rate limit indicator once */
   if (window.BBA && window.BBA.RateLimitIndicator) {
     window.BBA.RateLimitIndicator.mount('consultRateLimitIndicator', 'consultation');
+    console.log('[FORM DEBUG] Rate limit indicator mounted for consultation');
+  } else {
+    console.warn('[FORM DEBUG] RateLimitIndicator not available');
   }
 
   form.addEventListener('submit', function(e) {
+    console.log('[FORM DEBUG] 🟢 CONSULTATION FORM SUBMIT TRIGGERED');
+    console.log('[FORM DEBUG] Event type:', e.type);
+    console.log('[FORM DEBUG] Event target:', e.target.id);
+
+    /* Must be called first — critical for mobile */
     e.preventDefault();
+    console.log('[FORM DEBUG] e.preventDefault() called');
 
     /* Rate limit check */
     if (window.BBA && window.BBA.RateLimiter) {
       var rl = window.BBA.RateLimiter.check('consultation');
+      console.log('[FORM DEBUG] Rate limit check result:', rl);
       if (!rl.allowed) {
+        console.warn('[FORM DEBUG] Rate limit BLOCKED:', rl.message);
         showToast(rl.message, 'error');
         return;
       }
+    } else {
+      console.warn('[FORM DEBUG] RateLimiter not available — skipping rate check');
     }
 
+    /* Collect form field values */
+    var aliasEl = byId('consultAlias');
+    var ageEl = byId('consultAge');
+    var subjectEl = byId('consultSubject');
+    var messageEl = byId('consultMessage');
+
+    if (!aliasEl) { console.error('[FORM DEBUG] consultAlias element not found'); showToast('خطأ في النموذج', 'error'); return; }
+    if (!ageEl) { console.error('[FORM DEBUG] consultAge element not found'); showToast('خطأ في النموذج', 'error'); return; }
+    if (!subjectEl) { console.error('[FORM DEBUG] consultSubject element not found'); showToast('خطأ في النموذج', 'error'); return; }
+    if (!messageEl) { console.error('[FORM DEBUG] consultMessage element not found'); showToast('خطأ في النموذج', 'error'); return; }
+
     var formData = {
-      alias: byId('consultAlias').value.trim(),
-      ageGroup: byId('consultAge').value,
-      subject: byId('consultSubject').value.trim(),
-      message: byId('consultMessage').value.trim(),
+      alias: aliasEl.value.trim(),
+      ageGroup: ageEl.value,
+      subject: subjectEl.value.trim(),
+      message: messageEl.value.trim(),
       date: new Date().toISOString(),
       status: 'pending',
       specialistResponse: '',
       extraNotes: '',
       lastUpdated: ''
     };
+    console.log('[FORM DEBUG] Collected form data:', { alias: formData.alias ? '✓' : '✗', ageGroup: formData.ageGroup ? '✓' : '✗', subject: formData.subject ? '✓' : '✗', message: formData.message ? '✓' : '✗' });
+
+    /* Validate required fields */
     if (!formData.alias || !formData.ageGroup || !formData.subject || !formData.message) {
+      console.warn('[FORM DEBUG] Validation FAILED — missing required fields');
       showToast('يرجى ملء جميع الحقول المطلوبة', 'error');
       return;
     }
     if (formData.subject.length < 3) {
+      console.warn('[FORM DEBUG] Validation FAILED — subject too short:', formData.subject.length);
       showToast('عنوان الاستشارة قصير جداً (3 أحرف على الأقل)', 'error');
       return;
     }
     if (formData.message.length < 10) {
+      console.warn('[FORM DEBUG] Validation FAILED — message too short:', formData.message.length);
       showToast('الرسالة قصيرة جداً (10 أحرف على الأقل)', 'error');
       return;
     }
-    formData.trackingCode = generateTrackingCode();
-    var consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
-    consultations.push(formData);
-    localStorage.setItem('bba_consultations', JSON.stringify(consultations));
+    console.log('[FORM DEBUG] Validation PASSED');
 
-    /* Record this attempt */
-    if (window.BBA && window.BBA.RateLimiter) {
-      window.BBA.RateLimiter.record('consultation');
+    /* Generate tracking code */
+    formData.trackingCode = generateTrackingCode();
+    console.log('[FORM DEBUG] Tracking code generated:', formData.trackingCode);
+
+    /* Save to localStorage */
+    var consultations = [];
+    try {
+      consultations = JSON.parse(localStorage.getItem('bba_consultations') || '[]');
+      console.log('[FORM DEBUG] Loaded existing consultations from localStorage: ' + consultations.length + ' items');
+    } catch (e) {
+      console.error('[FORM DEBUG] Failed to parse existing consultations:', e);
+    }
+    consultations.push(formData);
+    console.log('[FORM DEBUG] Pushing to localStorage, total will be: ' + consultations.length);
+
+    try {
+      localStorage.setItem('bba_consultations', JSON.stringify(consultations));
+      console.log('[FORM DEBUG] ✅ SAVED to localStorage: bba_consultations');
+    } catch (e) {
+      console.error('[FORM DEBUG] ❌ localStorage.setItem FAILED:', e.message);
+      showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
+      return;
     }
 
-    byId('trackingCode').textContent = formData.trackingCode;
-    byId('trackingContainer').classList.add('visible');
-    form.reset();
+    /* Record this attempt in rate limiter */
+    if (window.BBA && window.BBA.RateLimiter) {
+      window.BBA.RateLimiter.record('consultation');
+      console.log('[FORM DEBUG] Rate limit recorded');
+    }
+
+    /* Update UI */
+    var tcEl = byId('trackingCode');
+    if (tcEl) {
+      tcEl.textContent = formData.trackingCode;
+      console.log('[FORM DEBUG] Tracking code displayed');
+    } else {
+      console.warn('[FORM DEBUG] trackingCode element not found');
+    }
+    var tCont = byId('trackingContainer');
+    if (tCont) {
+      tCont.classList.add('visible');
+      console.log('[FORM DEBUG] Tracking container shown');
+    }
+
+    try {
+      form.reset();
+      console.log('[FORM DEBUG] Form reset');
+    } catch (e) {
+      console.warn('[FORM DEBUG] form.reset() error:', e);
+    }
+
     showToast('تم إرسال استشارتك بنجاح! رمز المتابعة الخاص بك:', 'success');
+    console.log('[FORM DEBUG] 🟢 CONSULTATION FORM SUBMIT COMPLETE — SUCCESS');
   });
+
+  console.log('[FORM DEBUG] Consultation form submit listener attached');
 
   var copyBtn = byId('copyCodeBtn');
   if (copyBtn) {
@@ -333,6 +422,8 @@ function generateTrackingCode() {
     }
     document.body.removeChild(textarea);
   }
+
+  console.log('[FORM DEBUG] initConsultationForm: complete');
 })();
 
 
@@ -342,8 +433,13 @@ function generateTrackingCode() {
  * VOLUNTEER REGISTRATION FORM
  * ============================================================ */
 (function initVolunteerForm() {
+  console.log('[FORM DEBUG] initVolunteerForm: starting');
   var form = byId('volunteerForm');
-  if (!form) return;
+  if (!form) {
+    console.warn('[FORM DEBUG] initVolunteerForm: form element #volunteerForm not found');
+    return;
+  }
+  console.log('[FORM DEBUG] initVolunteerForm: form found');
 
   var MUNICIPALITIES = [
     'أولاد براهم', 'أولاد دحمان', 'أولاد سيدي إبراهيم', 'برج الغدير',
@@ -365,10 +461,14 @@ function generateTrackingCode() {
       option.textContent = MUNICIPALITIES[i];
       munSelect.appendChild(option);
     }
+    console.log('[FORM DEBUG] Populated ' + MUNICIPALITIES.length + ' municipalities');
+  } else {
+    console.warn('[FORM DEBUG] volunteerMunicipality select not found');
   }
 
   var membershipOptions = document.querySelectorAll('.membership-option');
   var selectedMembership = null;
+  console.log('[FORM DEBUG] Membership options found: ' + membershipOptions.length);
 
   for (var j = 0; j < membershipOptions.length; j++) {
     membershipOptions[j].addEventListener('click', function() {
@@ -377,74 +477,143 @@ function generateTrackingCode() {
       }
       this.classList.add('selected');
       selectedMembership = this.getAttribute('data-value');
+      console.log('[FORM DEBUG] Membership selected:', selectedMembership);
     });
   }
 
   /* Mount rate limit indicator once */
   if (window.BBA && window.BBA.RateLimitIndicator) {
     window.BBA.RateLimitIndicator.mount('volunteerRateLimitIndicator', 'volunteer_registration');
+    console.log('[FORM DEBUG] Rate limit indicator mounted for volunteer_registration');
+  } else {
+    console.warn('[FORM DEBUG] RateLimitIndicator not available');
   }
 
   form.addEventListener('submit', function(e) {
+    console.log('[FORM DEBUG] 🟢 VOLUNTEER FORM SUBMIT TRIGGERED');
+    console.log('[FORM DEBUG] Event type:', e.type);
+    console.log('[FORM DEBUG] Event target:', e.target.id);
+
+    /* Must be called first — critical for mobile */
     e.preventDefault();
+    console.log('[FORM DEBUG] e.preventDefault() called');
 
     /* Rate limit check */
     if (window.BBA && window.BBA.RateLimiter) {
       var rl = window.BBA.RateLimiter.check('volunteer_registration');
+      console.log('[FORM DEBUG] Rate limit check result:', rl);
       if (!rl.allowed) {
+        console.warn('[FORM DEBUG] Rate limit BLOCKED:', rl.message);
         showToast(rl.message, 'error');
         return;
       }
+    } else {
+      console.warn('[FORM DEBUG] RateLimiter not available — skipping rate check');
     }
 
+    /* Collect form field values with defensive element checks */
+    var nameEl = byId('volunteerName');
+    var emailEl = byId('volunteerEmail');
+    var phoneEl = byId('volunteerPhone');
+    var munEl = byId('volunteerMunicipality');
+    var motEl = byId('volunteerMotivation');
+
+    if (!nameEl) { console.error('[FORM DEBUG] volunteerName not found'); showToast('خطأ في النموذج', 'error'); return; }
+    if (!emailEl) { console.error('[FORM DEBUG] volunteerEmail not found'); showToast('خطأ في النموذج', 'error'); return; }
+    if (!phoneEl) { console.error('[FORM DEBUG] volunteerPhone not found'); showToast('خطأ في النموذج', 'error'); return; }
+    if (!munEl) { console.error('[FORM DEBUG] volunteerMunicipality not found'); showToast('خطأ في النموذج', 'error'); return; }
+
     var volunteer = {
-      fullName: byId('volunteerName').value.trim(),
-      email: byId('volunteerEmail').value.trim(),
-      phone: byId('volunteerPhone').value.trim(),
-      municipality: byId('volunteerMunicipality').value,
+      fullName: nameEl.value.trim(),
+      email: emailEl.value.trim(),
+      phone: phoneEl.value.trim(),
+      municipality: munEl.value,
       membershipType: selectedMembership || '',
-      motivation: byId('volunteerMotivation').value.trim(),
+      motivation: motEl ? motEl.value.trim() : '',
       status: 'pending',
       suspended: false,
       volunteerId: '',
       date: new Date().toISOString()
     };
+    console.log('[FORM DEBUG] Collected form data:', {
+      fullName: volunteer.fullName ? '✓' : '✗',
+      email: volunteer.email ? '✓' : '✗',
+      phone: volunteer.phone ? '✓' : '✗',
+      municipality: volunteer.municipality ? '✓' : '✗',
+      membershipType: volunteer.membershipType ? '✓' : '✗'
+    });
+
+    /* Validate required fields */
     if (!volunteer.fullName || !volunteer.email || !volunteer.phone ||
         !volunteer.municipality || !volunteer.membershipType) {
+      console.warn('[FORM DEBUG] Validation FAILED — missing required fields');
       showToast('يرجى ملء جميع الحقول المطلوبة', 'error');
       return;
     }
     if (volunteer.fullName.length < 3) {
+      console.warn('[FORM DEBUG] Validation FAILED — name too short:', volunteer.fullName.length);
       showToast('الاسم الكامل يجب أن يكون 3 أحرف على الأقل', 'error');
       return;
     }
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(volunteer.email)) {
+      console.warn('[FORM DEBUG] Validation FAILED — invalid email:', volunteer.email);
       showToast('يرجى إدخال بريد إلكتروني صحيح', 'error');
       return;
     }
     var phoneClean = volunteer.phone.replace(/\s/g, '').replace(/-/g, '');
     var phoneRegex = /^(05|06|07)\d{8}$/;
     if (!phoneRegex.test(phoneClean)) {
+      console.warn('[FORM DEBUG] Validation FAILED — invalid phone:', phoneClean);
       showToast('يرجى إدخال رقم هاتف جزائري صحيح (05XX-XX-XX-XX)', 'error');
       return;
     }
-    var volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+    console.log('[FORM DEBUG] Validation PASSED');
+
+    /* Save to localStorage */
+    var volunteers = [];
+    try {
+      volunteers = JSON.parse(localStorage.getItem('bba_volunteers') || '[]');
+      console.log('[FORM DEBUG] Loaded existing volunteers from localStorage: ' + volunteers.length + ' items');
+    } catch (e) {
+      console.error('[FORM DEBUG] Failed to parse existing volunteers:', e);
+    }
     volunteers.push(volunteer);
-    localStorage.setItem('bba_volunteers', JSON.stringify(volunteers));
+    console.log('[FORM DEBUG] Pushing to localStorage, total will be: ' + volunteers.length);
+
+    try {
+      localStorage.setItem('bba_volunteers', JSON.stringify(volunteers));
+      console.log('[FORM DEBUG] ✅ SAVED to localStorage: bba_volunteers');
+    } catch (e) {
+      console.error('[FORM DEBUG] ❌ localStorage.setItem FAILED:', e.message);
+      showToast('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.', 'error');
+      return;
+    }
 
     /* Record this attempt */
     if (window.BBA && window.BBA.RateLimiter) {
       window.BBA.RateLimiter.record('volunteer_registration');
+      console.log('[FORM DEBUG] Rate limit recorded');
     }
 
-    form.reset();
+    /* Reset form */
+    try {
+      form.reset();
+      console.log('[FORM DEBUG] Form reset');
+    } catch (e) {
+      console.warn('[FORM DEBUG] form.reset() error:', e);
+    }
     for (var m = 0; m < membershipOptions.length; m++) {
       membershipOptions[m].classList.remove('selected');
     }
     selectedMembership = null;
+
     showToast('تم تسجيلك كمتطوع بنجاح! سنتواصل معك قريباً ✓', 'success');
+    console.log('[FORM DEBUG] 🟢 VOLUNTEER FORM SUBMIT COMPLETE — SUCCESS');
   });
+
+  console.log('[FORM DEBUG] Volunteer form submit listener attached');
+  console.log('[FORM DEBUG] initVolunteerForm: complete');
 })();
 
 /**
