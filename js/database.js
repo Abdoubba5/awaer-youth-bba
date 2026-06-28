@@ -82,15 +82,17 @@
     'bba_achievements': true,
     'bba_activity_log': true,
     'bba_notifications_data': true
-  };
-
-  (function patchLocalStorage() {
+  };    (function patchLocalStorage() {
     var originalSet;
     try {
       originalSet = localStorage.setItem.bind(localStorage);
     } catch (e) {
-      /* Mobile Safari (iOS private browsing) may block localStorage.setItem binding */
-      console.warn('[BBA DB] Cannot bind localStorage.setItem — sync disabled:', e.message);
+      /* 🚨 FALLBACK: Mobile Safari (iOS private browsing) may block localStorage.setItem binding */
+      console.error('[BBA DB] 🚨 FALLBACK — Cannot bind localStorage.setItem, sync through monkey-patch is disabled');
+      console.error('[BBA DB] 🚨 Exception name:', e.name);
+      console.error('[BBA DB] 🚨 Exception message:', e.message);
+      console.error('[BBA DB] 🚨 Likely cause: iOS Safari private browsing or restricted Android WebView');
+      console.error('[BBA DB] 🚨 Impact: Automatic sync via localStorage.setItem will not work. Online-first insert methods still attempt Supabase directly.');
       return;
     }
 
@@ -106,8 +108,11 @@
         try {
           originalSet(key, value);
         } catch (e) {
-          /* Mobile private browsing may throw on setItem entirely */
-          console.warn('[BBA DB] localStorage.setItem threw:', e.message);
+          /* 🚨 FALLBACK: Mobile private browsing may throw on setItem entirely */
+          console.error('[BBA DB] 🚨 FALLBACK — localStorage.setItem threw during write');
+          console.error('[BBA DB] 🚨 Exception name:', e.name);
+          console.error('[BBA DB] 🚨 Exception message:', e.message);
+          console.error('[BBA DB] 🚨 Key:', key);
           return;
         }
 
@@ -142,10 +147,13 @@
       localStorage.setItem = patched;
       console.log('[BBA DB] localStorage.setItem patched successfully');
     } catch (e) {
-      /* On mobile browsers where localStorage.setItem is non-configurable,
-         this throws in strict mode. We catch silently — the app works
-         without Supabase sync, just localStorage. */
-      console.log('[BBA DB] localStorage.setItem patch failed (mobile browser):', e.message);
+      /* 🚨 FALLBACK: On mobile browsers where localStorage.setItem is non-configurable,
+         this throws in strict mode. */
+      console.error('[BBA DB] 🚨 FALLBACK — localStorage.setItem patch assignment failed');
+      console.error('[BBA DB] 🚨 Exception name:', e.name);
+      console.error('[BBA DB] 🚨 Exception message:', e.message);
+      console.error('[BBA DB] 🚨 Likely cause: Strict mode prohibits assignment to non-writable built-in on this browser');
+      console.error('[BBA DB] 🚨 Impact: Automatic sync via monkey-patch disabled. Online-first insert methods in insertVolunteer/insertConsultation still work.');
     }
   })();
 
@@ -202,7 +210,10 @@
             resolve(true);
           }).catch(function(err) {
             IS_INITIAL_PULLING = false;
-            console.warn('[SYNC DEBUG] ❌ initialPull failed:', err && err.message ? err.message : 'unknown error');
+            console.error('[BBA DB] 🚨 FALLBACK — initialPull failed');
+            console.error('[BBA DB] 🚨 Exception name:', err && err.name ? err.name : 'N/A');
+            console.error('[BBA DB] 🚨 Exception message:', err && err.message ? err.message : 'unknown error');
+            console.error('[BBA DB] 🚨 Exception details:', err && err.details ? err.details : 'N/A');
             /* Still flush pending syncs even if pull failed */
             if (PENDING_PULLING_SYNCS.length > 0) {
               console.log('[SYNC DEBUG] 🔄 Flushing ' + PENDING_PULLING_SYNCS.length + ' buffered syncs despite pull failure');
@@ -214,12 +225,22 @@
             resolve(false);
           });
         } catch (err) {
-          console.warn('[BBA DB] Failed to init Supabase:', err.message);
+          console.error('[BBA DB] 🚨 FALLBACK — Supabase client creation threw');
+          console.error('[BBA DB] 🚨 Exception name:', err.name);
+          console.error('[BBA DB] 🚨 Exception message:', err.message);
+          console.error('[BBA DB] 🚨 Exception stack:', err.stack ? err.stack.split('\n').slice(0, 3).join('\n') : 'N/A');
+          console.error('[BBA DB] 🚨 typeof window.supabase:', typeof window.supabase);
+          console.error('[BBA DB] 🚨 typeof window.supabase.createClient:', typeof (window.supabase && window.supabase.createClient));
+          console.error('[BBA DB] 🚨 Impact: isConnected=false. insertVolunteer/insertConsultation will bypass Supabase and fall back to localStorage.');
           isConnected = false;
           resolve(false);
         }
       } else {
-        console.log('[BBA DB] Supabase JS not loaded, using localStorage only');
+        console.error('[BBA DB] 🚨 FALLBACK — Supabase JS library not loaded');
+        console.error('[BBA DB] 🚨 typeof window.supabase:', typeof window.supabase);
+        console.error('[BBA DB] 🚨 typeof window.supabase.createClient:', typeof (window.supabase && window.supabase.createClient));
+        console.error('[BBA DB] 🚨 Likely cause: Supabase CDN script failed to load on this device (network issue on mobile / cached on desktop)');
+        console.error('[BBA DB] 🚨 Impact: supabaseClient is null. All inserts go to localStorage only. insertVolunteer/insertConsultation will skip Supabase.');
         isConnected = false;
         resolve(false);
       }
@@ -365,7 +386,9 @@
     console.log('[SYNC DEBUG] localKey:', localKey, '| isConnected:', isConnected, '| hasClient:', !!supabaseClient);
 
     if (!isConnected || !supabaseClient) {
-      console.log('[SYNC DEBUG] ❌ pushTable: Not connected — re-queueing', localKey);
+      console.error('[BBA DB] 🚨 FALLBACK — pushTable: Not connected to Supabase, re-queueing sync for', localKey);
+      console.error('[BBA DB] 🚨 isConnected:', isConnected, '| hasClient:', !!supabaseClient);
+      console.error('[BBA DB] 🚨 Impact: Data in localStorage for', localKey, 'will not reach Supabase until connection is restored');
       queueSync(localKey);
       console.log('[SYNC DEBUG] ===== pushTable END (re-queued) =====');
       return;
@@ -373,7 +396,9 @@
 
     var tableName = CONFIG.tableMap[localKey];
     if (!tableName) {
-      console.log('[SYNC DEBUG] ❌ pushTable: No table mapping for', localKey);
+      console.error('[BBA DB] 🚨 FALLBACK — pushTable: No table mapping for', localKey);
+      console.error('[BBA DB] 🚨 Cause: CONFIG.tableMap does not contain', localKey);
+      console.error('[BBA DB] 🚨 Impact: Data in localStorage for', localKey, 'cannot be pushed to Supabase — unknown table');
       console.log('[SYNC DEBUG] ===== pushTable END (no mapping) =====');
       return;
     }
@@ -391,7 +416,11 @@
       var items;
       try { items = JSON.parse(raw); }
       catch(e) {
-        console.log('[SYNC DEBUG] ❌ JSON parse failed for', localKey, ':', e.message);
+        console.error('[BBA DB] 🚨 FALLBACK — pushTable: JSON parse failed for', localKey);
+        console.error('[BBA DB] 🚨 Exception name:', e.name);
+        console.error('[BBA DB] 🚨 Exception message:', e.message);
+        console.error('[BBA DB] 🚨 raw.substring(0,100):', raw.substring(0, 100));
+        console.error('[BBA DB] 🚨 Impact: Corrupt data in localStorage cannot be parsed, sync aborted');
         console.log('[SYNC DEBUG] ===== pushTable END (parse error) =====');
         return;
       }
@@ -410,7 +439,13 @@
         .select('id');
 
       if (selectError) {
-        console.log('[SYNC DEBUG] ❌ SELECT error:', selectError.message);
+        console.error('[BBA DB] 🚨 FALLBACK — pushTable: SELECT error on', tableName);
+        console.error('[BBA DB] 🚨 Exception name:', selectError.name || 'SupabaseError');
+        console.error('[BBA DB] 🚨 Exception message:', selectError.message);
+        console.error('[BBA DB] 🚨 Exception code:', selectError.code || 'N/A');
+        console.error('[BBA DB] 🚨 Exception details:', selectError.details || 'N/A');
+        console.error('[BBA DB] 🚨 Exception hint:', selectError.hint || 'N/A');
+        console.error('[BBA DB] 🚨 Impact: Cannot read existing data from', tableName, '— sync may duplicate rows');
         throw selectError;
       }
       console.log('[SYNC DEBUG] Existing rows in Supabase:', existingData ? existingData.length : 0);
@@ -424,7 +459,12 @@
           .neq('id', '00000000-0000-0000-0000-000000000000');
 
         if (deleteError) {
-          console.log('[SYNC DEBUG] ❌ DELETE error (RLS?), falling back to upsert:', deleteError.message);
+          console.error('[BBA DB] 🚨 FALLBACK — pushTable: DELETE failed on', tableName, '- falling back to upsert');
+          console.error('[BBA DB] 🚨 Exception name:', deleteError.name || 'SupabaseError');
+          console.error('[BBA DB] 🚨 Exception message:', deleteError.message);
+          console.error('[BBA DB] 🚨 Exception code:', deleteError.code || 'N/A');
+          console.error('[BBA DB] 🚨 Exception details:', deleteError.details || 'N/A');
+          console.error('[BBA DB] 🚨 Likely cause: RLS policy blocks DELETE for anonymous users on', tableName);
           await upsertItems(tableName, items);
           console.log('[SYNC DEBUG] ===== pushTable END (upsert fallback) =====');
           return;
@@ -451,8 +491,14 @@
           .insert(batch);
 
         if (insertError) {
-          console.log('[SYNC DEBUG] ❌ INSERT error for batch', (i/50)+1, ':', insertError.message, insertError.details || '');
-          console.log('[SYNC DEBUG] ❌ First row in batch:', JSON.stringify(batch[0]).substring(0, 200));
+          console.error('[BBA DB] 🚨 FALLBACK — pushTable: INSERT failed for batch', (i/50)+1, 'on', tableName);
+          console.error('[BBA DB] 🚨 Exception name:', insertError.name || 'SupabaseError');
+          console.error('[BBA DB] 🚨 Exception message:', insertError.message);
+          console.error('[BBA DB] 🚨 Exception code:', insertError.code || 'N/A');
+          console.error('[BBA DB] 🚨 Exception details:', insertError.details || 'N/A');
+          console.error('[BBA DB] 🚨 Exception hint:', insertError.hint || 'N/A');
+          console.error('[BBA DB] 🚨 First row in batch:', JSON.stringify(batch[0]).substring(0, 200));
+          console.error('[BBA DB] 🚨 Impact: ' + items.length + ' rows partially synced — data may be incomplete on mobile');
           allInserted = false;
         } else {
           console.log('[SYNC DEBUG] ✅ Batch', (i/50)+1, 'inserted successfully');
@@ -463,11 +509,16 @@
         console.log('[SYNC DEBUG] ✅ ALL batches inserted successfully');
         console.log('[BBA DB] Synced ' + localKey + ' to Supabase: ' + items.length + ' items');
       } else {
-        console.log('[SYNC DEBUG] ⚠️ Some batches failed — data may be incomplete in Supabase');
+        console.error('[BBA DB] ⚠️ Some batches failed during pushTable — data may be incomplete in Supabase');
       }
     } catch (err) {
-      console.log('[SYNC DEBUG] ❌ pushTable threw:', err.message);
-      console.log('[SYNC DEBUG] Stack:', err.stack ? err.stack.substring(0, 300) : 'N/A');
+      console.error('[BBA DB] 🚨 FALLBACK — pushTable caught top-level exception');
+      console.error('[BBA DB] 🚨 Exception name:', err.name || 'Error');
+      console.error('[BBA DB] 🚨 Exception message:', err.message || '(no message)');
+      console.error('[BBA DB] 🚨 Exception code:', err.code || 'N/A');
+      console.error('[BBA DB] 🚨 Exception details:', err.details || 'N/A');
+      console.error('[BBA DB] 🚨 Exception hint:', err.hint || 'N/A');
+      console.error('[BBA DB] 🚨 Stack:', err.stack ? err.stack.substring(0, 300) : 'N/A');
     }
 
     console.log('[SYNC DEBUG] ===== pushTable END =====');
@@ -475,6 +526,7 @@
 
   /* Upsert items individually (fallback when delete not allowed) */
   async function upsertItems(tableName, items) {
+    var upsertFailures = 0;
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
       var row = transformRowToDB(tableName, item);
@@ -482,26 +534,61 @@
 
       if (item._supabase_id) {
         /* Update existing */
-        await supabaseClient
-          .from(tableName)
-          .update(row)
-          .eq('id', item._supabase_id);
+        try {
+          var { error: updateError } = await supabaseClient
+            .from(tableName)
+            .update(row)
+            .eq('id', item._supabase_id);
+          if (updateError) {
+            console.error('[BBA DB] 🚨 FALLBACK — upsertItems UPDATE failed for row', i, 'on', tableName);
+            console.error('[BBA DB] 🚨 Exception message:', updateError.message, '| code:', updateError.code || 'N/A');
+            upsertFailures++;
+          }
+        } catch (e) {
+          console.error('[BBA DB] 🚨 FALLBACK — upsertItems UPDATE threw for row', i, 'on', tableName);
+          console.error('[BBA DB] 🚨 Exception name:', e.name, '| message:', e.message);
+          upsertFailures++;
+        }
       } else {
         /* Insert new */
-        var { data, error } = await supabaseClient
-          .from(tableName)
-          .insert(row)
-          .select('id');
+        try {
+          var { data, error } = await supabaseClient
+            .from(tableName)
+            .insert(row)
+            .select('id');
 
-        if (!error && data && data.length > 0) {
-          /* Store the Supabase ID back to localStorage */
-          item._supabase_id = data[0].id;
+          if (error) {
+            console.error('[BBA DB] 🚨 FALLBACK — upsertItems INSERT failed for row', i, 'on', tableName);
+            console.error('[BBA DB] 🚨 Exception message:', error.message);
+            console.error('[BBA DB] 🚨 Exception code:', error.code || 'N/A');
+            console.error('[BBA DB] 🚨 Exception details:', error.details || 'N/A');
+            upsertFailures++;
+          } else if (data && data.length > 0) {
+            /* Store the Supabase ID back to localStorage */
+            item._supabase_id = data[0].id;
+          }
+        } catch (e) {
+          console.error('[BBA DB] 🚨 FALLBACK — upsertItems INSERT threw for row', i, 'on', tableName);
+          console.error('[BBA DB] 🚨 Exception name:', e.name, '| message:', e.message);
+          upsertFailures++;
         }
       }
     }
 
+    if (upsertFailures > 0) {
+      console.error('[BBA DB] 🚨 upsertItems completed with', upsertFailures, 'failure(s) out of', items.length, 'rows on', tableName);
+      console.error('[BBA DB] 🚨 Impact: Mobile data may be partially synced —', upsertFailures, 'rows did not reach Supabase');
+    } else {
+      console.log('[BBA DB] upsertItems: all', items.length, 'rows upserted successfully on', tableName);
+    }
+
     /* Save updated items (with _supabase_id) back to localStorage */
-    localStorage.setItem('bba_' + tableName, JSON.stringify(items));
+    try {
+      localStorage.setItem('bba_' + tableName, JSON.stringify(items));
+    } catch (e) {
+      console.error('[BBA DB] 🚨 FALLBACK — upsertItems localStorage write failed');
+      console.error('[BBA DB] 🚨 Exception:', e.name, '-', e.message);
+    }
   }
 
   /* Push CMS content to Supabase */
@@ -674,11 +761,15 @@
     console.log('[SYNC DEBUG] isSyncing:', isSyncing, '| isConnected:', isConnected, '| queue has:', syncQueue.length, 'items');
 
     if (isSyncing) {
-      console.log('[SYNC DEBUG] ❌ Already syncing — skipping this cycle');
+      console.error('[BBA DB] 🚨 FALLBACK — processSyncQueue: Already syncing, skipping this cycle');
+      console.error('[BBA DB] 🚨 Queue preserved for retry:', syncQueue.length, 'items');
       return;
     }
     if (!isConnected) {
-      console.log('[SYNC DEBUG] ❌ Not connected to Supabase — deferring sync. Queue kept for retry.');
+      console.error('[BBA DB] 🚨 FALLBACK — processSyncQueue: Not connected to Supabase, deferring sync');
+      console.error('[BBA DB] 🚨 isConnected:', isConnected, '| hasClient:', !!supabaseClient);
+      console.error('[BBA DB] 🚨 Queue preserved:', syncQueue.length, 'items waiting');
+      console.error('[BBA DB] 🚨 Impact: Queued data will only sync when connection returns (online event listener)');
       return;
     }
 
@@ -890,55 +981,111 @@
     insertVolunteer: async function(formData) {
       var tableName = 'volunteers';
       var localKey = 'bba_volunteers';
-      console.log('[BBA DB] insertVolunteer: starting, isConnected=' + isConnected);
+      console.log('[BBA DB] insertVolunteer: starting, isConnected=' + isConnected + ', hasClient=' + !!supabaseClient);
 
-      /* Try Supabase first */
-      if (isConnected && supabaseClient) {
-        try {
-          var row = transformRowToDB(tableName, formData);
-          console.log('[BBA DB] insertVolunteer: transformed row keys:', Object.keys(row).join(','));
-
-          var { data, error } = await supabaseClient
-            .from(tableName)
-            .insert(row)
-            .select();
-
-          if (error) {
-            console.warn('[BBA DB] insertVolunteer: Supabase insert failed:', error.message);
-            throw error;
-          }
-
-          console.log('[BBA DB] insertVolunteer: ✅ Supabase insert succeeded');
-
-          /* Sync localStorage as cache — use original setItem to avoid double-sync */
-          if (data && data.length > 0) {
-            var cached = transformRowFromDB(tableName, data[0]);
-            var all = [];
-            try { all = JSON.parse(localStorage.getItem(localKey) || '[]'); } catch(e) {}
-            all.push(cached);
-            if (window.__bba_original_setItem) {
-              window.__bba_original_setItem(localKey, JSON.stringify(all));
-            } else {
-              localStorage.setItem(localKey, JSON.stringify(all));
-            }
-            console.log('[BBA DB] insertVolunteer: localStorage cache updated');
-            return { success: true, source: 'supabase', insertedId: data[0].id };
-          }
-
-          return { success: true, source: 'supabase' };
-        } catch (err) {
-          console.warn('[BBA DB] insertVolunteer: Supabase insert FAILED:', err.message);
-          if (err.details) console.warn('[BBA DB] insertVolunteer: Error details:', err.details);
-          /* Fall through to localStorage fallback — pass the actual error so caller can show it */
-          var fallbackResult = this._saveToLocalAndQueueSync(localKey, formData, err.message);
-          return fallbackResult;
-        }
-      } else {
-        console.log('[BBA DB] insertVolunteer: Supabase offline, using localStorage');
+      /* ═══ CRITICAL: Always attempt Supabase insert ═══
+         Previously, this had `if (isConnected && supabaseClient)` which short-circuited to
+         localStorage when isConnected was false. On mobile, isConnected can be false due to:
+           - Supabase CDN not loading (mobile network issue)
+           - createClient() throwing (rare mobile JS quirk)
+         By always attempting the insert, we capture the REAL exception message.
+         Only skip if supabaseClient is truly null (library not loaded). */
+      if (!supabaseClient) {
+        console.error('[BBA DB] 🚨 FALLBACK — insertVolunteer: supabaseClient is null, cannot attempt Supabase');
+        console.error('[BBA DB] 🚨 Exception: supabaseClient is null');
+        console.error('[BBA DB] 🚨 Likely cause: Supabase JS library not loaded on this page/device');
+        var fb = this._saveToLocalAndQueueSync(localKey, formData, {
+          name: 'NullClientError',
+          message: 'supabaseClient is null — Supabase JS library was not loaded on this device',
+          details: 'isConnected=' + isConnected + ', typeof window.supabase=' + (typeof window.supabase),
+          hint: 'Ensure Supabase CDN script is loading correctly on mobile browsers'
+        });
+        return fb;
       }
 
-      /* Offline fallback — save to localStorage (triggers monkey-patch sync later) */
-      return this._saveToLocalAndQueueSync(localKey, formData);
+      try {
+        var row = transformRowToDB(tableName, formData);
+        console.log('[BBA DB] insertVolunteer: transformed row keys:', Object.keys(row).join(','));
+
+        console.log('[BBA DB] insertVolunteer: sending INSERT to Supabase table:', tableName);
+        var { data, error } = await supabaseClient
+          .from(tableName)
+          .insert(row)
+          .select();
+
+        if (error) {
+          /* Supabase returned an error object — this is a proper API error (RLS, schema, etc.) */
+          console.error('[BBA DB] 🚨 FALLBACK — insertVolunteer: Supabase INSERT returned error object');
+          console.error('[BBA DB] 🚨 Exception name:', error.name || 'SupabaseError');
+          console.error('[BBA DB] 🚨 Exception message:', error.message);
+          console.error('[BBA DB] 🚨 Exception code:', error.code || 'N/A');
+          console.error('[BBA DB] 🚨 Exception details:', error.details || 'N/A');
+          console.error('[BBA DB] 🚨 Exception hint:', error.hint || 'N/A');
+          if (error.stack) console.error('[BBA DB] 🚨 Stack:', error.stack.split('\n').slice(0, 4).join('\n'));
+          throw error;
+        }
+
+        console.log('[BBA DB] insertVolunteer: ✅ Supabase insert succeeded');
+
+        /* Sync localStorage as cache — use original setItem to avoid double-sync */
+        if (data && data.length > 0) {
+          var cached = transformRowFromDB(tableName, data[0]);
+          var all = [];
+          try { all = JSON.parse(localStorage.getItem(localKey) || '[]'); } catch(e) {}
+          all.push(cached);
+          if (window.__bba_original_setItem) {
+            window.__bba_original_setItem(localKey, JSON.stringify(all));
+          } else {
+            localStorage.setItem(localKey, JSON.stringify(all));
+          }
+          console.log('[BBA DB] insertVolunteer: localStorage cache updated (source: supabase)');
+          return { success: true, source: 'supabase', insertedId: data[0].id };
+        }
+
+        return { success: true, source: 'supabase' };
+      } catch (err) {
+        /* ═══ EXACT EXCEPTION CAPTURED ═══
+           This catch block runs when:
+           - Supabase returned an API error (RLS: error.name='SupabaseError', error.message='violates row-level security')
+           - Network failure (TypeError: 'Failed to fetch')
+           - timeout
+           - Any other runtime exception during the insert
+           The full error is logged and then passed to the localStorage fallback. */
+        var errMsg = err.message || '(no message)';
+        var errName = err.name || 'Error';
+        var errDetails = err.details || 'N/A';
+        var errCode = err.code || 'N/A';
+        var errHint = err.hint || 'N/A';
+
+        /* Categorize the exception */
+        var category = 'unknown';
+        if (errMsg.indexOf('Failed to fetch') !== -1 || errMsg.indexOf('NetworkError') !== -1 || errMsg.indexOf('network') !== -1 || errMsg.indexOf('Network') !== -1) {
+          category = 'network';
+        } else if (errMsg.indexOf('row-level security') !== -1 || errMsg.indexOf('violates') !== -1 || errCode === '42501') {
+          category = 'rls_policy';
+        } else if (errMsg.indexOf('does not exist') !== -1) {
+          category = 'schema';
+        } else if (errMsg.indexOf('timeout') !== -1 || errMsg.indexOf('Timeout') !== -1) {
+          category = 'timeout';
+        } else if (errName === 'TypeError') {
+          category = 'runtime_typeerror';
+        } else if (errName === 'SyntaxError' || errMsg.indexOf('JSON') !== -1) {
+          category = 'json_parse';
+        }
+
+        console.error('[BBA DB] 🚨 FALLBACK — insertVolunteer caught exception');
+        console.error('[BBA DB] 🚨 Exception name:', errName);
+        console.error('[BBA DB] 🚨 Exception message:', errMsg);
+        console.error('[BBA DB] 🚨 Exception code:', errCode);
+        console.error('[BBA DB] 🚨 Exception details:', errDetails);
+        console.error('[BBA DB] 🚨 Exception hint:', errHint);
+        console.error('[BBA DB] 🚨 Exception category:', category);
+        if (err.stack) console.error('[BBA DB] 🚨 Stack (first 3 lines):', err.stack.split('\n').slice(0, 4).join('\n'));
+
+        /* Fall back to localStorage — pass the full error object so _saveToLocalAndQueueSync can log it */
+        var fallbackResult = this._saveToLocalAndQueueSync(localKey, formData, err);
+        return fallbackResult;
+      }
     },
 
     /* ============================================================
@@ -948,55 +1095,99 @@
     insertConsultation: async function(formData) {
       var tableName = 'consultations';
       var localKey = 'bba_consultations';
-      console.log('[BBA DB] insertConsultation: starting, isConnected=' + isConnected);
+      console.log('[BBA DB] insertConsultation: starting, isConnected=' + isConnected + ', hasClient=' + !!supabaseClient);
 
-      /* Try Supabase first */
-      if (isConnected && supabaseClient) {
-        try {
-          var row = transformRowToDB(tableName, formData);
-          console.log('[BBA DB] insertConsultation: transformed row keys:', Object.keys(row).join(','));
-
-          var { data, error } = await supabaseClient
-            .from(tableName)
-            .insert(row)
-            .select();
-
-          if (error) {
-            console.warn('[BBA DB] insertConsultation: Supabase insert failed:', error.message);
-            throw error;
-          }
-
-          console.log('[BBA DB] insertConsultation: ✅ Supabase insert succeeded');
-
-          /* Sync localStorage as cache */
-          if (data && data.length > 0) {
-            var cached = transformRowFromDB(tableName, data[0]);
-            var all = [];
-            try { all = JSON.parse(localStorage.getItem(localKey) || '[]'); } catch(e) {}
-            all.push(cached);
-            if (window.__bba_original_setItem) {
-              window.__bba_original_setItem(localKey, JSON.stringify(all));
-            } else {
-              localStorage.setItem(localKey, JSON.stringify(all));
-            }
-            console.log('[BBA DB] insertConsultation: localStorage cache updated');
-            return { success: true, source: 'supabase', insertedId: data[0].id };
-          }
-
-          return { success: true, source: 'supabase' };
-        } catch (err) {
-          console.warn('[BBA DB] insertConsultation: Supabase insert FAILED:', err.message);
-          if (err.details) console.warn('[BBA DB] insertConsultation: Error details:', err.details);
-          /* Fall through to localStorage fallback — pass the actual error so caller can show it */
-          var fallbackResult = this._saveToLocalAndQueueSync(localKey, formData, err.message);
-          return fallbackResult;
-        }
-      } else {
-        console.log('[BBA DB] insertConsultation: Supabase offline, using localStorage');
+      /* ═══ CRITICAL: Always attempt Supabase insert ═══
+         Same pattern as insertVolunteer — never short-circuit to localStorage
+         without first trying Supabase and capturing the real exception. */
+      if (!supabaseClient) {
+        console.error('[BBA DB] 🚨 FALLBACK — insertConsultation: supabaseClient is null, cannot attempt Supabase');
+        console.error('[BBA DB] 🚨 Exception: supabaseClient is null');
+        console.error('[BBA DB] 🚨 Likely cause: Supabase JS library not loaded on this page/device');
+        var fb = this._saveToLocalAndQueueSync(localKey, formData, {
+          name: 'NullClientError',
+          message: 'supabaseClient is null — Supabase JS library was not loaded on this device',
+          details: 'isConnected=' + isConnected + ', typeof window.supabase=' + (typeof window.supabase),
+          hint: 'Ensure Supabase CDN script is loading correctly on mobile browsers'
+        });
+        return fb;
       }
 
-      /* Offline fallback */
-      return this._saveToLocalAndQueueSync(localKey, formData);
+      try {
+        var row = transformRowToDB(tableName, formData);
+        console.log('[BBA DB] insertConsultation: transformed row keys:', Object.keys(row).join(','));
+
+        console.log('[BBA DB] insertConsultation: sending INSERT to Supabase table:', tableName);
+        var { data, error } = await supabaseClient
+          .from(tableName)
+          .insert(row)
+          .select();
+
+        if (error) {
+          /* Supabase returned an error object */
+          console.error('[BBA DB] 🚨 FALLBACK — insertConsultation: Supabase INSERT returned error object');
+          console.error('[BBA DB] 🚨 Exception name:', error.name || 'SupabaseError');
+          console.error('[BBA DB] 🚨 Exception message:', error.message);
+          console.error('[BBA DB] 🚨 Exception code:', error.code || 'N/A');
+          console.error('[BBA DB] 🚨 Exception details:', error.details || 'N/A');
+          console.error('[BBA DB] 🚨 Exception hint:', error.hint || 'N/A');
+          if (error.stack) console.error('[BBA DB] 🚨 Stack:', error.stack.split('\n').slice(0, 4).join('\n'));
+          throw error;
+        }
+
+        console.log('[BBA DB] insertConsultation: ✅ Supabase insert succeeded');
+
+        /* Sync localStorage as cache */
+        if (data && data.length > 0) {
+          var cached = transformRowFromDB(tableName, data[0]);
+          var all = [];
+          try { all = JSON.parse(localStorage.getItem(localKey) || '[]'); } catch(e) {}
+          all.push(cached);
+          if (window.__bba_original_setItem) {
+            window.__bba_original_setItem(localKey, JSON.stringify(all));
+          } else {
+            localStorage.setItem(localKey, JSON.stringify(all));
+          }
+          console.log('[BBA DB] insertConsultation: localStorage cache updated (source: supabase)');
+          return { success: true, source: 'supabase', insertedId: data[0].id };
+        }
+
+        return { success: true, source: 'supabase' };
+      } catch (err) {
+        /* ═══ EXACT EXCEPTION CAPTURED ═══ */
+        var errMsg = err.message || '(no message)';
+        var errName = err.name || 'Error';
+        var errDetails = err.details || 'N/A';
+        var errCode = err.code || 'N/A';
+        var errHint = err.hint || 'N/A';
+
+        var category = 'unknown';
+        if (errMsg.indexOf('Failed to fetch') !== -1 || errMsg.indexOf('NetworkError') !== -1 || errMsg.indexOf('network') !== -1 || errMsg.indexOf('Network') !== -1) {
+          category = 'network';
+        } else if (errMsg.indexOf('row-level security') !== -1 || errMsg.indexOf('violates') !== -1 || errCode === '42501') {
+          category = 'rls_policy';
+        } else if (errMsg.indexOf('does not exist') !== -1) {
+          category = 'schema';
+        } else if (errMsg.indexOf('timeout') !== -1 || errMsg.indexOf('Timeout') !== -1) {
+          category = 'timeout';
+        } else if (errName === 'TypeError') {
+          category = 'runtime_typeerror';
+        } else if (errName === 'SyntaxError' || errMsg.indexOf('JSON') !== -1) {
+          category = 'json_parse';
+        }
+
+        console.error('[BBA DB] 🚨 FALLBACK — insertConsultation caught exception');
+        console.error('[BBA DB] 🚨 Exception name:', errName);
+        console.error('[BBA DB] 🚨 Exception message:', errMsg);
+        console.error('[BBA DB] 🚨 Exception code:', errCode);
+        console.error('[BBA DB] 🚨 Exception details:', errDetails);
+        console.error('[BBA DB] 🚨 Exception hint:', errHint);
+        console.error('[BBA DB] 🚨 Exception category:', category);
+        if (err.stack) console.error('[BBA DB] 🚨 Stack (first 3 lines):', err.stack.split('\n').slice(0, 4).join('\n'));
+
+        var fallbackResult = this._saveToLocalAndQueueSync(localKey, formData, err);
+        return fallbackResult;
+      }
     },
 
     /* ============================================================
@@ -1005,21 +1196,64 @@
      * ============================================================ */
     _saveToLocalAndQueueSync: function(localKey, formData, supabaseError) {
       console.log('[BBA DB] _saveToLocalAndQueueSync: saving ' + localKey + ' to localStorage');
+
+      /* ═══ LOG THE EXACT SUPABASE EXCEPTION ═══
+         supabaseError is now passed as the full error object (not just .message string).
+         Log every property available for debugging on mobile. */
       if (supabaseError) {
-        console.log('[BBA DB] _saveToLocalAndQueueSync: Supabase reason:', supabaseError);
+        console.log('[BBA DB] _saveToLocalAndQueueSync: 🚨 FALLBACK triggered by Supabase error:');
+        console.log('[BBA DB]   Error name:', supabaseError.name || 'N/A');
+        console.log('[BBA DB]   Error message:', supabaseError.message || 'N/A');
+        console.log('[BBA DB]   Error code:', supabaseError.code || 'N/A');
+        console.log('[BBA DB]   Error details:', supabaseError.details || 'N/A');
+        console.log('[BBA DB]   Error hint:', supabaseError.hint || 'N/A');
+        /* Categorize the error for easier diagnosis */
+        var errMsg = (supabaseError.message || '').toLowerCase();
+        if (errMsg.indexOf('failed to fetch') !== -1 || errMsg.indexOf('network') !== -1) {
+          console.log('[BBA DB]   ▶ Category: NETWORK ERROR — mobile device may have lost connectivity during the request');
+        } else if (errMsg.indexOf('row-level security') !== -1 || errMsg.indexOf('violates') !== -1 || supabaseError.code === '42501') {
+          console.log('[BBA DB]   ▶ Category: RLS POLICY — the anonymous insert is blocked by row-level security');
+        } else if (errMsg.indexOf('does not exist') !== -1 || errMsg.indexOf('column') !== -1) {
+          console.log('[BBA DB]   ▶ Category: SCHEMA MISMATCH — a column in the insert does not exist in the Supabase table');
+        } else if (errMsg.indexOf('timeout') !== -1) {
+          console.log('[BBA DB]   ▶ Category: TIMEOUT — the request took too long on slow mobile network');
+        } else if (supabaseError.name === 'TypeError') {
+          console.log('[BBA DB]   ▶ Category: JAVASCRIPT RUNTIME ERROR — a TypeError occurred, check browser console');
+        }
+      } else {
+        console.log('[BBA DB] _saveToLocalAndQueueSync: No Supabase error provided (Supabase was never attempted — supabaseClient was null)');
       }
+
       var all = [];
       try {
         all = JSON.parse(localStorage.getItem(localKey) || '[]');
-      } catch(e) {}
+      } catch(e) {
+        console.error('[BBA DB] _saveToLocalAndQueueSync: JSON parse of existing data failed:', e.message);
+      }
       all.push(formData);
 
       try {
         localStorage.setItem(localKey, JSON.stringify(all));
         console.log('[BBA DB] _saveToLocalAndQueueSync: ✅ saved to localStorage');
       } catch (e) {
-        console.error('[BBA DB] _saveToLocalAndQueueSync: localStorage setItem FAILED:', e.message);
-        return { success: false, source: 'localStorage_error', error: e.message, supabaseError: supabaseError || null };
+        console.error('[BBA DB] 🚨 FALLBACK — localStorage.setItem failed in _saveToLocalAndQueueSync');
+        console.error('[BBA DB] 🚨 Exception name:', e.name);
+        console.error('[BBA DB] 🚨 Exception message:', e.message);
+        console.error('[BBA DB] 🚨 Key:', localKey);
+        console.error('[BBA DB] 🚨 Likely cause: Mobile private browsing or storage quota exceeded');
+        return {
+          success: false,
+          source: 'localStorage_error',
+          error: e.message,
+          supabaseError: supabaseError ? supabaseError.message : null,
+          supabaseErrorFull: supabaseError ? {
+            name: supabaseError.name,
+            message: supabaseError.message,
+            code: supabaseError.code,
+            details: supabaseError.details,
+            hint: supabaseError.hint
+          } : null
+        };
       }
 
       /* Queue sync for later — the monkey-patch on localStorage.setItem handles this
@@ -1031,7 +1265,19 @@
         }, 100);
       }
 
-      return { success: true, source: 'localStorage', offline: true, supabaseError: supabaseError || null };
+      return {
+        success: true,
+        source: 'localStorage',
+        offline: true,
+        supabaseError: supabaseError ? supabaseError.message : null,
+        supabaseErrorFull: supabaseError ? {
+          name: supabaseError.name,
+          message: supabaseError.message,
+          code: supabaseError.code,
+          details: supabaseError.details,
+          hint: supabaseError.hint
+        } : null
+      };
     },
 
     /* Check if data exists in both localStorage and Supabase */
