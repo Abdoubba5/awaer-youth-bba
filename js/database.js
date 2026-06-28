@@ -176,74 +176,115 @@
   function init() {
     if (initPromise) return initPromise;
 
-    initPromise = new Promise(function(resolve) {
-      /* Try to load Supabase client from CDN */
-      if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-        try {
-          supabaseClient = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey, {
-            auth: {
-              autoRefreshToken: true,
-              persistSession: true,
-              detectSessionInUrl: true
-            }
-          });
-          isConnected = true;
-          console.log('✅ [BBA DB] Supabase client initialized');
+    /* ═══ CRITICAL RACE CONDITION FIX ═══
+       On mobile devices, the Supabase CDN script may not be loaded yet when
+       database.js runs (slow 3G/4G). Previously, the one-time check
+       `if (typeof window.supabase === 'undefined')` failed immediately and
+       permanently set isConnected=false, causing ALL form submissions to
+       fall back to localStorage forever — even if the CDN script arrived
+       200ms later.
+       
+       Now we POLL every 100ms for up to 5 seconds, waiting for
+       window.supabase.createClient to become available. This gives the
+       CDN script enough time to load on mobile networks.
+       Only fall to offline mode after 50 failed retries (5 seconds). */
 
-          /* Initial sync: pull data from Supabase into localStorage */
-          IS_INITIAL_PULLING = true;
-          initialPull().then(function() {
-            IS_INITIAL_PULLING = false;
-            /* ═══ CRITICAL FIX ═══
-               Flush any syncs that were buffered during initialPull().
-               On mobile (slow 3G/4G), initialPull takes 1-3 seconds.
-               Any form submissions during that window were buffered
-               in PENDING_PULLING_SYNCS instead of being silently dropped.
-               Now we flush them so they actually reach Supabase. */
-            if (PENDING_PULLING_SYNCS.length > 0) {
-              console.log('[SYNC DEBUG] 🔄 Flushing ' + PENDING_PULLING_SYNCS.length + ' buffered syncs from initial pull period:', PENDING_PULLING_SYNCS.join(','));
-              for (var pi = 0; pi < PENDING_PULLING_SYNCS.length; pi++) {
-                queueSync(PENDING_PULLING_SYNCS[pi]);
+    initPromise = new Promise(function(resolve) {
+      var MAX_RETRY_MS = 5000;
+      var RETRY_INTERVAL_MS = 100;
+      var MAX_RETRIES = Math.floor(MAX_RETRY_MS / RETRY_INTERVAL_MS); /* 50 */
+      var startTime = Date.now();
+      var retryCount = 0;
+
+      function attemptInit() {
+        var elapsed = Date.now() - startTime;
+
+        if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+          /* ✅ Success — Supabase JS library is available after waiting */
+          console.log('[BBA DB] ✅ Supabase JS library detected after ' + elapsed + 'ms (' + retryCount + ' retries)');
+
+          try {
+            supabaseClient = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey, {
+              auth: {
+                autoRefreshToken: true,
+                persistSession: true,
+                detectSessionInUrl: true
               }
-              PENDING_PULLING_SYNCS = [];
-            }
-            resolve(true);
-          }).catch(function(err) {
-            IS_INITIAL_PULLING = false;
-            console.error('[BBA DB] 🚨 FALLBACK — initialPull failed');
-            console.error('[BBA DB] 🚨 Exception name:', err && err.name ? err.name : 'N/A');
-            console.error('[BBA DB] 🚨 Exception message:', err && err.message ? err.message : 'unknown error');
-            console.error('[BBA DB] 🚨 Exception details:', err && err.details ? err.details : 'N/A');
-            /* Still flush pending syncs even if pull failed */
-            if (PENDING_PULLING_SYNCS.length > 0) {
-              console.log('[SYNC DEBUG] 🔄 Flushing ' + PENDING_PULLING_SYNCS.length + ' buffered syncs despite pull failure');
-              for (var pi = 0; pi < PENDING_PULLING_SYNCS.length; pi++) {
-                queueSync(PENDING_PULLING_SYNCS[pi]);
+            });
+            isConnected = true;
+            console.log('✅ [BBA DB] Supabase client initialized at ' + elapsed + 'ms');
+
+            /* Initial sync: pull data from Supabase into localStorage */
+            IS_INITIAL_PULLING = true;
+            initialPull().then(function() {
+              IS_INITIAL_PULLING = false;
+              /* ═══ CRITICAL FIX ═══
+                 Flush any syncs that were buffered during initialPull().
+                 On mobile (slow 3G/4G), initialPull takes 1-3 seconds.
+                 Any form submissions during that window were buffered
+                 in PENDING_PULLING_SYNCS instead of being silently dropped.
+                 Now we flush them so they actually reach Supabase. */
+              if (PENDING_PULLING_SYNCS.length > 0) {
+                console.log('[SYNC DEBUG] 🔄 Flushing ' + PENDING_PULLING_SYNCS.length + ' buffered syncs from initial pull period:', PENDING_PULLING_SYNCS.join(','));
+                for (var pi = 0; pi < PENDING_PULLING_SYNCS.length; pi++) {
+                  queueSync(PENDING_PULLING_SYNCS[pi]);
+                }
+                PENDING_PULLING_SYNCS = [];
               }
-              PENDING_PULLING_SYNCS = [];
-            }
+              resolve(true);
+            }).catch(function(err) {
+              IS_INITIAL_PULLING = false;
+              console.error('[BBA DB] 🚨 FALLBACK — initialPull failed');
+              console.error('[BBA DB] 🚨 Exception name:', err && err.name ? err.name : 'N/A');
+              console.error('[BBA DB] 🚨 Exception message:', err && err.message ? err.message : 'unknown error');
+              console.error('[BBA DB] 🚨 Exception details:', err && err.details ? err.details : 'N/A');
+              /* Still flush pending syncs even if pull failed */
+              if (PENDING_PULLING_SYNCS.length > 0) {
+                console.log('[SYNC DEBUG] 🔄 Flushing ' + PENDING_PULLING_SYNCS.length + ' buffered syncs despite pull failure');
+                for (var pi = 0; pi < PENDING_PULLING_SYNCS.length; pi++) {
+                  queueSync(PENDING_PULLING_SYNCS[pi]);
+                }
+                PENDING_PULLING_SYNCS = [];
+              }
+              resolve(false);
+            });
+          } catch (err) {
+            console.error('[BBA DB] 🚨 FALLBACK — Supabase client creation threw');
+            console.error('[BBA DB] 🚨 Exception name:', err.name);
+            console.error('[BBA DB] 🚨 Exception message:', err.message);
+            console.error('[BBA DB] 🚨 Exception stack:', err.stack ? err.stack.split('\n').slice(0, 3).join('\n') : 'N/A');
+            console.error('[BBA DB] 🚨 typeof window.supabase:', typeof window.supabase);
+            console.error('[BBA DB] 🚨 typeof window.supabase.createClient:', typeof (window.supabase && window.supabase.createClient));
+            console.error('[BBA DB] 🚨 Impact: isConnected=false. insertVolunteer/insertConsultation will bypass Supabase and fall back to localStorage.');
+            isConnected = false;
             resolve(false);
-          });
-        } catch (err) {
-          console.error('[BBA DB] 🚨 FALLBACK — Supabase client creation threw');
-          console.error('[BBA DB] 🚨 Exception name:', err.name);
-          console.error('[BBA DB] 🚨 Exception message:', err.message);
-          console.error('[BBA DB] 🚨 Exception stack:', err.stack ? err.stack.split('\n').slice(0, 3).join('\n') : 'N/A');
+          }
+        } else if (elapsed >= MAX_RETRY_MS) {
+          /* ⏰ Timeout — all retries exhausted, fall back to offline mode */
+          var totalRetries = retryCount;
+          console.error('[BBA DB] 🚨 FALLBACK — Supabase JS library not loaded within ' + MAX_RETRY_MS + 'ms (' + totalRetries + ' retries)');
+          console.error('[BBA DB] 🚨 Total time waited:', elapsed + 'ms');
+          console.error('[BBA DB] 🚨 Total retries:', totalRetries);
           console.error('[BBA DB] 🚨 typeof window.supabase:', typeof window.supabase);
           console.error('[BBA DB] 🚨 typeof window.supabase.createClient:', typeof (window.supabase && window.supabase.createClient));
-          console.error('[BBA DB] 🚨 Impact: isConnected=false. insertVolunteer/insertConsultation will bypass Supabase and fall back to localStorage.');
+          console.error('[BBA DB] 🚨 Likely cause: Supabase CDN script failed to load on this device (network issue on mobile)');
+          console.error('[BBA DB] 🚨 Impact: supabaseClient is null. All inserts go to localStorage only until page refresh.');
           isConnected = false;
           resolve(false);
+        } else {
+          /* ⏳ Supabase not available yet — retry after 100ms */
+          retryCount++;
+          if (retryCount === 1 || retryCount % 10 === 0 || retryCount === MAX_RETRIES) {
+            var pct = Math.round((elapsed / MAX_RETRY_MS) * 100);
+            console.log('[BBA DB] ⏳ Waiting for Supabase JS library... retry ' + retryCount + '/' + MAX_RETRIES + ' (' + elapsed + 'ms elapsed, ' + pct + '%)');
+          }
+          setTimeout(attemptInit, RETRY_INTERVAL_MS);
         }
-      } else {
-        console.error('[BBA DB] 🚨 FALLBACK — Supabase JS library not loaded');
-        console.error('[BBA DB] 🚨 typeof window.supabase:', typeof window.supabase);
-        console.error('[BBA DB] 🚨 typeof window.supabase.createClient:', typeof (window.supabase && window.supabase.createClient));
-        console.error('[BBA DB] 🚨 Likely cause: Supabase CDN script failed to load on this device (network issue on mobile / cached on desktop)');
-        console.error('[BBA DB] 🚨 Impact: supabaseClient is null. All inserts go to localStorage only. insertVolunteer/insertConsultation will skip Supabase.');
-        isConnected = false;
-        resolve(false);
       }
+
+      /* Start the polling loop */
+      console.log('[BBA DB] ⏳ Starting Supabase JS polling (retrying every ' + RETRY_INTERVAL_MS + 'ms for up to ' + MAX_RETRY_MS + 'ms)...');
+      attemptInit();
     });
 
     return initPromise;
