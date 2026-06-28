@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!--
+    ============================================================
+    Sitemap - منصة وعي الشباب BBA
+    Youth Awareness Platform — Bordj Bou Arreridj
+    Under the Supervision of Dz Young Leaders Program
+    Last updated: June 2026
+    ============================================================
+  -->
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://bba-wa3y.dz/</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- About -->
+  <url>
+    <loc>https://bba-wa3y.dz/about.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Target Audience -->
+  <url>
+    <loc>https://bba-wa3y.dz/target-audience.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Dz Young Leaders Program -->
+  <url>
+    <loc>https://bba-wa3y.dz/dz-young-leaders.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Achievements & Statistics -->
+  <url>
+    <loc>https://bba-wa3y.dz/achievements.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Activities & Events -->
+  <url>
+    <loc>https://bba-wa3y.dz/activities.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Youth Club -->
+  <url>
+    <loc>https://bba-wa3y.dz/club.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Media Center (Videos & Gallery) -->
+  <url>
+    <loc>https://bba-wa3y.dz/media-center.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Academy / Training -->
+  <url>
+    <loc>https://bba-wa3y.dz/academy.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Partners -->
+  <url>
+    <loc>https://bba-wa3y.dz/partners.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Team -->
+  <url>
+    <loc>https://bba-wa3y.dz/team.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Certificate Verification -->
+  <url>
+    <loc>https://bba-wa3y.dz/verify-certificate.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

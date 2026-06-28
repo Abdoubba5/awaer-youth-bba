@@ -30,7 +30,7 @@
     .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold-hover));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--bg)}
 
     /* Hero */
-    .hero{padding:4rem 0 3rem;text-align:center}
+    .hero{padding:calc(var(--nav-height) + 2rem) 0 3rem;text-align:center}
     .hero-icon{font-size:3.5rem;margin-bottom:1rem}
     .hero h1{margin-bottom:0.5rem;background:linear-gradient(135deg,var(--text) 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .hero p{max-width:500px;margin:0 auto}
@@ -120,17 +120,7 @@
 
   <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-  <header class="header">
-    <div class="header-inner">
-      <a href="index.html" class="logo">
-        <span class="logo-icon">وعي</span>
-        <span>منصة وعي الشباب BBA</span>
-      </a>
-      <nav>
-        <a href="index.html" style="font-size:0.85rem;color:var(--muted);padding:0.4rem 0.75rem;border-radius:var(--radius-sm);transition:var(--transition)">الصفحة الرئيسية</a>
-      </nav>
-    </div>
-  </header>
+  <div id="navbar"></div>
 
   <main class="container">
     <section class="hero">
@@ -195,11 +185,7 @@
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <p>© 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | برنامج <span class="footer-gold">Dz Young Leaders</span></p>
-    </div>
-  </footer>
+  <div id="footer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
@@ -207,6 +193,7 @@
   <script src="js/rate-limiter.js"></script>
   <script src="js/rate-limit-indicator.js"></script>
   <script src="js/platform-core.js"></script>
+  <script src="js/navigation.js"></script>
   <script src="js/certificate-security.js"></script>
   <script src="js/qr-utils.js"></script>
   <script src="js/test-data.js"></script>

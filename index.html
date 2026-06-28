@@ -54,54 +54,8 @@
     </div>
   </div>
 
-  <nav class="nav" role="navigation" aria-label="القائمة الرئيسية">
-    <div class="nav-inner">
-      <a href="#hero" class="nav-logo">
-        <span class="nav-logo-icon" aria-hidden="true">وعي</span>
-        <span id="heroTitleText">منصة وعي الشباب BBA</span>
-      </a>
-      <div class="nav-links">
-        <a href="#hero" class="active">الرئيسية</a>
-        <a href="about.html">عن المشروع</a>
-        <a href="club.html">نادي الشباب</a>
-        <a href="activities.html">النشاطات</a>
-        <a href="academy.html">الأكاديمية</a>
-        <a href="media-center.html">المركز الإعلامي</a>
-        <a href="dz-young-leaders.html">DZ Leaders</a>
-        <a href="#awareness">التوعية</a>
-        <a href="#consultation">الاستشارات</a>
-        <a href="#contact">تواصل</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:0.5rem">
-        <div id="indexThemeSwitcher"></div>
-      </div>
-    </div>
-  </nav>
+<div id="navbar"></div>
 
-  <nav class="nav-mobile" role="navigation" aria-label="القائمة السفلية">
-    <div class="nav-mobile-inner">
-      <a href="#hero">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>الرئيسية</span>
-      </a>
-      <a href="#events">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>الفعاليات</span>
-      </a>
-      <a href="#awareness">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-        <span>التوعية</span>
-      </a>
-      <a href="#consultation">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span>الاستشارات</span>
-      </a>
-      <a href="#contact">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span>تواصل</span>
-      </a>
-    </div>
-  </nav>
 
   <!-- ===== HERO SECTION (Parallax) ===== -->
   <section id="hero" class="hero">
@@ -414,6 +368,21 @@
     </div>
   </section>
 
+  <!-- ===== SURVEYS SECTION ===== -->
+  <section id="surveys" class="section" style="background:var(--surface-solid)">
+    <div class="container">
+      <div class="section-header">
+        <div class="lantern-ornament"><span class="lantern-ornament-dot"></span></div>
+        <h2>الاستبيانات</h2>
+        <p>شارك برأيك وساعدنا في تحسين خدماتنا من خلال الإجابة على استبياناتنا</p>
+        <div class="gold-accent"></div>
+      </div>
+      <div id="surveysContainer" style="max-width:700px;margin:0 auto">
+        <div style="text-align:center;padding:2rem;color:var(--muted)"><p>جاري تحميل الاستبيانات...</p></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== QUICK ACCESS SECTION ===== -->
   <section id="quick-access" class="section">
     <div class="container">
@@ -546,23 +515,7 @@
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <p>        © 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | تحت إشراف <span class="footer-gold">برنامج Dz Young Leaders</span> | جميع الحقوق محفوظة</p>
-      <div class="footer-links">
-        <a href="about.html">📖 عن المشروع</a>
-        <a href="club.html">⭐ نادي الشباب</a>
-        <a href="team.html">👥 فريق العمل</a>
-        <a href="activities.html">📋 النشاطات</a>
-        <a href="partners.html">🤝 الشركاء</a>
-        <a href="media-center.html">📺 المركز الإعلامي</a>
-        <a href="academy.html">🎓 الأكاديمية</a>
-        <a href="dz-young-leaders.html">🇩🇿 DZ Leaders</a>
-        <a href="portal.html" id="footerLinkPortal">👤 بوابة المتطوعين</a>
-        <a href="verify-certificate.html">✅ التحقق من الشهادات</a>
-      </div>
-    </div>
-  </footer>
+<div id="footer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
@@ -626,7 +579,7 @@
         }
       }
 
-      /* Hero section */
+      /* Hero section - accepts badge, title, subtitle, primaryBtnText, primaryBtnLink, secondaryBtnText, secondaryBtnLink from CMS */
       var hero = cmsGet('hero', {});
       if (hero.badge && byId('heroBadgeText')) byId('heroBadgeText').textContent = hero.badge;
       if (hero.title && byId('heroMainTitle')) byId('heroMainTitle').textContent = hero.title;
@@ -637,55 +590,73 @@
       if (hero.secondaryBtnText && byId('heroSecondaryBtnText')) byId('heroSecondaryBtnText').textContent = hero.secondaryBtnText;
       if (hero.secondaryBtnLink && byId('heroSecondaryBtn')) byId('heroSecondaryBtn').href = hero.secondaryBtnLink;
 
-      /* Testimonials */
+      /* Testimonials - filter by published + visible */
       var testimonials = cmsGet('testimonials', []);
       var tg = byId('testimonialsGrid');
       if (tg && testimonials.length > 0) {
-        var tHtml = '';
+        var tFiltered = [];
         for (var ti = 0; ti < testimonials.length; ti++) {
-          var t = testimonials[ti];
-          tHtml += '<div class="testimonial-card"><p class="testimonial-text">"' + escapeHtml(t.text) + '"</p><div class="testimonial-author"><div class="testimonial-avatar">' + (t.avatar || '⭐') + '</div><div><div class="testimonial-name">' + escapeHtml(t.author) + '</div><div class="testimonial-role">' + escapeHtml(t.role || '') + '</div></div></div></div>';
+          if (testimonials[ti].published !== false && testimonials[ti].visible !== false) tFiltered.push(testimonials[ti]);
         }
-        tg.innerHTML = tHtml;
+        if (tFiltered.length > 0) {
+          var tHtml = '';
+          for (var ti = 0; ti < tFiltered.length; ti++) {
+          var t = tFiltered[ti];
+          tHtml += '<div class="testimonial-card"><p class="testimonial-text">"' + escapeHtml(t.text) + '"</p><div class="testimonial-author"><div class="testimonial-avatar">' + (t.avatar || '⭐') + '</div><div><div class="testimonial-name">' + escapeHtml(t.author) + '</div><div class="testimonial-role">' + escapeHtml(t.role || '') + '</div></div></div></div>';
+          }
+          tg.innerHTML = tHtml;
+        }
       }
 
-      /* FAQ Accordion */
+      /* FAQ Accordion - filter by published */
       var faqs = cmsGet('faq', []);
       var fa = byId('faqAccordion');
       if (fa && faqs.length > 0) {
-        var fHtml = '';
+        var fFiltered = [];
         for (var fi = 0; fi < faqs.length; fi++) {
-          var f = faqs[fi];
+          if (faqs[fi].published !== false) fFiltered.push(faqs[fi]);
+        }
+        if (fFiltered.length > 0) {
+          var fHtml = '';
+          for (var fi = 0; fi < fFiltered.length; fi++) {
+          var f = fFiltered[fi];
           fHtml += '<div style="background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:0.75rem;overflow:hidden">' +
             '<button type="button" style="width:100%;padding:1rem 1.25rem;background:none;border:none;color:var(--text);font-family:var(--font);font-size:0.9rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;text-align:right" onclick="var p=this.nextElementSibling;var i=this.querySelector(\'.faq-icon\');if(p.style.maxHeight){p.style.maxHeight=null;i.textContent=\'+\'}else{p.style.maxHeight=p.scrollHeight+\'px\';i.textContent=\'−\'}">' +
             '<span>' + escapeHtml(f.question) + '</span>' +
             '<span class="faq-icon" style="flex-shrink:0;color:var(--gold);font-size:1.25rem;font-weight:700">+</span></button>' +
             '<div style="max-height:0;overflow:hidden;transition:max-height 0.3s ease"><div style="padding:0 1.25rem 1rem;font-size:0.85rem;color:var(--text-secondary);line-height:1.8">' + escapeHtml(f.answer) + '</div></div></div>';
+          }
+          fa.innerHTML = fHtml;
         }
-        fa.innerHTML = fHtml;
       }
 
-      /* Partners */
+      /* Partners - filter by published */
       var partners = cmsGet('partners', []);
       var pg = byId('partnersGrid');
       if (pg && partners.length > 0) {
-        var pHtml = '';
+        var pFiltered = [];
         for (var pi = 0; pi < partners.length; pi++) {
-          var p = partners[pi];
+          if (partners[pi].published !== false) pFiltered.push(partners[pi]);
+        }
+        if (pFiltered.length > 0) {
+          var pHtml = '';
+          for (var pi = 0; pi < pFiltered.length; pi++) {
+          var p = pFiltered[pi];
           pHtml += '<a href="' + (p.website || '#') + '" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:1rem 1.5rem;background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-md);text-decoration:none;transition:all 0.3s ease;min-width:140px" onmouseover="this.style.borderColor=\'var(--gold)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.transform=\'none\'">' +
             '<div style="font-size:2.5rem;color:var(--gold)">🤝</div>' +
             '<div style="color:var(--text);font-size:0.85rem;font-weight:600;text-align:center">' + escapeHtml(p.name) + '</div>' +
             (p.category ? '<div style="color:var(--muted);font-size:0.7rem">' + escapeHtml(p.category) + '</div>' : '') +
             '</a>';
+          }
+          pg.innerHTML = pHtml;
         }
-        pg.innerHTML = pHtml;
       }
 
-      /* Dynamic articles from CMS */
+      /* Dynamic articles from CMS - filter by published + visible */
       var articles = cmsGet('articles', []);
       var published = [];
       for (var ai = 0; ai < articles.length; ai++) {
-        if (articles[ai].published !== false) published.push(articles[ai]);
+        if (articles[ai].published !== false && articles[ai].visible !== false) published.push(articles[ai]);
       }
       if (published.length > 0 && typeof openArticleModal === 'function') {
         window.ARTICLES = published;
@@ -937,6 +908,109 @@
             cutout: '60%',
             animation: { duration: 1000, easing: 'easeOutQuart' } }
         });
+      }
+    })();
+
+    /* ============================================================
+     * PUBLIC SURVEYS
+     * ============================================================ */
+    (function initPublicSurveys() {
+      var container = byId('surveysContainer');
+      if (!container) return;
+
+      function esc(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+      function loadSurveys() {
+        var surveys = [];
+        try { surveys = JSON.parse(localStorage.getItem('bba_cms_surveys') || '[]'); } catch(e) { surveys = []; }
+        surveys = surveys.filter(function(s) { return s.published !== false; });
+
+        if (surveys.length === 0) {
+          container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted)"><div style="font-size:3rem;margin-bottom:1rem">📊</div><p>لا توجد استبيانات متاحة حالياً. تابعنا لمعرفة أحدث الاستبيانات!</p></div>';
+          return;
+        }
+
+        var html = '';
+        for (var i = 0; i < surveys.length; i++) {
+          var s = surveys[i];
+          var responseCount = (s.responses && s.responses.length) || 0;
+          html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:1rem;overflow:hidden">' +
+            '<button type="button" class="survey-toggle" style="width:100%;padding:1rem 1.25rem;background:none;border:none;color:var(--text);font-family:var(--font);font-size:0.9rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;text-align:right" onclick="var b=this.nextElementSibling;var i=this.querySelector(\'.survey-icon\');if(b.style.maxHeight){b.style.maxHeight=null;i.textContent=\'+\'}else{b.style.maxHeight=b.scrollHeight+\'px\';i.textContent=\'−\'}">' +
+            '<span>📊 ' + esc(s.title) + ' <span style="font-size:0.75rem;color:var(--muted);font-weight:400">(' + responseCount + ' مشاركة)</span></span>' +
+            '<span class="survey-icon" style="flex-shrink:0;color:var(--gold);font-size:1.25rem;font-weight:700">+</span></button>' +
+            '<div style="max-height:0;overflow:hidden;transition:max-height 0.3s ease"><div style="padding:0 1.25rem 1rem">' +
+            (s.description ? '<p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1rem">' + esc(s.description) + '</p>' : '') +
+            '<div id="surveyForm_' + s.id + '">' +
+            (s.questions && s.questions.length > 0 ? buildSurveyForm(s) : '<p style="color:var(--muted);font-size:0.85rem">هذا الاستبيان لا يحتوي على أسئلة</p>') +
+            '</div></div></div></div>';
+        }
+        container.innerHTML = html;
+      }
+
+      function buildSurveyForm(survey) {
+        var qs = survey.questions || [];
+        var html = '<form class="survey-response-form" data-survey-id="' + survey.id + '">';
+        for (var i = 0; i < qs.length; i++) {
+          html += '<div class="form-group" style="margin-bottom:0.75rem">' +
+            '<label style="font-size:0.85rem;color:var(--text);font-weight:600;margin-bottom:0.35rem">' + (i+1) + '. ' + esc(qs[i]) + '</label>' +
+            '<textarea class="survey-answer" data-q="' + i + '" style="width:100%;padding:0.6rem;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-solid);color:var(--text);font-family:var(--font);font-size:0.82rem;min-height:60px;resize:vertical" placeholder="اكتب إجابتك هنا..." required></textarea></div>';
+        }
+        html += '<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">📨 إرسال الإجابات</button>' +
+          '<div class="survey-success" style="display:none;text-align:center;padding:1rem;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:var(--radius-sm);margin-top:0.75rem">' +
+          '<div style="font-size:1.5rem;margin-bottom:0.5rem">✅</div><p style="color:var(--success);font-weight:600">شكراً لمشاركتك! تم تسجيل إجاباتك بنجاح.</p></div></form>';
+        return html;
+      }
+
+      /* Delegate submit events */
+      document.addEventListener('submit', function(e) {
+        var form = e.target;
+        if (!form.classList.contains('survey-response-form')) return;
+        e.preventDefault();
+
+        var surveyId = parseInt(form.getAttribute('data-survey-id'), 10);
+        var answers = form.querySelectorAll('.survey-answer');
+        var response = [];
+        var valid = true;
+
+        for (var i = 0; i < answers.length; i++) {
+          var val = answers[i].value.trim();
+          if (!val) { valid = false; break; }
+          response.push(val);
+        }
+
+        if (!valid) { showToast('يرجى الإجابة على جميع الأسئلة', 'error'); return; }
+
+        var surveys = [];
+        try { surveys = JSON.parse(localStorage.getItem('bba_cms_surveys') || '[]'); } catch(e) { surveys = []; }
+
+        for (var i = 0; i < surveys.length; i++) {
+          if (surveys[i].id === surveyId) {
+            if (!surveys[i].responses) surveys[i].responses = [];
+            surveys[i].responses.push({
+              answers: response,
+              submittedAt: new Date().toISOString()
+            });
+            localStorage.setItem('bba_cms_surveys', JSON.stringify(surveys));
+            break;
+          }
+        }
+
+        form.querySelector('.survey-success').style.display = 'block';
+        form.querySelector('button[type="submit"]').style.display = 'none';
+        var inputs = form.querySelectorAll('.survey-answer');
+        for (var i = 0; i < inputs.length; i++) { inputs[i].disabled = true; }
+        showToast('✅ شكراً لمشاركتك في الاستبيان!', 'success');
+      });
+
+      loadSurveys();
+
+      /* Re-load surveys when section becomes visible */
+      var surveysSection = document.getElementById('surveys');
+      if (surveysSection && window.IntersectionObserver) {
+        var obs = new IntersectionObserver(function(entries) {
+          if (entries[0].isIntersecting) loadSurveys();
+        }, { threshold: 0.1 });
+        obs.observe(surveysSection);
       }
     })();
 
@@ -1281,5 +1355,60 @@
       });
     })();
   </script>
+<script src="js/cms.js"></script>
+<script>
+    /* Load Contact Info from CMS */
+    (function initContactFromCMS() {
+      if (!window.CMS) return;
+      var ci = window.CMS.getContactInfo();
+      if (!ci) return;
+      function byId(id) { return document.getElementById(id); }
+      function esc(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+      if (ci.email) {
+        var emailBtn = byId('contactEmailBtn');
+        if (emailBtn) {
+          var desc = emailBtn.querySelector('.contact-btn-desc');
+          if (desc) desc.textContent = ci.email;
+        }
+      }
+      if (ci.phone) {
+        var phoneBtns = document.querySelectorAll('.contact-call-btn');
+        if (phoneBtns.length > 0) {
+          var desc = phoneBtns[0].querySelector('.contact-btn-desc');
+          if (desc) desc.textContent = ci.phone;
+          phoneBtns[0].setAttribute('data-phone', ci.phone.replace(/\s/g, ''));
+        }
+        if (ci.phone2 && phoneBtns.length > 1) {
+          var desc2 = phoneBtns[1].querySelector('.contact-btn-desc');
+          if (desc2) desc2.textContent = ci.phone2;
+          phoneBtns[1].setAttribute('data-phone', ci.phone2.replace(/\s/g, ''));
+        }
+      }
+      if (ci.whatsapp) {
+        var waBtn = byId('contactWhatsAppBtn');
+        if (waBtn) {
+          var desc = waBtn.querySelector('.contact-btn-desc');
+          if (desc) desc.textContent = ci.whatsapp;
+        }
+      }
+      if (ci.address) {
+        var addr = document.querySelector('#contact .form-card > div:last-child div:first-child span');
+        if (addr) addr.textContent = ci.address;
+      }
+      if (ci.hours) {
+        var hours = document.querySelector('#contact .form-card > div:last-child div:last-child span');
+        if (hours) hours.textContent = ci.hours;
+      }
+      if (ci.title) {
+        var title = document.querySelector('#contact .form-card h3');
+        if (title) title.textContent = ci.title;
+      }
+      if (ci.description) {
+        var desc = document.querySelector('#contact .form-card > p');
+        if (desc) desc.textContent = ci.description;
+      }
+    })();
+  </script>
+<script src="js/navigation.js"></script>
 </body>
 </html>

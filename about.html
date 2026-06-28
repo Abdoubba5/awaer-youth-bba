@@ -18,113 +18,36 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="وعي BBA">
   <style>
-    :root{--bg:#050712;--surface:rgba(12,17,34,0.88);--surface-solid:#0C1122;--gold:#C9A84C;--gold-hover:#B8943E;--gold-light:rgba(201,168,76,0.10);--success:#34D399;--text:#F5F0E8;--text-secondary:#D1CEC6;--muted:#7A7670;--border:rgba(201,168,76,0.12);--border-light:rgba(255,255,255,0.04);--radius-sm:6px;--radius-md:12px;--radius-lg:20px;--font:'Cairo',sans-serif;--transition:all 0.4s cubic-bezier(0.4,0,0.2,1);--container:1100px}
+
     *,:before,:after{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth;scroll-padding-top:80px;overflow-x:hidden}
     body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;direction:rtl;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
     main{position:relative;z-index:10}
-    h1,h2,h3,h4{font-weight:700;line-height:1.4}
-    h1{font-size:clamp(1.75rem,4vw,2.5rem)}h2{font-size:clamp(1.35rem,2.5vw,1.75rem)}h3{font-size:clamp(1.1rem,1.8vw,1.3rem)}
+    h1{font-size:clamp(1.75rem,4vw,2.5rem)}h2{font-size:clamp(1.35rem,2.5vw,1.75rem)}h3{font-size:clamp(1.1rem,1.8vw,1.3rem)}h1,h2,h3,h4{font-weight:700;line-height:1.4}
     p{color:var(--muted);font-size:clamp(0.9rem,1.1vw,1rem)}
     a{color:var(--gold);text-decoration:none;transition:var(--transition)}
     a:hover{color:var(--gold-hover)}
     .container{max-width:var(--container);margin:0 auto;padding:0 clamp(1rem,3vw,2rem);width:100%}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.6rem 1.25rem;border-radius:var(--radius-sm);font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition);border:none}
-    .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-hover));color:var(--bg)}
-    .btn-secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
-    .btn-secondary:hover{background:var(--gold-light);transform:translateY(-2px)}
 
-    .header{background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:1rem 0;position:sticky;top:0;z-index:100}
-    .header-inner{max-width:var(--container);margin:0 auto;padding:0 1rem;display:flex;align-items:center;justify-content:space-between}
-    .logo{display:flex;align-items:center;gap:0.5rem;font-size:1rem;font-weight:700;color:var(--gold)}
-    .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold-hover));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--bg)}
-    .nav-links{display:flex;align-items:center;gap:0.25rem}
-    .nav-links a{color:var(--muted);padding:0.4rem 0.75rem;border-radius:var(--radius-sm);font-size:0.85rem;font-weight:500;transition:var(--transition)}
-    .nav-links a:hover{color:var(--gold);background:var(--gold-light)}
-
-    .hero{text-align:center;padding:4rem 0 3rem;position:relative;overflow:hidden}
+    .hero{text-align:center;padding:calc(var(--nav-height) + 2rem) 0 3rem;position:relative;overflow:hidden}
     .hero:before{content:'';position:absolute;top:-30%;right:-20%;width:250px;height:250px;background:radial-gradient(circle,rgba(212,175,55,0.06) 0%,transparent 70%);border-radius:50%;z-index:-1;pointer-events:none}
     .hero-icon{font-size:4rem;margin-bottom:1rem}
     .hero h1{background:linear-gradient(135deg,var(--text) 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem}
     .hero p{max-width:600px;margin:0 auto;font-size:1.05rem}
 
-    .section{padding:clamp(3rem,6vw,5rem) 0}
-    .section-header{text-align:center;margin-bottom:clamp(2rem,4vw,3rem)}
-    .section-header h2{margin-bottom:0.5rem}
-    .gold-accent{display:inline-block;width:60px;height:3px;background:var(--gold);border-radius:2px;margin-top:0.5rem}
-
     .story-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.5rem,4vw,2.5rem);margin-bottom:2rem;transition:var(--transition);position:relative;overflow:hidden}
     .story-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.4}
     .story-card:hover{transform:translateY(-2px);border-color:var(--border-gold,rgba(201,168,76,0.25));box-shadow:0 8px 32px rgba(201,168,76,0.10)}
-    .story-card-icon{font-size:2.5rem;margin-bottom:1rem}
-    .story-card h3{color:var(--gold);margin-bottom:0.75rem}
-    .story-card p{line-height:1.9;margin-bottom:0.75rem}
-    .story-card ul{list-style:none;padding:0}
-    .story-card ul li{padding:0.5rem 0;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;color:var(--text-secondary)}
-    .story-card ul li:last-child{border-bottom:none}
     .story-card ul li:before{content:'✦';color:var(--gold);font-size:0.6rem;flex-shrink:0}
-
-    .timeline-section{position:relative;padding:2rem 0}
-    .timeline-section:before{content:'';position:absolute;right:12px;top:0;bottom:0;width:2px;background:var(--border-light)}
-    .timeline-item{position:relative;padding-right:2.5rem;margin-bottom:2rem}
-    .timeline-item:before{content:'';position:absolute;right:-10px;top:0.5rem;width:24px;height:24px;border-radius:50%;background:var(--gold-light);border:3px solid var(--gold);z-index:1}
-    .timeline-item:after{content:'';position:absolute;right:-4px;top:0.8rem;width:12px;height:12px;border-radius:50%;background:var(--gold);z-index:2}
-    .timeline-year{font-size:0.8rem;color:var(--gold);font-weight:700;margin-bottom:0.25rem}
-    .timeline-title{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:0.25rem}
-    .timeline-desc{font-size:0.85rem;color:var(--muted);line-height:1.7}
-
-    .values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.25rem}
-    .value-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;text-align:center;transition:var(--transition);position:relative;overflow:hidden}
-    .value-card::before{content:'';position:absolute;inset:0;opacity:0.02;background-image:linear-gradient(45deg,var(--gold) 1px,transparent 1px),linear-gradient(-45deg,var(--gold) 1px,transparent 1px);background-size:30px 30px;pointer-events:none}
-    .value-card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 8px 24px rgba(201,168,76,0.15)}
-    .value-icon{font-size:2.5rem;margin-bottom:0.75rem}
-    .value-title{font-weight:600;color:var(--gold);margin-bottom:0.5rem}
-    .value-desc{font-size:0.85rem;color:var(--text-secondary);line-height:1.7}
-
-    .impact-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-top:2rem}
-    .impact-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;text-align:center;position:relative}
-    .impact-stat::before{content:'';position:absolute;inset:0;opacity:0.02;background-image:linear-gradient(45deg,var(--gold) 1px,transparent 1px),linear-gradient(-45deg,var(--gold) 1px,transparent 1px);background-size:20px 20px;pointer-events:none}
-    .impact-stat-value{font-size:2rem;font-weight:700;color:var(--gold)}
-    .impact-stat-label{font-size:0.8rem;color:var(--muted);margin-top:0.25rem}
-
-    .quote-card{background:linear-gradient(135deg,rgba(212,175,55,0.06),transparent);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;text-align:center;margin:2rem 0;position:relative}
-    .quote-card:before{content:'\\201C';position:absolute;top:-0.5rem;right:1.5rem;font-size:5rem;color:var(--gold);opacity:0.15;font-weight:700;line-height:1}
-    .quote-text{font-size:1.1rem;color:var(--text-secondary);font-style:italic;line-height:1.9;margin-bottom:1rem}
-    .quote-author{color:var(--gold);font-weight:600;font-size:0.9rem}
-
-    .footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border)}
-    .footer p{font-size:0.8rem}
-    .footer-gold{color:var(--gold);font-weight:600}
 
     .badge-sponsor{display:inline-flex;align-items:center;gap:0.35rem;padding:0.25rem 0.75rem;background:var(--gold-light);border:1px solid var(--border);border-radius:100px;font-size:0.75rem;color:var(--gold);font-weight:600}
 
-    @media(max-width:768px){.nav-links{display:none}.values-grid{grid-template-columns:1fr}.impact-stats{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:480px){.impact-stats{grid-template-columns:1fr}}
     @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     .fade-in-up{animation:fadeInUp 0.6s ease forwards}
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="header-inner">
-      <a href="index.html" class="logo">
-        <span class="logo-icon">وعي</span>
-        <span>منصة وعي الشباب BBA</span>
-      </a>
-      <nav class="nav-links">
-        <a href="index.html">الرئيسية</a>
-        <a href="about.html" class="active">عن المشروع</a>
-        <a href="target-audience.html">الفئة المستهدفة</a>
-        <a href="index.html#awareness">التوعية</a>
-        <a href="index.html#consultation">الاستشارات</a>
-        <a href="index.html#contact">تواصل</a>
-      </nav>
-      <div style="display:flex;align-items:center;gap:0.75rem">
-        <span class="badge-sponsor">🏛️ برنامج Dz Young Leaders</span>
-        <div id="aboutThemeSwitcher"></div>
-      </div>
-    </div>
-  </header>
+  <div id="navbar"></div>
 
   <main>
     <!-- Hero -->
@@ -284,23 +207,14 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <p>© 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | تحت إشراف <span class="footer-gold">برنامج Dz Young Leaders</span></p>
-      <div style="margin-top:0.75rem;display:flex;justify-content:center;flex-wrap:wrap;gap:0.5rem;font-size:0.8rem">
-        <a href="index.html">الرئيسية</a>
-        <a href="target-audience.html">الفئة المستهدفة</a>
-        <a href="index.html#awareness">التوعية</a>
-        <a href="index.html#consultation">الاستشارات</a>
-        <a href="portal.html">بوابة المتطوعين</a>
-      </div>
-    </div>
-  </footer>
+  <div id="footer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
   <script src="js/database.js"></script>
   <script src="js/platform-core.js"></script>
+  <script src="js/cms.js"></script>
+  <script src="js/navigation.js"></script>
   <script>
     function byId(id) { return document.getElementById(id); }
     (function() {
@@ -316,12 +230,30 @@
       byId('aboutStatCerts').textContent = certs.length;
     })();
 
-    /* Theme switcher */
-    (function() {
-      function byId(id) { return document.getElementById(id); }
-      var container = byId('aboutThemeSwitcher');
-      if (container && window.BBA && window.BBA.Theme) {
-        window.BBA.Theme.createSwitcher(container);
+    /* Load About section from CMS */
+    (function loadAboutFromCMS() {
+      if (!window.CMS) return;
+      var about = window.CMS.getAbout();
+      if (!about) return;
+      if (about.title) {
+        var heroH1 = document.querySelector('.hero h1');
+        if (heroH1) heroH1.textContent = about.title;
+      }
+      if (about.subtitle) {
+        var heroP = document.querySelector('.hero p');
+        if (heroP) heroP.textContent = about.subtitle;
+      }
+      if (about.vision) {
+        var visionDesc = document.querySelector('.value-card:nth-child(2) .value-desc');
+        if (visionDesc) visionDesc.textContent = about.vision;
+      }
+      if (about.mission) {
+        var missionDesc = document.querySelector('.value-card:nth-child(1) .value-desc');
+        if (missionDesc) missionDesc.textContent = about.mission;
+      }
+      if (about.content) {
+        var firstCard = document.querySelector('.story-card p');
+        if (firstCard) firstCard.textContent = about.content;
       }
     })();
   </script>

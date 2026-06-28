@@ -38,15 +38,29 @@
       'cms_hero', 'cms_notice_bar', 'cms_achievements_page',
       'cms_articles', 'cms_testimonials', 'cms_faq', 'cms_partners',
       'cms_gallery', 'cms_videos', 'cms_library', 'cms_surveys',
-      'cms_rehabilitation',
+      'cms_rehabilitation', 'cms_navigation', 'cms_footer', 'cms_social',
+      'cms_stats', 'cms_cta', 'cms_about', 'cms_team_members',
+      'cms_activities_cms', 'cms_seo', 'cms_global', 'cms_contact',
+      'cms_announcements', 'cms_calendar',
       'hero', 'notice_bar', 'testimonials', 'faq', 'partners',
-      'articles', 'gallery', 'videos', 'library', 'surveys', 'rehabilitation'
+      'articles', 'gallery', 'videos', 'library', 'surveys', 'rehabilitation',
+      'navigation', 'footer', 'social',
+      'stats', 'cta', 'about', 'team_members',
+      'activities_cms', 'seo', 'global', 'contact',
+      'announcements', 'calendar'
     ],
     /* Keys that are single objects (not arrays) */
     singleObjectKeys: [
       'bba_cms_hero', 'bba_cms_notice_bar', 'bba_cms_achievements_page',
+      'bba_cms_navigation', 'bba_cms_footer', 'bba_cms_social',
+      'bba_cms_cta', 'bba_cms_about', 'bba_cms_activities_cms',
+      'bba_cms_seo', 'bba_cms_global', 'bba_cms_contact',
       'cms_hero', 'cms_notice_bar', 'cms_achievements_page',
-      'hero', 'notice_bar'
+      'cms_navigation', 'cms_footer', 'cms_social',
+      'cms_cta', 'cms_about', 'cms_activities_cms',
+      'cms_seo', 'cms_global', 'cms_contact',
+      'hero', 'notice_bar', 'navigation', 'footer', 'social',
+      'cta', 'about', 'activities_cms', 'seo', 'global', 'contact'
     ]
   };
 
@@ -386,7 +400,11 @@
     var cmsKeys = [
       'hero', 'notice_bar', 'achievements_page',
       'articles', 'testimonials', 'faq', 'partners',
-      'gallery', 'videos', 'library', 'surveys', 'rehabilitation'
+      'gallery', 'videos', 'library', 'surveys', 'rehabilitation',
+      'navigation', 'footer', 'social',
+      'stats', 'cta', 'about', 'team_members',
+      'activities_cms', 'seo', 'global', 'contact',
+      'announcements', 'calendar'
     ];
 
     for (var i = 0; i < cmsKeys.length; i++) {

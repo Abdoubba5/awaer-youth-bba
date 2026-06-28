@@ -32,52 +32,8 @@
   </style>
 </head>
 <body>
-  <nav class="nav" role="navigation" aria-label="القائمة الرئيسية">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
-        <span class="nav-logo-icon" aria-hidden="true">وعي</span>
-        <span>منصة وعي الشباب BBA</span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html">الرئيسية</a>
-        <a href="about.html">عن المشروع</a>
-        <a href="activities.html" class="active">النشاطات</a>
-        <a href="#events">الفعاليات</a>
-        <a href="academy.html">الأكاديمية</a>
-        <a href="media-center.html">المركز الإعلامي</a>
-        <a href="index.html#consultation">الاستشارات</a>
-        <a href="index.html#contact">تواصل</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:0.5rem">
-        <div id="activitiesThemeSwitcher"></div>
-      </div>
-    </div>
-  </nav>
+<div id="navbar"></div>
 
-  <nav class="nav-mobile" role="navigation" aria-label="القائمة السفلية">
-    <div class="nav-mobile-inner">
-      <a href="index.html">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>الرئيسية</span>
-      </a>
-      <a href="activities.html" class="active">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <span>النشاطات</span>
-      </a>
-      <a href="#events">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>الفعاليات</span>
-      </a>
-      <a href="academy.html">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M12 6v7"/><path d="M9 9h6"/></svg>
-        <span>الأكاديمية</span>
-      </a>
-      <a href="index.html#contact">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span>تواصل</span>
-      </a>
-    </div>
-  </nav>
 
   <section class="section" style="padding-top:calc(var(--nav-height) + 2rem)">
     <div class="container">
@@ -123,31 +79,34 @@
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <p>© 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | تحت إشراف <span class="footer-gold">برنامج Dz Young Leaders</span> | جميع الحقوق محفوظة</p>
-      <div class="footer-links">
-        <a href="about.html">📖 عن المشروع</a>
-        <a href="team.html">👥 فريق العمل</a>
-        <a href="partners.html">🤝 الشركاء</a>
-        <a href="media-center.html">📺 المركز الإعلامي</a>
-        <a href="academy.html">🎓 الأكاديمية</a>
-        <a href="portal.html">👤 بوابة المتطوعين</a>
-        <a href="verify-certificate.html">✅ التحقق من الشهادات</a>
-      </div>
-    </div>
-  </footer>
+<div id="footer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
   <script src="js/database.js"></script>
   <script src="js/platform-core.js"></script>
+  <script src="js/cms.js"></script>
   <script>
     (function() {
       var ts = document.getElementById('activitiesThemeSwitcher');
       if (ts && window.BBA && window.BBA.Theme) window.BBA.Theme.createSwitcher(ts);
 
       function escapeHtml(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+      /* Load page header from CMS */
+      (function loadActivitiesHeader() {
+        if (!window.CMS) return;
+        var data = window.CMS.getActivitiesCms();
+        if (!data) return;
+        if (data.title) {
+          var h2 = document.querySelector('.section-header h2');
+          if (h2) h2.textContent = data.title;
+        }
+        if (data.subtitle) {
+          var p = document.querySelector('.section-header p');
+          if (p) p.textContent = data.subtitle;
+        }
+      })();
 
       /* Render events */
       function renderEvents(filter) {
@@ -218,5 +177,6 @@
       renderActivityLog();
     })();
   </script>
+<script src="js/navigation.js"></script>
 </body>
 </html>

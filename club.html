@@ -29,52 +29,8 @@
   </style>
 </head>
 <body>
-  <nav class="nav" role="navigation" aria-label="القائمة الرئيسية">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
-        <span class="nav-logo-icon" aria-hidden="true">وعي</span>
-        <span>منصة وعي الشباب BBA</span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html">الرئيسية</a>
-        <a href="about.html">عن المشروع</a>
-        <a href="club.html" class="active">نادي الشباب</a>
-        <a href="activities.html">النشاطات</a>
-        <a href="academy.html">الأكاديمية</a>
-        <a href="media-center.html">المركز الإعلامي</a>
-        <a href="dz-young-leaders.html">Dz Young Leaders</a>
-        <a href="index.html#contact">تواصل</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:0.5rem">
-        <div id="clubThemeSwitcher"></div>
-      </div>
-    </div>
-  </nav>
+<div id="navbar"></div>
 
-  <nav class="nav-mobile" role="navigation" aria-label="القائمة السفلية">
-    <div class="nav-mobile-inner">
-      <a href="index.html">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>الرئيسية</span>
-      </a>
-      <a href="club.html" class="active">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        <span>النادي</span>
-      </a>
-      <a href="activities.html">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <span>النشاطات</span>
-      </a>
-      <a href="academy.html">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M12 6v7"/><path d="M9 9h6"/></svg>
-        <span>الأكاديمية</span>
-      </a>
-      <a href="index.html#contact">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span>تواصل</span>
-      </a>
-    </div>
-  </nav>
 
   <section class="hero" style="min-height:60vh;padding-top:calc(var(--nav-height) + 2rem)">
     <div class="hero-bg"></div>
@@ -226,20 +182,7 @@
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <p>© 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | تحت إشراف <span class="footer-gold">برنامج Dz Young Leaders</span> | جميع الحقوق محفوظة</p>
-      <div class="footer-links">
-        <a href="about.html">📖 عن المشروع</a>
-        <a href="team.html">👥 فريق العمل</a>
-        <a href="partners.html">🤝 الشركاء</a>
-        <a href="media-center.html">📺 المركز الإعلامي</a>
-        <a href="academy.html">🎓 الأكاديمية</a>
-        <a href="portal.html">👤 بوابة المتطوعين</a>
-        <a href="verify-certificate.html">✅ التحقق من الشهادات</a>
-      </div>
-    </div>
-  </footer>
+<div id="footer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
@@ -255,9 +198,10 @@
         window.BBA.Theme.createSwitcher(themeSwitcher);
       }
 
-      /* Load club data from CMS */
+      /* Load club data from CMS via API */
       function loadClubData() {
-        var data = JSON.parse(localStorage.getItem('bba_cms_club_data') || 'null');
+        var data = window.CMS ? window.CMS.getClubData() : null;
+        if (!data) { try { data = JSON.parse(localStorage.getItem('bba_cms_club_data') || 'null'); } catch(e) {} }
         if (!data) return;
 
         if (data.name) {
@@ -321,5 +265,6 @@
       }
     })();
   </script>
+<script src="js/navigation.js"></script>
 </body>
 </html>

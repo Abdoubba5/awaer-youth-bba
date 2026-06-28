@@ -1,870 +1,774 @@
 /* ============================================================
-   منصة وعي الشباب BBA - Content Management System
-   Version: 1.0.0
-   All CMS content is stored dynamically in localStorage
+   منصة وعي الشباب BBA — Central CMS Module
+   Manages ALL public page content: hero, stats, testimonials,
+   FAQ, partners, gallery, videos, library, surveys, rehab,
+   navigation, footer, social, club, articles, announcements,
+   calendar, about, team members, activities CMS, SEO, global.
+   All data in localStorage under 'bba_cms_*' keys.
+   Exposes window.CMS for all public pages.
    ============================================================ */
 
-(function() {
-  /* ============================================================
-   * UTILITY HELPERS
-   * ============================================================ */
+(function centralCMS() {
+  'use strict';
+
   function byId(id) { return document.getElementById(id); }
-  function escapeHtml(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-  function qs(s, cb) { var n = document.querySelectorAll(s); for (var i = 0; i < n.length; i++) cb(n[i], i); }
+  function esc(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+  function cmsGet(key, defaultVal) {
+    try { return JSON.parse(localStorage.getItem('bba_cms_' + key) || JSON.stringify(defaultVal)); }
+    catch(e) { return defaultVal; }
+  }
+  function cmsSet(key, data) { localStorage.setItem('bba_cms_' + key, JSON.stringify(data)); }
 
   /* ============================================================
-   * CMS DATA ACCESS LAYER
-   * All content stored in localStorage with bba_cms_ prefix
+   * CMS API
    * ============================================================ */
-  var CMS = {
-    get: function(key, def) {
-      try { return JSON.parse(localStorage.getItem('bba_cms_' + key) || JSON.stringify(def)); }
-      catch(e) { return def; }
-    },
-    set: function(key, data) {
-      localStorage.setItem('bba_cms_' + key, JSON.stringify(data));
-      /* Auto-sync is handled by database.js localStorage patch (bba_cms_ prefix) */
-    },
-    getAll: function(key) {
-      return this.get(key, []);
-    },
-    add: function(key, item) {
-      var data = this.getAll(key);
-      item.id = Date.now() + Math.floor(Math.random() * 1000);
-      item.createdAt = new Date().toISOString();
-      data.push(item);
-      this.set(key, data);
-      return item;
-    },
-    update: function(key, id, updates) {
-      var data = this.getAll(key);
+  var CMS = {};
+
+  /* ----- Hero ----- */
+  CMS.getHero = function() { return cmsGet('hero', { badge: '', title: '', subtitle: '', buttons: [] }); };
+  CMS.saveHero = function(d) { cmsSet('hero', d); };
+
+  /* ----- Notice Bar ----- */
+  CMS.getNoticeBar = function() { return cmsGet('notice_bar', { text: '', visible: false, priority: 'info' }); };
+  CMS.saveNoticeBar = function(d) { cmsSet('notice_bar', d); };
+
+  /* ----- Testimonials ----- */
+  CMS.getTestimonials = function() { return cmsGet('testimonials', []); };
+  CMS.saveTestimonials = function(d) { cmsSet('testimonials', d); };
+
+  /* ----- Homepage Statistics ----- */
+  CMS.getStats = function() { return cmsGet('stats', [
+    { label: 'المتطوعون', value: '500+', icon: '👥' },
+    { label: 'المستفيدون', value: '10,000+', icon: '🎯' },
+    { label: 'الأنشطة', value: '120+', icon: '📋' },
+    { label: 'الشركاء', value: '30+', icon: '🤝' }
+  ]); };
+  CMS.saveStats = function(d) { cmsSet('stats', d); };
+
+  /* ----- Homepage CTA ----- */
+  CMS.getCta = function() { return cmsGet('cta', {
+    title: 'انضم إلينا اليوم', subtitle: 'كن جزءًا من التغيير', btnText: 'سجل الآن', btnLink: 'index.html#contact'
+  }); };
+  CMS.saveCta = function(d) { cmsSet('cta', d); };
+
+  /* ----- FAQ ----- */
+  CMS.getFaq = function() { return cmsGet('faq', []); };
+  CMS.saveFaq = function(d) { cmsSet('faq', d); };
+
+  /* ----- Partners ----- */
+  CMS.getPartners = function() { return cmsGet('partners', []); };
+  CMS.savePartners = function(d) { cmsSet('partners', d); };
+
+  /* ----- Gallery ----- */
+  CMS.getGallery = function() { return cmsGet('gallery', []); };
+  CMS.saveGallery = function(d) { cmsSet('gallery', d); };
+
+  /* ----- Videos ----- */
+  CMS.getVideos = function() { return cmsGet('videos', []); };
+  CMS.saveVideos = function(d) { cmsSet('videos', d); };
+
+  /* ----- Library ----- */
+  CMS.getLibrary = function() { return cmsGet('library', []); };
+  CMS.saveLibrary = function(d) { cmsSet('library', d); };
+
+  /* ----- Surveys ----- */
+  CMS.getSurveys = function() { return cmsGet('surveys', []); };
+  CMS.saveSurveys = function(d) { cmsSet('surveys', d); };
+
+  /* ----- Rehabilitation ----- */
+  CMS.getRehabilitation = function() { return cmsGet('rehabilitation', []); };
+  CMS.saveRehabilitation = function(d) { cmsSet('rehabilitation', d); };
+
+  /* ----- Achievements Page ----- */
+  CMS.getAchievementsPage = function() { return cmsGet('achievements_page', { title: '', items: [] }); };
+  CMS.saveAchievementsPage = function(d) { cmsSet('achievements_page', d); };
+
+  /* ----- Articles ----- */
+  CMS.getArticles = function() { return cmsGet('articles', []); };
+  CMS.saveArticles = function(d) { cmsSet('articles', d); };
+
+  /* ----- Announcements ----- */
+  CMS.getAnnouncements = function() { return cmsGet('announcements', []); };
+  CMS.saveAnnouncements = function(d) { cmsSet('announcements', d); };
+
+  /* ----- Calendar Events ----- */
+  CMS.getCalendarEvents = function() { return cmsGet('calendar', []); };
+  CMS.saveCalendarEvents = function(d) { cmsSet('calendar', d); };
+
+  /* ----- Navigation ----- */
+  CMS.getNavigation = function() {
+    return cmsGet('navigation', {
+      logoText: 'منصة وعي الشباب BBA',
+      items: [
+        { label: 'الرئيسية', href: 'index.html', visible: true },
+        { label: 'عن المشروع', href: 'about.html', visible: true },
+        { label: 'الفئة المستهدفة', href: 'target-audience.html', visible: true },
+        { label: 'نادي الشباب', href: 'club.html', visible: true },
+        { label: 'النشاطات', href: 'activities.html', visible: true },
+        { label: 'الأكاديمية', href: 'academy.html', visible: true },
+        { label: 'المركز الإعلامي', href: 'media-center.html', visible: true },
+        { label: 'الشركاء', href: 'partners.html', visible: true },
+        { label: 'DZ Leaders', href: 'dz-young-leaders.html', visible: true },
+        { label: 'فريق العمل', href: 'team.html', visible: true },
+        { label: 'الإنجازات', href: 'achievements.html', visible: true },
+        { label: 'تواصل', href: 'index.html#contact', visible: true }
+      ],
+      mobileItems: [
+        { label: 'الرئيسية', href: 'index.html', icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', visible: true }
+      ]
+    });
+  };
+  CMS.saveNavigation = function(d) { cmsSet('navigation', d); };
+
+  /* ----- Footer ----- */
+  CMS.getFooter = function() {
+    return cmsGet('footer', {
+      copyright: '© 2026 منصة وعي الشباب BBA',
+      sponsor: 'تحت إشراف برنامج Dz Young Leaders',
+      links: [
+        { label: '📖 عن المشروع', href: 'about.html', visible: true },
+        { label: '👥 فريق العمل', href: 'team.html', visible: true },
+        { label: '🤝 الشركاء', href: 'partners.html', visible: true },
+        { label: '📺 المركز الإعلامي', href: 'media-center.html', visible: true },
+        { label: '🎓 الأكاديمية', href: 'academy.html', visible: true },
+        { label: '👤 بوابة المتطوعين', href: 'portal.html', visible: true },
+        { label: '✅ التحقق من الشهادات', href: 'verify-certificate.html', visible: true }
+      ]
+    });
+  };
+  CMS.saveFooter = function(d) { cmsSet('footer', d); };
+
+  /* ----- Social Media ----- */
+  CMS.getSocial = function() {
+    return cmsGet('social', {
+      email: 'contact@bba.dz', phone: '+213 XXX XX XX XX',
+      facebook: 'https://facebook.com/bba.wa3y', instagram: 'https://instagram.com/bba.wa3y',
+      twitter: 'https://twitter.com/bba_wa3y', youtube: 'https://youtube.com/@bba.wa3y',
+      address: 'برج بوعريريج، الجزائر'
+    });
+  };
+  CMS.saveSocial = function(d) { cmsSet('social', d); };
+
+  /* ----- Club Data ----- */ /* Administered via cms_club.js */
+  CMS.getClubData = function() {
+    try { return JSON.parse(localStorage.getItem('bba_cms_club_data') || 'null') || {}; }
+    catch(e) { return {}; }
+  };
+  CMS.saveClubData = function(d) { localStorage.setItem('bba_cms_club_data', JSON.stringify(d)); };
+
+  /* ----- About Section ----- */
+  CMS.getAbout = function() {
+    return cmsGet('about', {
+      title: 'عن المشروع', subtitle: 'منصة وعي الشباب BBA',
+      content: 'منصة شبابية تهدف إلى نشر الوعي بمخاطر المخدرات والمؤثرات العقلية...',
+      vision: 'نحو جيل واعٍ خالٍ من المخدرات', mission: 'تمكين الشباب بالمعرفة والمهارات',
+      image: ''
+    });
+  };
+  CMS.saveAbout = function(d) { cmsSet('about', d); };
+
+  /* ----- Team Members ----- */
+  CMS.getTeamMembers = function() {    return cmsGet('team_members', [
+    { name: 'أحمد بن علي', role: 'مدير المنصة', bio: '', image: '', visible: true },
+    { name: 'سارة بن محمد', role: 'منسقة البرامج', bio: '', image: '', visible: true }
+  ]); };
+  CMS.saveTeamMembers = function(d) { cmsSet('team_members', d); };
+
+  /* ----- Contact Info (separate from social) ----- */
+  CMS.getContactInfo = function() {
+    return cmsGet('contact', {
+      address: 'برج بوعريريج، الجزائر', phone: '+213 XXX XX XX XX',
+      email: 'info@bba.dz', workingHours: '9:00 - 17:00',
+      mapLat: 36.0749, mapLng: 4.7616
+    });
+  };
+  CMS.saveContactInfo = function(d) { cmsSet('contact', d); };
+
+  /* ----- Activities CMS Content ----- */
+  CMS.getActivitiesCms = function() {
+    return cmsGet('activities_cms', {
+      title: 'النشاطات والفعاليات', subtitle: 'تعرف على أنشطتنا المتنوعة',
+      categories: ['حملات توعوية', 'ورش تدريبية', 'فعاليات ثقافية', 'أنشطة تطوعية']
+    });
+  };
+  CMS.saveActivitiesCms = function(d) { cmsSet('activities_cms', d); };
+
+  /* ----- SEO Settings ----- */
+  CMS.getSeo = function() {
+    return cmsGet('seo', {
+      title: 'منصة وعي الشباب BBA - برج بوعريريج',
+      description: 'منصة شبابية للتوعية بمخاطر المخدرات وتعزيز الصحة النفسية في برج بوعريريج',
+      keywords: 'وعي, شباب, مخدرات, توعية, برج بوعريريج, Dz Young Leaders',
+      ogImage: '', ogTitle: '', ogDescription: '',
+      googleAnalyticsId: '', googleTagId: ''
+    });
+  };
+  CMS.saveSeo = function(d) { cmsSet('seo', d); };
+
+  /* ----- Global Settings ----- */
+  CMS.getGlobalSettings = function() {
+    return cmsGet('global', {
+      siteName: 'منصة وعي الشباب BBA',
+      siteUrl: 'https://bba-wa3y.dz',
+      primaryColor: '#C9A84C', secondaryColor: '#2DD4BF',
+      language: 'ar', direction: 'rtl',
+      maintenanceMode: false,
+      theme: 'dark', allowThemeSwitch: true
+    });
+  };
+  CMS.saveGlobalSettings = function(d) { cmsSet('global', d); };
+
+  /* ----- Generic ----- */
+  CMS.get = function(key, def) { return cmsGet(key, def); };
+  CMS.save = function(key, d) { cmsSet(key, d); };
+
+  CMS.refreshNavigation = function() {
+    if (window.BBA && window.BBA.Navigation) window.BBA.Navigation.refresh();
+  };
+
+  window.CMS = CMS;
+
+  /* ============================================================
+   * ADMIN FORM RENDERERS
+   * ============================================================ */
+
+  function renderListEditor(containerId, getFn, saveFn, fields, itemLabel) {
+    var container = byId(containerId);
+    if (!container) return;
+    var data = getFn();
+    function render() {
+      var html = '<div style="display:grid;gap:0.5rem;margin-bottom:0.75rem" class="cms-list-items">';
       for (var i = 0; i < data.length; i++) {
-        if (data[i].id === id) {
-          for (var prop in updates) { data[i][prop] = updates[prop]; }
-          data[i].updatedAt = new Date().toISOString();
-          break;
+        html += '<div class="cms-list-item" style="display:flex;align-items:center;gap:0.4rem;padding:0.4rem;background:var(--surface-card);border-radius:var(--radius-sm)">';
+        html += '<span style="flex:0 0 20px;font-size:0.75rem;color:var(--muted)">' + (i+1) + '</span>';
+        for (var f = 0; f < fields.length; f++) {
+          var field = fields[f];
+          var val = data[i][field.key] || '';
+          if (field.type === 'textarea') {
+            html += '<textarea class="cms-field-' + field.key + '" placeholder="' + esc(field.label) + '" style="flex:' + (field.flex||1) + ';padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem;min-height:50px">' + esc(val) + '</textarea>';
+          } else if (field.type === 'checkbox') {
+            html += '<label style="font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:0.25rem;white-space:nowrap"><input type="checkbox" class="cms-field-' + field.key + '" ' + (val ? 'checked' : '') + '> ' + esc(field.label) + '</label>';
+          } else {
+            html += '<input type="' + (field.type||'text') + '" class="cms-field-' + field.key + '" value="' + esc(val) + '" placeholder="' + esc(field.label) + '" style="flex:' + (field.flex||1) + ';padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem">';
+          }
         }
-      }
-      this.set(key, data);
-      return data;
-    },
-    remove: function(key, id) {
-      var data = this.getAll(key);
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].id === id) { data.splice(i, 1); break; }
-      }
-      this.set(key, data);
-      return data;
-    },
-    togglePublish: function(key, id) {
-      var data = this.getAll(key);
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].id === id) { data[i].published = !data[i].published; data[i].updatedAt = new Date().toISOString(); break; }
-      }
-      this.set(key, data);
-      return data;
-    },
-    reorder: function(key, fromIdx, toIdx) {
-      var data = this.getAll(key);
-      if (fromIdx < 0 || fromIdx >= data.length || toIdx < 0 || toIdx >= data.length) return data;
-      var item = data.splice(fromIdx, 1)[0];
-      data.splice(toIdx, 0, item);
-      this.set(key, data);
-      return data;
-    }
-  };
-
-  /* ============================================================
-   * DEFAULTS - Seed initial data if empty
-   * ============================================================ */
-  function seedDefaults() {
-    /* Hero settings */
-    if (!localStorage.getItem('bba_cms_hero')) {
-      CMS.set('hero', {
-        badge: 'Dz Young Leaders - برج بوعريريج',
-        title: 'منصة وعي الشباب BBA',
-        subtitle: 'منصة رقمية للتوعية بمخاطر المخدرات والمؤثرات العقلية وتعزيز الصحة النفسية لدى الشباب في ولاية برج بوعريريج.',
-        primaryBtnText: 'طلب استشارة سرية',
-        primaryBtnLink: '#consultation',
-        secondaryBtnText: 'الانضمام كمتطوع',
-        secondaryBtnLink: '#volunteer',
-        bgImage: ''
-      });
-    }
-
-    /* Default articles (Arabic awareness content) */
-    if (!localStorage.getItem('bba_cms_articles')) {
-      CMS.set('articles', [
-        { id: 1, title: 'المخدرات الرقمية: حقائق وأخطار', category: 'توعية رقمية', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=250&fit=crop', readingTime: 5, summary: 'تعرف على حقيقة ما يسمى بالمخدرات الرقمية وتأثيرها على الدماغ.', content: '<h4>ما هي المخدرات الرقمية؟</h4><p>المخدرات الرقمية (أو ما يُعرف بـ \"I-Doser\") هي ملفات صوتية تستخدم تقنية النبضات بكلتا الأذنين.</p><h4>الحقيقة العلمية</h4><p>الدراسات العلمية لم تثبت بشكل قاطع أن هذه المؤثرات الصوتية تسبب إدماناً كيميائياً.</p>', published: true, pinned: false, date: '2026-01-15' },
-        { id: 2, title: 'الصحة النفسية للشباب: دليل العناية الذاتية', category: 'صحة نفسية', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=250&fit=crop', readingTime: 7, summary: 'استراتيجيات عملية للحفاظ على صحتك النفسية في عالم مليء بالتحديات.', content: '<h4>أهمية الصحة النفسية للشباب</h4><p>تمثل الصحة النفسية جزءاً أساسياً من الصحة العامة.</p><h4>استراتيجيات العناية الذاتية</h4><ul><li>الروتين اليومي</li><li>النشاط البدني</li><li>التواصل الاجتماعي</li></ul>', published: true, pinned: false, date: '2026-02-01' },
-        { id: 3, title: 'كيف تقول لا للمخدرات بثقة', category: 'مهارات حياتية', image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=250&fit=crop', readingTime: 4, summary: 'تدرب على مهارات الرفض الفعال وكيفية مقاومة ضغط الأقران.', content: '<h4>لماذا يصعب قول لا؟</h4><p>الخوف من الرفض الاجتماعي يدفع الكثير لقبول أشياء ضارة.</p>', published: true, pinned: false, date: '2026-02-20' },
-        { id: 4, title: 'الرياضة: سلاحك ضد الإدمان', category: 'نمط حياة صحي', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop', readingTime: 6, summary: 'اكتشف كيف يمكن للنشاط البدني المنتظم أن يكون درعاً واقياً.', content: '<h4>العلاقة بين الرياضة والوقاية من الإدمان</h4><p>النشاط البدني يحفز إفراز هرمونات السعادة.</p>', published: true, pinned: false, date: '2026-03-10' },
-        { id: 5, title: 'علامات التحذير: متى تطلب المساعدة؟', category: 'وقاية', image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400&h=250&fit=crop', readingTime: 5, summary: 'دليل للتعرف على العلامات المبكرة لتعاطي المخدرات.', content: '<h4>لماذا التعرف المبكر مهم؟</h4><p>التعرف المبكر يمكن أن ينقذ حياة.</p>', published: true, pinned: false, date: '2026-03-25' },
-        { id: 6, title: 'الإدمان الرقمي وعلاقته بالمخدرات', category: 'توعية', image: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=250&fit=crop', readingTime: 6, summary: 'دراسة العلاقة بين إدمان الأجهزة الرقمية والميول لتعاطي المخدرات.', content: '<h4>ما هو الإدمان الرقمي؟</h4><p>الإدمان الرقمي هو الاستخدام القهري المفرط للأجهزة.</p>', published: true, pinned: false, date: '2026-04-08' }
-      ]);
-    }
-
-    /* Default testimonials */
-    if (!localStorage.getItem('bba_cms_testimonials')) {
-      CMS.set('testimonials', [
-        { id: 1, text: 'التطوع في المنصة غير حياتي، تعلمت كيف أساعد غيري وأكون جزءاً من تغيير إيجابي في مجتمعي.', author: 'متطوع متميز', role: 'عضو في التنظيم - برج بوعريريج', avatar: '⭐', published: true },
-        { id: 2, text: 'الاستشارات النفسية ساعدتني كثيراً في تخطي فترة صعبة. أشكر الفريق على الاحترافية والسرية التامة.', author: 'مستفيد من الخدمات', role: 'مستشار - رأس الوادي', avatar: '💚', published: true },
-        { id: 3, text: 'فخور بأن أكون جزءاً من هذا البرنامج الرائد. الورشات التدريبية والحملات التوعوية التي ننظمها تحدث فرقاً حقيقياً.', author: 'قائد فريق', role: 'عضو فعال في الإدارة - المنصورة', avatar: '🏆', published: true }
-      ]);
-    }
-
-    /* Default partners */
-    if (!localStorage.getItem('bba_cms_partners')) {
-      CMS.set('partners', [
-        { name: 'Dz Young Leaders', logo: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23D4AF37%22/%3E%3Ctext y=%2268%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2230%22 fill=%22%2306090e%22 font-weight=%22700%22 font-family=%22Cairo%22%3EDZ%3C/text%3E%3C/svg%3E', website: '#', category: 'شريك رسمي', published: true },
-        { name: 'جامعة برج بوعريريج', logo: '', website: '#', category: 'شريك أكاديمي', published: true }
-      ]);
-    }
-
-    /* Default FAQ */
-    if (!localStorage.getItem('bba_cms_faq')) {
-      CMS.set('faq', [
-        { question: 'كيف يمكنني الانضمام كمتطوع؟', answer: 'يمكنك التسجيل من خلال نموذج التطوع في الصفحة الرئيسية. بعد تقديم الطلب، ستقوم الإدارة بمراجعته والرد عليك.', published: true },
-        { question: 'كيف يمكنني متابعة حالة استشارتي؟', answer: 'استخدم رمز المتابعة الذي حصلت عليه عند تقديم الاستشارة في قسم تتبع الاستشارات بالصفحة الرئيسية.', published: true },
-        { question: 'هل الاستشارات مجانية وسرية؟', answer: 'نعم، جميع الاستشارات مجانية وسرية تماماً. يمكنك استخدام اسم مستعار لضمان الخصوصية.', published: true },
-        { question: 'كيف أحصل على شهادة تطوع؟', answer: 'بعد المشاركة في الأنشطة والفعاليات، تقوم الإدارة بإصدار شهادات تقدير للمتطوعين المتميزين.', published: true }
-      ]);
-    }
-
-    /* Default notice bar */
-    if (!localStorage.getItem('bba_cms_notice_bar')) {
-      CMS.set('notice_bar', { message: 'مرحباً بكم في منصة وعي الشباب BBA | برنامج Dz Young Leaders', visible: true, priority: 'info', expiresAt: '' });
-    }
-
-    /* Default calendar events from bba_events */
-    if (!localStorage.getItem('bba_cms_calendar')) {
-      CMS.set('calendar', []);
-    }
-
-    /* Default surveys */
-    if (!localStorage.getItem('bba_cms_surveys')) {
-      CMS.set('surveys', []);
-    }
-
-    /* Default gallery */
-    if (!localStorage.getItem('bba_cms_gallery')) {
-      CMS.set('gallery', []);
-    }
-
-    /* Default videos */
-    if (!localStorage.getItem('bba_cms_videos')) {
-      CMS.set('videos', []);
-    }
-
-    /* Default library */
-    if (!localStorage.getItem('bba_cms_library')) {
-      CMS.set('library', []);
-    }
-
-    /* Default achievements page data */
-    if (!localStorage.getItem('bba_cms_achievements')) {
-      CMS.set('achievements', {
-        year: new Date().getFullYear(),
-        description: 'إنجازات برنامج Dz Young Leaders لعام ' + new Date().getFullYear(),
-        published: true
-      });
-    }
-  }
-
-  seedDefaults();
-
-  /* ============================================================
-   * PUBLIC API - Expose CMS functions globally
-   * ============================================================ */
-  window.CMS = {
-    getHero: function() { return CMS.get('hero', {}); },
-    saveHero: function(data) { CMS.set('hero', data); },
-
-    getArticles: function() { return CMS.getAll('articles'); },
-    addArticle: function(item) { return CMS.add('articles', item); },
-    updateArticle: function(id, updates) { return CMS.update('articles', id, updates); },
-    removeArticle: function(id) { return CMS.remove('articles', id); },
-    toggleArticlePublish: function(id) { return CMS.togglePublish('articles', id); },
-
-    getTestimonials: function() { return CMS.getAll('testimonials'); },
-    addTestimonial: function(item) { return CMS.add('testimonials', item); },
-    updateTestimonial: function(id, updates) { return CMS.update('testimonials', id, updates); },
-    removeTestimonial: function(id) { return CMS.remove('testimonials', id); },
-
-    getNoticeBar: function() { return CMS.get('notice_bar', { message: '', visible: false }); },
-    saveNoticeBar: function(data) { CMS.set('notice_bar', data); },
-
-    getPartners: function() { return CMS.getAll('partners'); },
-    addPartner: function(item) { return CMS.add('partners', item); },
-    removePartner: function(id) { return CMS.remove('partners', id); },
-
-    getFaq: function() { return CMS.getAll('faq'); },
-    addFaq: function(item) { return CMS.add('faq', item); },
-    updateFaq: function(id, updates) { return CMS.update('faq', id, updates); },
-    removeFaq: function(id) { return CMS.remove('faq', id); },
-
-    getGallery: function() { return CMS.getAll('gallery'); },
-    addGalleryAlbum: function(item) { return CMS.add('gallery', item); },
-    removeGalleryAlbum: function(id) { return CMS.remove('gallery', id); },
-
-    getVideos: function() { return CMS.getAll('videos'); },
-    addVideo: function(item) { return CMS.add('videos', item); },
-    removeVideo: function(id) { return CMS.remove('videos', id); },
-
-    getLibrary: function() { return CMS.getAll('library'); },
-    addLibraryItem: function(item) { return CMS.add('library', item); },
-    removeLibraryItem: function(id) { return CMS.remove('library', id); },
-
-    getSurveys: function() { return CMS.getAll('surveys'); },
-    addSurvey: function(item) { return CMS.add('surveys', item); },
-    updateSurvey: function(id, updates) { return CMS.update('surveys', id, updates); },
-    removeSurvey: function(id) { return CMS.remove('surveys', id); },
-
-    getAchievementsPage: function() { return CMS.get('achievements_page', {}); },
-    saveAchievementsPage: function(data) { CMS.set('achievements_page', data); },
-
-    getRehabilitation: function() { return CMS.getAll('rehabilitation'); },
-    addRehabilitation: function(item) { return CMS.add('rehabilitation', item); },
-    removeRehabilitation: function(id) {
-      var data = CMS.getAll('rehabilitation');
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].id === id) { data.splice(i, 1); break; }
-      }
-      CMS.set('rehabilitation', data);
-      return data;
-    }
-  };
-
-  /* ============================================================
-   * ADMIN CMS RENDERERS - Called from sidou-da.html
-   * ============================================================ */
-  if (!byId('cmsHeroForm')) return; // Not on admin page
-
-  /* --- HERO FORM --- */
-  function renderHeroForm() {
-    var hero = window.CMS.getHero();
-    var container = byId('cmsHeroForm');
-    if (!container) return;
-    container.innerHTML =
-      '<div class="form-group"><label>الشعار (Badge)</label><input type="text" id="cmsHeroBadge" value="' + escapeHtml(hero.badge || '') + '" class="cms-input"></div>' +
-      '<div class="form-group"><label>العنوان الرئيسي</label><input type="text" id="cmsHeroTitle" value="' + escapeHtml(hero.title || '') + '" class="cms-input"></div>' +
-      '<div class="form-group"><label>النص الفرعي</label><textarea id="cmsHeroSubtitle" class="cms-input" style="min-height:60px">' + escapeHtml(hero.subtitle || '') + '</textarea></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">' +
-      '<div class="form-group"><label>نص الزر الأساسي</label><input type="text" id="cmsHeroPrimaryBtn" value="' + escapeHtml(hero.primaryBtnText || '') + '" class="cms-input"></div>' +
-      '<div class="form-group"><label>رابط الزر الأساسي</label><input type="text" id="cmsHeroPrimaryLink" value="' + escapeHtml(hero.primaryBtnLink || '') + '" class="cms-input"></div>' +
-      '</div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">' +
-      '<div class="form-group"><label>نص الزر الثانوي</label><input type="text" id="cmsHeroSecondaryBtn" value="' + escapeHtml(hero.secondaryBtnText || '') + '" class="cms-input"></div>' +
-      '<div class="form-group"><label>رابط الزر الثانوي</label><input type="text" id="cmsHeroSecondaryLink" value="' + escapeHtml(hero.secondaryBtnLink || '') + '" class="cms-input"></div>' +
-      '</div>' +
-      '<button type="button" id="cmsSaveHeroBtn" class="btn btn-primary" style="width:100%;justify-content:center">💾 حفظ إعدادات الصفحة الرئيسية</button>';
-
-    byId('cmsSaveHeroBtn').addEventListener('click', function() {
-      var data = {
-        badge: byId('cmsHeroBadge').value.trim(),
-        title: byId('cmsHeroTitle').value.trim(),
-        subtitle: byId('cmsHeroSubtitle').value.trim(),
-        primaryBtnText: byId('cmsHeroPrimaryBtn').value.trim(),
-        primaryBtnLink: byId('cmsHeroPrimaryLink').value.trim(),
-        secondaryBtnText: byId('cmsHeroSecondaryBtn').value.trim(),
-        secondaryBtnLink: byId('cmsHeroSecondaryLink').value.trim()
-      };
-      window.CMS.saveHero(data);
-      showToast('✅ تم حفظ إعدادات الصفحة الرئيسية', 'success');
-    });
-  }
-
-  /* --- NOTICE BAR FORM --- */
-  function renderNoticeBarForm() {
-    var notice = window.CMS.getNoticeBar();
-    var container = byId('cmsNoticeBarForm');
-    if (!container) return;
-    container.innerHTML =
-      '<div class="form-group"><label>نص الإعلان</label><input type="text" id="cmsNoticeMsg" value="' + escapeHtml(notice.message || '') + '" class="cms-input" placeholder="مثال: مرحباً بكم في المنصة"></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem">' +
-      '<div class="form-group"><label>الأولوية</label><select id="cmsNoticePriority" class="cms-input"><option value="info"' + (notice.priority === 'info' ? ' selected' : '') + '>معلومات</option><option value="alert"' + (notice.priority === 'alert' ? ' selected' : '') + '>تنبيه</option><option value="urgent"' + (notice.priority === 'urgent' ? ' selected' : '') + '>عاجل</option></select></div>' +
-      '<div class="form-group"><label>الإظهار</label><select id="cmsNoticeVisible" class="cms-input"><option value="true"' + (notice.visible ? ' selected' : '') + '>ظاهر</option><option value="false"' + (!notice.visible ? ' selected' : '') + '>مخفي</option></select></div>' +
-      '<div class="form-group"><label>تاريخ الانتهاء</label><input type="date" id="cmsNoticeExpires" value="' + (notice.expiresAt ? notice.expiresAt.split('T')[0] : '') + '" class="cms-input"></div>' +
-      '</div>' +
-      '<button type="button" id="cmsSaveNoticeBtn" class="btn btn-primary" style="width:100%;justify-content:center">💾 حفظ الإعلان</button>';
-
-    byId('cmsSaveNoticeBtn').addEventListener('click', function() {
-      window.CMS.saveNoticeBar({
-        message: byId('cmsNoticeMsg').value.trim(),
-        priority: byId('cmsNoticePriority').value,
-        visible: byId('cmsNoticeVisible').value === 'true',
-        expiresAt: byId('cmsNoticeExpires').value
-      });
-      showToast('✅ تم حفظ شريط الإعلان', 'success');
-    });
-  }
-
-  /* --- TESTIMONIAL FORM --- */
-  function renderTestimonialForm() {
-    var container = byId('cmsTestimonialForm');
-    if (!container) return;
-    container.innerHTML =
-      '<div id="cmsTestimonialList" style="margin-bottom:1rem"></div>' +
-      '<div style="border-top:1px solid var(--border-light);padding-top:1rem">' +
-      '<h4 style="font-size:0.9rem;color:var(--gold);margin-bottom:0.75rem">➕ إضافة شهادة جديدة</h4>' +
-      '<div class="form-group"><label>النص</label><textarea id="cmsTestimonialText" class="cms-input" style="min-height:60px" placeholder="نص الشهادة..."></textarea></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">' +
-      '<div class="form-group"><label>الاسم</label><input type="text" id="cmsTestimonialAuthor" class="cms-input" placeholder="اسم الشخص"></div>' +
-      '<div class="form-group"><label>الدور</label><input type="text" id="cmsTestimonialRole" class="cms-input" placeholder="مثال: متطوع - برج بوعريريج"></div>' +
-      '</div>' +
-      '<button type="button" id="cmsAddTestimonialBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ إضافة الشهادة</button></div>';
-
-    function renderTestimonialList() {
-      var list = byId('cmsTestimonialList');
-      if (!list) return;
-      var data = window.CMS.getTestimonials();
-      if (data.length === 0) { list.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:1rem">لا توجد شهادات بعد</div>'; return; }
-      var html = '<h4 style="font-size:0.9rem;color:var(--gold);margin-bottom:0.5rem">📋 الشهادات (' + data.length + ')</h4>';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var t = data[i];
-        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.4rem;background:rgba(212,175,55,0.02)">' +
-          '<div style="flex:1;min-width:0"><div style="font-size:0.8rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(t.text) + '</div><div style="font-size:0.7rem;color:var(--muted)">— ' + escapeHtml(t.author) + '</div></div>' +
-          '<button class="btn btn-sm" onclick="window.CMS.removeTestimonial(' + t.id + ');renderTestimonialList();showToast(\'تم حذف الشهادة\',\'info\')" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.5rem;font-size:0.65rem;border-radius:4px;cursor:pointer;font-family:var(--font);flex-shrink:0">🗑️</button></div>';
-      }
-      list.innerHTML = html;
-    }
-
-    byId('cmsAddTestimonialBtn').addEventListener('click', function() {
-      var text = byId('cmsTestimonialText').value.trim();
-      var author = byId('cmsTestimonialAuthor').value.trim();
-      var role = byId('cmsTestimonialRole').value.trim();
-      if (!text || !author) { showToast('النص والاسم مطلوبان', 'error'); return; }
-      window.CMS.addTestimonial({ text: text, author: author, role: role, avatar: '⭐', published: true });
-      byId('cmsTestimonialText').value = '';
-      byId('cmsTestimonialAuthor').value = '';
-      byId('cmsTestimonialRole').value = '';
-      renderTestimonialList();
-      showToast('✅ تم إضافة الشهادة', 'success');
-    });
-
-    renderTestimonialList();
-  }
-
-  /* --- ARTICLES FORM --- */
-  function renderArticleForm() {
-    var container = byId('cmsArticleForm');
-    var listContainer = byId('cmsArticlesList');
-    if (!container || !listContainer) return;
-
-    container.innerHTML =
-      '<div class="form-group"><label>عنوان المقال *</label><input type="text" id="cmsArticleTitle" class="cms-input" placeholder="عنوان المقال"></div>' +
-      '<div class="form-group"><label>التصنيف</label><select id="cmsArticleCategory" class="cms-input"><option value="توعية رقمية">توعية رقمية</option><option value="صحة نفسية">صحة نفسية</option><option value="مهارات حياتية">مهارات حياتية</option><option value="نمط حياة صحي">نمط حياة صحي</option><option value="وقاية">وقاية</option><option value="توعية">توعية</option></select></div>' +
-      '<div class="form-group"><label>رابط الصورة</label><input type="url" id="cmsArticleImage" class="cms-input" placeholder="https://example.com/image.jpg"></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">' +
-      '<div class="form-group"><label>وقت القراءة (دقائق)</label><input type="number" id="cmsArticleReadingTime" class="cms-input" value="5" min="1"></div>' +
-      '<div class="form-group"><label>تاريخ النشر</label><input type="date" id="cmsArticleDate" class="cms-input"></div>' +
-      '</div>' +
-      '<div class="form-group"><label>الملخص</label><textarea id="cmsArticleSummary" class="cms-input" style="min-height:60px" placeholder="ملخص المقال..."></textarea></div>' +
-      '<div class="form-group"><label>المحتوى الكامل (HTML)</label><textarea id="cmsArticleContent" class="cms-input" style="min-height:200px;font-family:monospace;font-size:0.8rem" placeholder="محتوى المقال بتنسيق HTML..."></textarea></div>' +
-      '<button type="button" id="cmsAddArticleBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ نشر المقال</button>';
-
-    /* Set default date */
-    var dateInput = byId('cmsArticleDate');
-    if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
-
-    function renderArticlesList() {
-      var data = window.CMS.getArticles();
-      if (data.length === 0) { listContainer.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">لا توجد مقالات بعد</div>'; return; }
-      var html = '';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var a = data[i];
-        var status = a.published !== false ? '<span class="badge badge-approved">منشور</span>' : '<span class="badge badge-pending">مسودة</span>';
-        var pinned = a.pinned ? '📌 ' : '';
-        html += '<div style="padding:0.75rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.5rem;background:rgba(212,175,55,0.02)">' +
-          '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
-          '<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:0.85rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + pinned + escapeHtml(a.title) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:0.2rem">' + escapeHtml(a.category) + ' | 📅 ' + (a.date || '') + '</div></div>' +
-          '<div style="display:flex;gap:0.3rem;flex-shrink:0;margin-right:0.5rem">' +
-          '<button class="btn btn-sm" onclick="window.CMS.toggleArticlePublish(' + a.id + ');renderArticlesList();showToast(\'تم تغيير حالة النشر\',\'info\')" style="background:transparent;color:var(--gold);border:1px solid var(--gold);padding:0.2rem 0.4rem;font-size:0.6rem;border-radius:4px;cursor:pointer;font-family:var(--font)">' + (a.published !== false ? '🔒' : '🔓') + '</button>' +
-          '<button class="btn btn-sm" onclick="window.CMS.removeArticle(' + a.id + ');renderArticlesList();showToast(\'تم حذف المقال\',\'info\')" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.4rem;font-size:0.6rem;border-radius:4px;cursor:pointer;font-family:var(--font)">🗑️</button>' +
-          '</div></div>' + status +
-          '</div>';
-      }
-      listContainer.innerHTML = html;
-    }
-
-    byId('cmsAddArticleBtn').addEventListener('click', function() {
-      var title = byId('cmsArticleTitle').value.trim();
-      var category = byId('cmsArticleCategory').value;
-      var image = byId('cmsArticleImage').value.trim();
-      var readingTime = parseInt(byId('cmsArticleReadingTime').value, 10) || 5;
-      var date = byId('cmsArticleDate').value;
-      var summary = byId('cmsArticleSummary').value.trim();
-      var content = byId('cmsArticleContent').value.trim();
-      if (!title) { showToast('عنوان المقال مطلوب', 'error'); return; }
-      window.CMS.addArticle({ title: title, category: category, image: image || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=250&fit=crop', readingTime: readingTime, summary: summary, content: content || '<p>' + summary + '</p>', published: true, pinned: false, date: date || new Date().toISOString().split('T')[0] });
-      byId('cmsArticleTitle').value = '';
-      byId('cmsArticleImage').value = '';
-      byId('cmsArticleSummary').value = '';
-      byId('cmsArticleContent').value = '';
-      renderArticlesList();
-      showToast('✅ تم نشر المقال بنجاح', 'success');
-    });
-
-    renderArticlesList();
-  }
-
-  /* --- ANNOUNCEMENTS FORM --- */
-  function renderAnnouncementForm() {
-    var container = byId('cmsAnnouncementForm');
-    var listContainer = byId('cmsAnnouncementsList');
-    if (!container || !listContainer) return;
-
-    container.innerHTML =
-      '<div class="form-group"><label>العنوان</label><input type="text" id="cmsAnnTitle" class="cms-input" placeholder="عنوان الإعلان"></div>' +
-      '<div class="form-group"><label>المحتوى</label><textarea id="cmsAnnMessage" class="cms-input" style="min-height:80px" placeholder="نص الإعلان..."></textarea></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem">' +
-      '<div class="form-group"><label>النوع</label><select id="cmsAnnType" class="cms-input"><option value="info">معلومات</option><option value="alert">تنبيه</option><option value="achievement">إنجاز</option></select></div>' +
-      '<div class="form-group"><label>مثبت</label><select id="cmsAnnPinned" class="cms-input"><option value="false">لا</option><option value="true">نعم</option></select></div>' +
-      '</div>' +
-      '<button type="button" id="cmsAddAnnBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ نشر الإعلان</button>';
-
-    function renderAnnouncementsList() {
-      var data = JSON.parse(localStorage.getItem('bba_notifications_data') || '[]');
-      if (data.length === 0) { listContainer.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">لا توجد إعلانات بعد</div>'; return; }
-      var html = '';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var a = data[i];
-        html += '<div style="padding:0.75rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.5rem">' +
-          '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
-          '<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:0.85rem;color:var(--text)">' + escapeHtml(a.title) + '</div><div style="font-size:0.78rem;color:var(--text-secondary);margin-top:0.2rem">' + escapeHtml(a.message) + '</div></div>' +
-          '<span style="font-size:0.7rem;color:var(--muted);white-space:nowrap">' + new Date(a.createdAt).toLocaleDateString('ar-DZ') + '</span></div></div>';
-      }
-      listContainer.innerHTML = html;
-    }
-
-    byId('cmsAddAnnBtn').addEventListener('click', function() {
-      var title = byId('cmsAnnTitle').value.trim();
-      var message = byId('cmsAnnMessage').value.trim();
-      var type = byId('cmsAnnType').value;
-      if (!title || !message) { showToast('العنوان والمحتوى مطلوبان', 'error'); return; }
-      var data = JSON.parse(localStorage.getItem('bba_notifications_data') || '[]');
-      data.push({ title: title, message: message, type: type, targetVolunteer: 'all', isUrgent: false, createdAt: new Date().toISOString() });
-      localStorage.setItem('bba_notifications_data', JSON.stringify(data));
-      byId('cmsAnnTitle').value = '';
-      byId('cmsAnnMessage').value = '';
-      renderAnnouncementsList();
-      showToast('✅ تم نشر الإعلان', 'success');
-    });
-
-    renderAnnouncementsList();
-  }
-
-  /* --- GALLERY FORM --- */
-  function renderGalleryForm() {
-    var container = byId('cmsGalleryForm');
-    var listContainer = byId('cmsGalleryList');
-    if (!container || !listContainer) return;
-
-    container.innerHTML =
-      '<div class="form-group"><label>اسم الألبوم</label><input type="text" id="cmsGalleryName" class="cms-input" placeholder="مثال: فعاليات رمضان 2026"></div>' +
-      '<div class="form-group"><label>رابط الصور (فواصل سطر جديدة)</label><textarea id="cmsGalleryImages" class="cms-input" style="min-height:80px;font-family:monospace;font-size:0.75rem" placeholder="https://example.com/photo1.jpg\nhttps://example.com/photo2.jpg"></textarea></div>' +
-      '<button type="button" id="cmsAddGalleryBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ إنشاء الألبوم</button>';
-
-    function renderGalleryList() {
-      var data = window.CMS.getGallery();
-      if (data.length === 0) { listContainer.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">لا توجد ألبومات بعد</div>'; return; }
-      var html = '';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var g = data[i];
-        var images = g.images || [];
-        html += '<div style="padding:0.75rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.5rem">' +
-          '<div style="display:flex;justify-content:space-between;align-items:center">' +
-          '<div><div style="font-weight:600;font-size:0.85rem;color:var(--text)">🖼️ ' + escapeHtml(g.name) + '</div><div style="font-size:0.75rem;color:var(--muted)">' + images.length + ' صورة</div></div>' +
-          '<button class="btn btn-sm" onclick="window.CMS.removeGalleryAlbum(' + g.id + ');renderGalleryList();showToast(\'تم حذف الألبوم\',\'info\')" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.5rem;font-size:0.65rem;border-radius:4px;cursor:pointer;font-family:var(--font)">🗑️</button>' +
-          '</div></div>';
-      }
-      listContainer.innerHTML = html;
-    }
-
-    byId('cmsAddGalleryBtn').addEventListener('click', function() {
-      var name = byId('cmsGalleryName').value.trim();
-      var imagesText = byId('cmsGalleryImages').value.trim();
-      if (!name) { showToast('اسم الألبوم مطلوب', 'error'); return; }
-      var images = imagesText ? imagesText.split('\n').map(function(s) { return s.trim(); }).filter(function(s) { return s; }) : [];
-      window.CMS.addGalleryAlbum({ name: name, images: images, published: true });
-      byId('cmsGalleryName').value = '';
-      byId('cmsGalleryImages').value = '';
-      renderGalleryList();
-      showToast('✅ تم إنشاء الألبوم', 'success');
-    });
-
-    renderGalleryList();
-  }
-
-  /* --- VIDEOS FORM --- */
-  function renderVideoForm() {
-    var container = byId('cmsVideoForm');
-    var listContainer = byId('cmsVideosList');
-    if (!container || !listContainer) return;
-
-    container.innerHTML =
-      '<div class="form-group"><label>عنوان الفيديو</label><input type="text" id="cmsVideoTitle" class="cms-input" placeholder="عنوان الفيديو"></div>' +
-      '<div class="form-group"><label>رابط YouTube</label><input type="url" id="cmsVideoUrl" class="cms-input" placeholder="https://www.youtube.com/watch?v=..."></div>' +
-      '<div class="form-group"><label>التصنيف</label><select id="cmsVideoCategory" class="cms-input"><option value="توعوية">توعوية</option><option value="تدريبية">تدريبية</option><option value="فعاليات">فعاليات</option><option value="أخرى">أخرى</option></select></div>' +
-      '<div class="form-group"><label>مميز</label><select id="cmsVideoFeatured" class="cms-input"><option value="false">لا</option><option value="true">نعم</option></select></div>' +
-      '<button type="button" id="cmsAddVideoBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ إضافة الفيديو</button>';
-
-    function renderVideosList() {
-      var data = window.CMS.getVideos();
-      if (data.length === 0) { listContainer.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">لا توجد فيديوهات بعد</div>'; return; }
-      var html = '';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var v = data[i];
-        html += '<div style="padding:0.75rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center">' +
-          '<div><div style="font-weight:600;font-size:0.85rem;color:var(--text)">🎬 ' + escapeHtml(v.title) + '</div><div style="font-size:0.72rem;color:var(--muted)">' + escapeHtml(v.category || '') + (v.featured ? ' | ⭐ مميز' : '') + '</div></div>' +
-          '<button class="btn btn-sm" onclick="window.CMS.removeVideo(' + v.id + ');renderVideosList();showToast(\'تم حذف الفيديو\',\'info\')" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.5rem;font-size:0.65rem;border-radius:4px;cursor:pointer;font-family:var(--font)">🗑️</button></div>';
-      }
-      listContainer.innerHTML = html;
-    }
-
-    byId('cmsAddVideoBtn').addEventListener('click', function() {
-      var title = byId('cmsVideoTitle').value.trim();
-      var url = byId('cmsVideoUrl').value.trim();
-      var category = byId('cmsVideoCategory').value;
-      var featured = byId('cmsVideoFeatured').value === 'true';
-      if (!title || !url) { showToast('العنوان والرابط مطلوبان', 'error'); return; }
-      window.CMS.addVideo({ title: title, url: url, category: category, featured: featured, published: true });
-      byId('cmsVideoTitle').value = '';
-      byId('cmsVideoUrl').value = '';
-      renderVideosList();
-      showToast('✅ تم إضافة الفيديو', 'success');
-    });
-
-    renderVideosList();
-  }
-
-  /* --- PARTNERS FORM --- */
-  function renderPartnerForm() {
-    var container = byId('cmsPartnerForm');
-    var listContainer = byId('cmsPartnersList');
-    if (!container || !listContainer) return;
-
-    container.innerHTML =
-      '<div class="form-group"><label>اسم الشريك</label><input type="text" id="cmsPartnerName" class="cms-input" placeholder="اسم المؤسسة"></div>' +
-      '<div class="form-group"><label>رابط الشعار (URL)</label><input type="url" id="cmsPartnerLogo" class="cms-input" placeholder="https://example.com/logo.png"></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">' +
-      '<div class="form-group"><label>الموقع الإلكتروني</label><input type="url" id="cmsPartnerWebsite" class="cms-input" placeholder="https://example.com"></div>' +
-      '<div class="form-group"><label>معلومات الاتصال</label><textarea id="cmsPartnerContact" class="cms-input" style="min-height:50px;font-size:0.8rem" placeholder="مثال: 05XX-XX-XX-XX\ncontact@example.com"></textarea></div>' +
-      '<div class="form-group"><label>التصنيف</label><select id="cmsPartnerCategory" class="cms-input"><option value="شريك رسمي">شريك رسمي</option><option value="شريك أكاديمي">شريك أكاديمي</option><option value="شريك إعلامي">شريك إعلامي</option><option value="راعي">راعي</option><option value="المؤسسات التربوية">المؤسسات التربوية</option><option value="دور الشباب">دور الشباب</option><option value="الجمعيات المحلية">الجمعيات المحلية</option><option value="مختصو علم النفس">مختصو علم النفس</option><option value="وسائل الإعلام المحلية">وسائل الإعلام المحلية</option></select></div>' +
-      '</div>' +
-      '<button type="button" id="cmsAddPartnerBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ إضافة شريك</button>';
-
-    function renderPartnersList() {
-      var data = window.CMS.getPartners();
-      if (data.length === 0) { listContainer.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">لا يوجد شركاء بعد</div>'; return; }
-      var html = '';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var p = data[i];
-        html += '<div style="padding:0.75rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center">' +
-          '<div><div style="font-weight:600;font-size:0.85rem;color:var(--text)">🤝 ' + escapeHtml(p.name) + '</div><div style="font-size:0.72rem;color:var(--muted)">' + escapeHtml(p.category || '') + '</div></div>' +
-          '<button class="btn btn-sm" onclick="window.CMS.removePartner(' + p.id + ');renderPartnersList();showToast(\'تم حذف الشريك\',\'info\')" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.5rem;font-size:0.65rem;border-radius:4px;cursor:pointer;font-family:var(--font)">🗑️</button></div>';
-      }
-      listContainer.innerHTML = html;
-    }
-
-    byId('cmsAddPartnerBtn').addEventListener('click', function() {
-      var name = byId('cmsPartnerName').value.trim();
-      var logo = byId('cmsPartnerLogo').value.trim();
-      var website = byId('cmsPartnerWebsite').value.trim();
-      var category = byId('cmsPartnerCategory').value;
-      if (!name) { showToast('اسم الشريك مطلوب', 'error'); return; }
-      var contactInfo = byId('cmsPartnerContact').value.trim();
-      window.CMS.addPartner({ name: name, logo: logo, website: website, category: category, contactInfo: contactInfo, published: true });
-      byId('cmsPartnerName').value = '';
-      byId('cmsPartnerLogo').value = '';
-      byId('cmsPartnerWebsite').value = '';
-      renderPartnersList();
-      showToast('✅ تم إضافة الشريك', 'success');
-    });
-
-    renderPartnersList();
-  }
-
-  /* --- FAQ FORM --- */
-  function renderFaqForm() {
-    var container = byId('cmsFaqForm');
-    var listContainer = byId('cmsFaqList');
-    if (!container || !listContainer) return;
-
-    container.innerHTML =
-      '<div class="form-group"><label>السؤال</label><input type="text" id="cmsFaqQuestion" class="cms-input" placeholder="السؤال الشائع"></div>' +
-      '<div class="form-group"><label>الإجابة</label><textarea id="cmsFaqAnswer" class="cms-input" style="min-height:80px" placeholder="الإجابة..."></textarea></div>' +
-      '<button type="button" id="cmsAddFaqBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ إضافة سؤال</button>';
-
-    function renderFaqList() {
-      var data = window.CMS.getFaq();
-      if (data.length === 0) { listContainer.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">لا توجد أسئلة بعد</div>'; return; }
-      var html = '';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var f = data[i];
-        html += '<div style="padding:0.75rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.5rem">' +
-          '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
-          '<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:0.85rem;color:var(--gold)">❓ ' + escapeHtml(f.question) + '</div><div style="font-size:0.78rem;color:var(--text-secondary);margin-top:0.3rem">' + escapeHtml(f.answer) + '</div></div>' +
-          '<button class="btn btn-sm" onclick="window.CMS.removeFaq(' + f.id + ');renderFaqList();showToast(\'تم حذف السؤال\',\'info\')" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.5rem;font-size:0.65rem;border-radius:4px;cursor:pointer;font-family:var(--font);flex-shrink:0">🗑️</button>' +
-          '</div></div>';
-      }
-      listContainer.innerHTML = html;
-    }
-
-    byId('cmsAddFaqBtn').addEventListener('click', function() {
-      var question = byId('cmsFaqQuestion').value.trim();
-      var answer = byId('cmsFaqAnswer').value.trim();
-      if (!question || !answer) { showToast('السؤال والإجابة مطلوبان', 'error'); return; }
-      window.CMS.addFaq({ question: question, answer: answer, published: true });
-      byId('cmsFaqQuestion').value = '';
-      byId('cmsFaqAnswer').value = '';
-      renderFaqList();
-      showToast('✅ تم إضافة السؤال', 'success');
-    });
-
-    renderFaqList();
-  }
-
-  /* --- LIBRARY FORM --- */
-  function renderLibraryForm() {
-    var container = byId('cmsLibraryForm');
-    var listContainer = byId('cmsLibraryList');
-    if (!container || !listContainer) return;
-
-    container.innerHTML =
-      '<div class="form-group"><label>عنوان المستند</label><input type="text" id="cmsLibTitle" class="cms-input" placeholder="عنوان المستند"></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">' +
-      '<div class="form-group"><label>الرابط</label><input type="url" id="cmsLibUrl" class="cms-input" placeholder="https://example.com/document.pdf"></div>' +
-      '<div class="form-group"><label>النوع</label><select id="cmsLibType" class="cms-input"><option value="PDF">PDF</option><option value="DOCX">DOCX</option><option value="PPTX">PPTX</option><option value="أخرى">أخرى</option></select></div>' +
-      '</div>' +
-      '<div class="form-group"><label>التصنيف</label><input type="text" id="cmsLibCategory" class="cms-input" placeholder="مثال: تقارير, كتيبات, بحوث"></div>' +
-      '<button type="button" id="cmsAddLibBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ إضافة مستند</button>';
-
-    function renderLibraryList() {
-      var data = window.CMS.getLibrary();
-      if (data.length === 0) { listContainer.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">لا توجد مستندات بعد</div>'; return; }
-      var html = '';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var l = data[i];
-        html += '<div style="padding:0.75rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center">' +
-          '<div><div style="font-weight:600;font-size:0.85rem;color:var(--text)">📄 ' + escapeHtml(l.title) + ' <span style="font-size:0.7rem;color:var(--gold)">[' + (l.type || 'PDF') + ']</span></div><div style="font-size:0.72rem;color:var(--muted)">' + escapeHtml(l.category || '') + '</div></div>' +
-          '<button class="btn btn-sm" onclick="window.CMS.removeLibraryItem(' + l.id + ');renderLibraryList();showToast(\'تم حذف المستند\',\'info\')" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.5rem;font-size:0.65rem;border-radius:4px;cursor:pointer;font-family:var(--font)">🗑️</button></div>';
-      }
-      listContainer.innerHTML = html;
-    }
-
-    byId('cmsAddLibBtn').addEventListener('click', function() {
-      var title = byId('cmsLibTitle').value.trim();
-      var url = byId('cmsLibUrl').value.trim();
-      var type = byId('cmsLibType').value;
-      var category = byId('cmsLibCategory').value.trim();
-      if (!title || !url) { showToast('العنوان والرابط مطلوبان', 'error'); return; }
-      window.CMS.addLibraryItem({ title: title, url: url, type: type, category: category, downloads: 0, published: true });
-      byId('cmsLibTitle').value = '';
-      byId('cmsLibUrl').value = '';
-      byId('cmsLibCategory').value = '';
-      renderLibraryList();
-      showToast('✅ تم إضافة المستند', 'success');
-    });
-
-    renderLibraryList();
-  }
-
-  /* --- SURVEYS FORM --- */
-  function renderSurveyForm() {
-    var container = byId('cmsSurveyForm');
-    var listContainer = byId('cmsSurveysList');
-    if (!container || !listContainer) return;
-
-    container.innerHTML =
-      '<div class="form-group"><label>عنوان الاستبيان</label><input type="text" id="cmsSurveyTitle" class="cms-input" placeholder="عنوان الاستبيان"></div>' +
-      '<div class="form-group"><label>الوصف</label><textarea id="cmsSurveyDesc" class="cms-input" style="min-height:60px" placeholder="وصف الاستبيان..."></textarea></div>' +
-      '<div class="form-group"><label>الأسئلة (سؤال واحد في كل سطر)</label><textarea id="cmsSurveyQuestions" class="cms-input" style="min-height:80px;font-family:monospace;font-size:0.75rem" placeholder="السؤال الأول؟\nالسؤال الثاني؟\nالسؤال الثالث؟"></textarea></div>' +
-      '<button type="button" id="cmsAddSurveyBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ إنشاء الاستبيان</button>';
-
-    function renderSurveysList() {
-      var data = window.CMS.getSurveys();
-      if (data.length === 0) { listContainer.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">لا توجد استبيانات بعد</div>'; return; }
-      var html = '';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var s = data[i];
-        var responses = s.responses || [];
-        html += '<div style="padding:0.75rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.5rem">' +
-          '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
-          '<div><div style="font-weight:600;font-size:0.85rem;color:var(--text)">📊 ' + escapeHtml(s.title) + '</div><div style="font-size:0.72rem;color:var(--muted)">' + (s.questions ? s.questions.length : 0) + ' سؤال | ' + responses.length + ' مشاركة</div></div>' +
-          '<div style="display:flex;gap:0.3rem">' +
-          (responses.length > 0 ? '<button class="btn btn-sm" onclick="alert(JSON.stringify(' + JSON.stringify(responses) + ',null,2))" style="background:transparent;color:var(--gold);border:1px solid var(--gold);padding:0.2rem 0.4rem;font-size:0.6rem;border-radius:4px;cursor:pointer;font-family:var(--font)">📊</button>' : '') +
-          '<button class="btn btn-sm" onclick="window.CMS.removeSurvey(' + s.id + ');renderSurveysList();showToast(\'تم حذف الاستبيان\',\'info\')" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.4rem;font-size:0.6rem;border-radius:4px;cursor:pointer;font-family:var(--font)">🗑️</button>' +
-          '</div></div></div>';
-      }
-      listContainer.innerHTML = html;
-    }
-
-    byId('cmsAddSurveyBtn').addEventListener('click', function() {
-      var title = byId('cmsSurveyTitle').value.trim();
-      var desc = byId('cmsSurveyDesc').value.trim();
-      var questionsText = byId('cmsSurveyQuestions').value.trim();
-      if (!title) { showToast('عنوان الاستبيان مطلوب', 'error'); return; }
-      var questions = questionsText ? questionsText.split('\n').map(function(s) { return s.trim(); }).filter(function(s) { return s; }) : [];
-      if (questions.length === 0) { showToast('أضف سؤالاً واحداً على الأقل', 'error'); return; }
-      window.CMS.addSurvey({ title: title, description: desc, questions: questions, responses: [], published: true });
-      byId('cmsSurveyTitle').value = '';
-      byId('cmsSurveyDesc').value = '';
-      byId('cmsSurveyQuestions').value = '';
-      renderSurveysList();
-      showToast('✅ تم إنشاء الاستبيان', 'success');
-    });
-
-    renderSurveysList();
-  }
-
-  /* --- REHABILITATION PROGRAM FORM --- */
-  function renderRehabilitationForm() {
-    var container = byId('cmsRehabForm');
-    var listContainer = byId('cmsRehabList');
-    if (!container || !listContainer) return;
-
-    container.innerHTML =
-      '<div class="form-group"><label>عنوان التقرير أو التحديث *</label><input type="text" id="cmsRehabTitle" class="cms-input" placeholder="مثال: تقرير الأسبوع الأول من البرنامج"></div>' +
-      '<div class="form-group"><label>المحتوى</label><textarea id="cmsRehabContent" class="cms-input" style="min-height:100px" placeholder="محتوى التقرير..."></textarea></div>' +
-      '<div class="form-group"><label>رابط المستند (PDF, DOCX)</label><input type="url" id="cmsRehabDocUrl" class="cms-input" placeholder="https://example.com/report.pdf"></div>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">' +
-      '<div class="form-group"><label>النوع</label><select id="cmsRehabType" class="cms-input"><option value="تقرير">📋 تقرير</option><option value="تحديث">🔄 تحديث</option><option value="وثيقة">📄 وثيقة</option><option value="إنجاز">🏆 إنجاز</option></select></div>' +
-      '<div class="form-group"><label>المرحلة</label><select id="cmsRehabStage" class="cms-input"><option value="المرحلة الأولى - التوعية داخل المؤسسة العقابية">المرحلة الأولى - التوعية</option><option value="المرحلة الثانية - التأهيل النفسي">المرحلة الثانية - التأهيل النفسي</option><option value="المرحلة الثالثة - التدريب المهني">المرحلة الثالثة - التدريب المهني</option><option value="المرحلة الرابعة - متابعة ما بعد الإفراج">المرحلة الرابعة - متابعة ما بعد الإفراج</option></select></div>' +
-      '</div>' +
-      '<button type="button" id="cmsAddRehabBtn" class="btn btn-primary" style="width:100%;justify-content:center">➕ نشر التقرير</button>';
-
-    window.renderRehabList = function() {
-      var data = window.CMS.getRehabilitation();
-      if (data.length === 0) { listContainer.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">لا توجد تقارير بعد. أضف أول تقرير!</div>'; return; }
-      var html = '';
-      for (var i = data.length - 1; i >= 0; i--) {
-        var r = data[i];
-        html += '<div style="padding:0.75rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.5rem">' +
-          '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
-          '<div style="flex:1;min-width:0">' +
-          '<div style="font-weight:600;font-size:0.85rem;color:var(--text)">' + (r.typeIcon || '📋') + ' ' + escapeHtml(r.title) + '</div>' +
-          '<div style="font-size:0.72rem;color:var(--gold);margin-top:0.15rem">' + escapeHtml(r.stage || '') + '</div>' +
-          '<div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.3rem">' + (r.content ? escapeHtml(r.content).substring(0, 100) + (r.content.length > 100 ? '...' : '') : '') + '</div>' +
-          '<div style="font-size:0.7rem;color:var(--muted);margin-top:0.2rem">' + new Date(r.createdAt).toLocaleDateString('ar-DZ',{year:'numeric',month:'long',day:'numeric'}) + '</div></div>' +
-          '<div style="display:flex;gap:0.3rem;flex-shrink:0">' +
-          '<button class="btn btn-sm" onclick="window.CMS.removeRehabilitation(' + r.id + ');window.renderRehabList();showToast(\'تم حذف التقرير\',\'info\')" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:0.2rem 0.4rem;font-size:0.6rem;border-radius:4px;cursor:pointer;font-family:var(--font)">🗑️</button>' +
-          '</div></div></div>';
-      }
-      listContainer.innerHTML = html;
-    };
-
-    byId('cmsAddRehabBtn').addEventListener('click', function() {
-      var title = byId('cmsRehabTitle').value.trim();
-      var content = byId('cmsRehabContent').value.trim();
-      var docUrl = byId('cmsRehabDocUrl').value.trim();
-      var type = byId('cmsRehabType').value;
-      var stage = byId('cmsRehabStage').value;
-      if (!title) { showToast('عنوان التقرير مطلوب', 'error'); return; }
-      window.CMS.addRehabilitation({ title: title, content: content, docUrl: docUrl, type: type, stage: stage, published: true });
-      byId('cmsRehabTitle').value = '';
-      byId('cmsRehabContent').value = '';
-      byId('cmsRehabDocUrl').value = '';
-      window.renderRehabList();
-      showToast('✅ تم نشر التقرير', 'success');
-    });
-
-    renderRehabList();
-  }
-
-  /* --- CALENDAR VIEW --- */
-  function renderCalendarView() {
-    var container = byId('cmsCalendarView');
-    if (!container) return;
-    var events = JSON.parse(localStorage.getItem('bba_events') || '[]');
-    var today = new Date();
-    var monthNames = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-    var currentMonth = today.getMonth();
-    var currentYear = today.getFullYear();
-
-    var html = '<div style="text-align:center;margin-bottom:1rem"><span style="font-size:1.25rem;font-weight:700;color:var(--gold)">' + monthNames[currentMonth] + ' ' + currentYear + '</span></div>';
-    html += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:1rem">';
-    var dayNames = ['ح','ن','ث','ر','خ','ج','س'];
-    for (var d = 0; d < 7; d++) { html += '<div style="text-align:center;padding:0.3rem;font-size:0.7rem;color:var(--muted);font-weight:600">' + dayNames[d] + '</div>'; }
-
-    var firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    var daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    for (var pad = 0; pad < firstDay; pad++) { html += '<div></div>'; }
-    for (var d = 1; d <= daysInMonth; d++) {
-      var dateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-      var dayEvents = [];
-      for (var e = 0; e < events.length; e++) {
-        if (events[e].date === dateStr && events[e].status === 'open') dayEvents.push(events[e]);
-      }
-      var isToday = d === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
-      html += '<div style="text-align:center;padding:0.4rem 0.2rem;border-radius:var(--radius-sm);background:' + (isToday ? 'var(--gold-light)' : 'transparent') + ';border:' + (isToday ? '1px solid var(--gold)' : '1px solid transparent') + ';position:relative;min-height:40px">' +
-        '<div style="font-size:0.78rem;color:' + (isToday ? 'var(--gold)' : 'var(--text)') + ';font-weight:' + (isToday ? '700' : '400') + '">' + d + '</div>' +
-        (dayEvents.length > 0 ? '<div style="display:flex;justify-content:center;gap:2px;margin-top:2px">' + dayEvents.slice(0, 2).map(function() { return '<div style="width:6px;height:6px;border-radius:50%;background:var(--gold)"></div>'; }).join('') + '</div>' : '') +
-        '</div>';
-    }
-    html += '</div>';
-
-    /* List view of upcoming events */
-    var upcoming = [];
-    for (var e = 0; e < events.length; e++) {
-      if (events[e].status === 'open') {
-        var ed = new Date(events[e].date + 'T00:00:00');
-        if (ed >= today) upcoming.push(events[e]);
-      }
-    }
-    upcoming.sort(function(a,b) { return new Date(a.date) - new Date(b.date); });
-    if (upcoming.length > 0) {
-      html += '<div style="border-top:1px solid var(--border-light);padding-top:1rem;margin-top:0.5rem">';
-      html += '<h4 style="font-size:0.85rem;color:var(--gold);margin-bottom:0.5rem">📅 الفعاليات القادمة</h4>';
-      for (var e = 0; e < upcoming.length; e++) {
-        html += '<div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;font-size:0.8rem;color:var(--text)">' +
-          '<span style="color:var(--gold)">' + (upcoming[e].typeIcon || '📅') + '</span>' +
-          '<span>' + escapeHtml(upcoming[e].title) + '</span>' +
-          '<span style="color:var(--muted);font-size:0.75rem">' + new Date(upcoming[e].date).toLocaleDateString('ar-DZ', {day:'numeric',month:'short'}) + '</span></div>';
+        if (data[i].visible !== undefined) {
+          html += '<label style="font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:0.25rem;white-space:nowrap"><input type="checkbox" class="cms-field-visible" ' + (data[i].visible !== false ? 'checked' : '') + '> ظاهر</label>';
+        }
+        if (data[i].published !== undefined) {
+          html += '<label style="font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:0.25rem;white-space:nowrap"><input type="checkbox" class="cms-field-published" ' + (data[i].published !== false ? 'checked' : '') + '> منشور</label>';
+        }
+        html += '<button class="cms-item-remove" style="padding:0.25rem 0.5rem;font-size:0.75rem;background:none;border:1px solid var(--danger);color:var(--danger);border-radius:4px;cursor:pointer">✕</button>';
+        html += '</div>';
       }
       html += '</div>';
-    }
+      html += '<div style="display:flex;gap:0.5rem"><button class="cms-add-item btn btn-secondary btn-sm" style="font-size:0.78rem">➕ إضافة ' + (itemLabel||'') + '</button>';
+      html += '<button class="cms-save-list btn btn-primary btn-sm" style="font-size:0.78rem">💾 حفظ</button></div>';
+      container.innerHTML = html;
 
-    container.innerHTML = '<div class="admin-card">' + html + '</div>';
+      container.querySelector('.cms-save-list').onclick = function() {
+        var items = container.querySelectorAll('.cms-list-item');
+        var newData = [];
+        items.forEach(function(item) {
+          var entry = {};
+          var allEmpty = true;
+          fields.forEach(function(f) {
+            var inp = item.querySelector('.cms-field-' + f.key);
+            if (f.type === 'checkbox') { entry[f.key] = inp.checked; if (inp.checked) allEmpty = false; }
+            else if (f.type === 'textarea') { entry[f.key] = inp.value.trim(); if (inp.value.trim()) allEmpty = false; }
+            else { entry[f.key] = inp.value.trim(); if (inp.value.trim()) allEmpty = false; }
+          });
+          var visCb = item.querySelector('.cms-field-visible');
+          if (visCb) entry.visible = visCb.checked;
+          var pubCb = item.querySelector('.cms-field-published');
+          if (pubCb) entry.published = pubCb.checked;
+          if (!allEmpty) newData.push(entry);
+        });
+        saveFn(newData);
+        showCMSToast('✅ تم الحفظ');
+      };
+
+      container.querySelector('.cms-add-item').onclick = function() {
+        data.push({ visible: true, published: true });
+        render();
+      };
+
+      container.querySelectorAll('.cms-item-remove').forEach(function(btn) {
+        btn.onclick = function() { btn.closest('.cms-list-item').remove(); };
+      });
+    }
+    render();
   }
+
+  function renderSimpleForm(containerId, getFn, saveFn, fields) {
+    var container = byId(containerId);
+    if (!container) return;
+    var data = getFn();
+    var html = '';
+    for (var i = 0; i < fields.length; i++) {
+      var f = fields[i];
+      var val = data[f.key] !== undefined ? data[f.key] : '';
+      if (f.type === 'textarea') {
+        html += '<div class="form-group"><label>' + esc(f.label) + '</label><textarea id="sf-' + f.key + '" class="cms-input" placeholder="' + esc(f.placeholder||'') + '" style="width:100%;min-height:' + (f.rows||80) + 'px;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);resize:vertical">' + esc(val) + '</textarea></div>';
+      } else if (f.type === 'checkbox') {
+        html += '<div class="form-group"><label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer"><input type="checkbox" id="sf-' + f.key + '" ' + (val ? 'checked' : '') + ' style="width:18px;height:18px"> ' + esc(f.label) + '</label></div>';
+      } else if (f.type === 'color') {
+        html += '<div class="form-group"><label>' + esc(f.label) + '</label><input type="color" id="sf-' + f.key + '" value="' + esc(val) + '" style="width:60px;height:40px;border:1px solid var(--border);border-radius:4px;background:transparent;cursor:pointer"></div>';
+      } else if (f.type === 'select') {
+        html += '<div class="form-group"><label>' + esc(f.label) + '</label><select id="sf-' + f.key + '" style="width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">';
+        for (var o = 0; o < (f.options||[]).length; o++) {
+          html += '<option value="' + esc(f.options[o].value) + '" ' + (val === f.options[o].value ? 'selected' : '') + '>' + esc(f.options[o].label) + '</option>';
+        }
+        html += '</select></div>';
+      } else {
+        html += '<div class="form-group"><label>' + esc(f.label) + '</label><input type="' + (f.type||'text') + '" id="sf-' + f.key + '" value="' + esc(val) + '" class="cms-input" placeholder="' + esc(f.placeholder||'') + '"></div>';
+      }
+    }
+    html += '<button class="cms-simple-save btn btn-primary" style="margin-top:0.5rem;font-size:0.82rem">💾 حفظ</button>';
+    container.innerHTML = html;
+    container.querySelector('.cms-simple-save').onclick = function() {
+      var newData = {};
+      for (var i = 0; i < fields.length; i++) {
+        var inp = byId('sf-' + fields[i].key);
+        if (fields[i].type === 'checkbox') newData[fields[i].key] = inp.checked;
+        else if (fields[i].type === 'number') newData[fields[i].key] = parseFloat(inp.value) || 0;
+        else newData[fields[i].key] = inp.value;
+      }
+      saveFn(newData);
+      showCMSToast('✅ تم حفظ ' + (containerId.replace('cms','').replace('Form','') || 'الإعدادات'));
+    };
+  }
+
+  /* ----- Hero Form ----- */
+  CMS.renderHeroForm = function() {
+    var container = byId('cmsHeroForm');
+    if (!container) return;
+    var hero = CMS.getHero();
+    var html =
+      '<div class="form-group"><label>شارة (Badge)</label><input type="text" id="heroBadge" value="' + esc(hero.badge) + '" class="cms-input" placeholder="مثال: 🏆 منصة شبابية رائدة"></div>' +
+      '<div class="form-group"><label>العنوان الرئيسي</label><input type="text" id="heroTitle" value="' + esc(hero.title) + '" class="cms-input" placeholder="مثال: وعي الشباب"></div>' +
+      '<div class="form-group"><label>العنوان الفرعي</label><textarea id="heroSubtitle" class="cms-input" style="min-height:60px;width:100%;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">' + esc(hero.subtitle) + '</textarea></div>' +
+      '<h4 style="color:var(--gold);margin:0.75rem 0 0.5rem;font-size:0.85rem">🔘 الأزرار</h4>' +
+      '<div id="heroButtons" style="display:grid;gap:0.4rem;margin-bottom:0.5rem">';
+    var btns = hero.buttons || [];
+    for (var i = 0; i < Math.max(btns.length, 2); i++) {
+      var b = btns[i] || {};
+      html += '<div style="display:flex;gap:0.4rem"><input type="text" class="hero-btn-text" value="' + esc(b.text||'') + '" placeholder="نص الزر" style="flex:1;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem"><input type="text" class="hero-btn-link" value="' + esc(b.link||'') + '" placeholder="الرابط" style="flex:2;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem"></div>';
+    }
+    html += '</div><button id="heroSaveBtn" class="btn btn-primary" style="font-size:0.82rem">💾 حفظ القسم البطل</button>';
+    container.innerHTML = html;
+    byId('heroSaveBtn').onclick = function() {
+      var btns = [];
+      container.querySelectorAll('.hero-btn-text').forEach(function(inp, idx) {
+        var link = container.querySelectorAll('.hero-btn-link')[idx];
+        if (inp.value.trim() || (link && link.value.trim())) {
+          btns.push({ text: inp.value.trim() || '', link: link ? link.value.trim() : '' });
+        }
+      });
+      CMS.saveHero({
+        badge: byId('heroBadge').value,
+        title: byId('heroTitle').value,
+        subtitle: byId('heroSubtitle').value,
+        buttons: btns
+      });
+      showCMSToast('✅ تم حفظ قسم البطل');
+    };
+  };
+
+  /* ----- Notice Bar Form ----- */
+  CMS.renderNoticeBarForm = function() {
+    var container = byId('cmsNoticeBarForm');
+    if (!container) return;
+    var nb = CMS.getNoticeBar();
+    var html =
+      '<div class="form-group"><label>نص الإعلان</label><input type="text" id="nbText" value="' + esc(nb.text) + '" class="cms-input" placeholder="مثال: 🎉 حملة التوعية الجديدة"></div>' +
+      '<div style="display:flex;gap:1rem;align-items:center"><label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer"><input type="checkbox" id="nbVisible" ' + (nb.visible ? 'checked' : '') + ' style="width:18px;height:18px"> ظاهر</label>' +
+      '<div class="form-group" style="flex:1;margin:0"><label>الأولوية</label><select id="nbPriority" style="width:100%;padding:0.5rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font)">' +
+      '<option value="info" ' + (nb.priority==='info'?'selected':'') + '>🔵 معلومات</option>' +
+      '<option value="warning" ' + (nb.priority==='warning'?'selected':'') + '>🟡 تنبيه</option>' +
+      '<option value="urgent" ' + (nb.priority==='urgent'?'selected':'') + '>🔴 عاجل</option>' +
+      '</select></div></div>' +
+      '<button id="nbSaveBtn" class="btn btn-primary" style="margin-top:0.5rem;font-size:0.82rem">💾 حفظ الإعلان</button>';
+    container.innerHTML = html;
+    byId('nbSaveBtn').onclick = function() {
+      CMS.saveNoticeBar({ text: byId('nbText').value, visible: byId('nbVisible').checked, priority: byId('nbPriority').value });
+      showCMSToast('✅ تم حفظ شريط الإعلان');
+    };
+  };
+
+  /* ----- Testimonials Form ----- */
+  CMS.renderTestimonialForm = function() {
+    var container = byId('cmsTestimonialForm');
+    if (!container) return;
+    renderListEditor('cmsTestimonialForm', CMS.getTestimonials, CMS.saveTestimonials, [
+      { key: 'name', label: 'الاسم', flex: 1 },
+      { key: 'role', label: 'الدور', flex: 1 },
+      { key: 'text', label: 'النص', type: 'textarea', flex: 2 }
+    ], 'شهادة');
+  };
+
+  /* ----- FAQ Form ----- */
+  CMS.renderFaqForm = function() {
+    renderListEditor('cmsFaqForm', CMS.getFaq, CMS.saveFaq, [
+      { key: 'question', label: 'السؤال', flex: 1 },
+      { key: 'answer', label: 'الإجابة', type: 'textarea', flex: 2 }
+    ], 'سؤال');
+  };
+
+  /* ----- Partners Form ----- */
+  CMS.renderPartnersForm = function() {
+    renderListEditor('cmsPartnerForm', CMS.getPartners, CMS.savePartners, [
+      { key: 'name', label: 'اسم الشريك', flex: 1 },
+      { key: 'logo', label: 'رابط الشعار', flex: 1 },
+      { key: 'url', label: 'الموقع', flex: 1 }
+    ], 'شريك');
+  };
+
+  /* ----- Gallery Form ----- */
+  CMS.renderGalleryForm = function() {
+    renderListEditor('cmsGalleryForm', CMS.getGallery, CMS.saveGallery, [
+      { key: 'name', label: 'اسم الألبوم', flex: 1 },
+      { key: 'description', label: 'الوصف', flex: 1 }
+    ], 'ألبوم');
+  };
+
+  /* ----- Videos Form ----- */
+  CMS.renderVideosForm = function() {
+    renderListEditor('cmsVideoForm', CMS.getVideos, CMS.saveVideos, [
+      { key: 'title', label: 'العنوان', flex: 1 },
+      { key: 'url', label: 'الرابط', flex: 1 },
+      { key: 'category', label: 'التصنيف', flex: 0.5 }
+    ], 'فيديو');
+  };
+
+  /* ----- Library Form ----- */
+  CMS.renderLibraryForm = function() {
+    renderListEditor('cmsLibraryForm', CMS.getLibrary, CMS.saveLibrary, [
+      { key: 'title', label: 'العنوان', flex: 1 },
+      { key: 'url', label: 'الرابط', flex: 1 },
+      { key: 'type', label: 'النوع (PDF/DOCX)', flex: 0.5 },
+      { key: 'category', label: 'التصنيف', flex: 0.5 }
+    ], 'مستند');
+  };
+
+  /* ----- Surveys Form ----- */
+  CMS.renderSurveysForm = function() {
+    renderListEditor('cmsSurveyForm', CMS.getSurveys, CMS.saveSurveys, [
+      { key: 'title', label: 'عنوان الاستبيان', flex: 1 },
+      { key: 'description', label: 'الوصف', flex: 1 }
+    ], 'استبيان');
+  };
+
+  /* ----- Rehabilitation Form ----- */
+  CMS.renderRehabForm = function() {
+    renderListEditor('cmsRehabForm', CMS.getRehabilitation, CMS.saveRehabilitation, [
+      { key: 'title', label: 'العنوان', flex: 1 },
+      { key: 'content', label: 'المحتوى', type: 'textarea', flex: 2 },
+      { key: 'stage', label: 'المرحلة', flex: 0.5 }
+    ], 'تقرير');
+  };
+
+  /* ----- Articles Form (container: cmsArticleForm) ----- */
+  CMS.renderArticlesForm = function() {
+    renderListEditor('cmsArticleForm', CMS.getArticles, CMS.saveArticles, [
+      { key: 'title', label: 'العنوان', flex: 1 },
+      { key: 'summary', label: 'الملخص', flex: 1 },
+      { key: 'category', label: 'التصنيف', flex: 0.5 }
+    ], 'مقال');
+  };
+
+  /* ----- Announcements Form (container: cmsAnnouncementForm) ----- */
+  CMS.renderAnnouncementsForm = function() {
+    renderListEditor('cmsAnnouncementForm', CMS.getAnnouncements, CMS.saveAnnouncements, [
+      { key: 'title', label: 'العنوان', flex: 1 },
+      { key: 'text', label: 'النص', type: 'textarea', flex: 2 },
+      { key: 'date', label: 'التاريخ', flex: 0.5 }
+    ], 'إعلان');
+  };
+
+  /* ----- Calendar Form (container: cmsCalendarView) ----- */
+  CMS.renderCalendarForm = function() {
+    renderListEditor('cmsCalendarView', CMS.getCalendarEvents, CMS.saveCalendarEvents, [
+      { key: 'title', label: 'الحدث', flex: 1 },
+      { key: 'date', label: 'التاريخ', flex: 0.5 },
+      { key: 'location', label: 'المكان', flex: 0.5 }
+    ], 'حدث');
+  };
+
+  /* ----- Navigation Form ----- */
+  CMS.renderNavForm = function() {
+    var container = byId('cmsNavForm');
+    if (!container) return;
+    var nav = CMS.getNavigation();
+    var html = '<div class="form-group"><label>نص الشعار (Logo)</label><input type="text" id="navLogoText" value="' + esc(nav.logoText) + '" class="cms-input"></div>';
+    html += '<h4 style="color:var(--gold);margin:1rem 0 0.5rem;font-size:0.9rem">📌 روابط القائمة الرئيسية</h4><div id="navItemsContainer" style="display:grid;gap:0.5rem;margin-bottom:0.75rem">';
+    var items = nav.items || [];
+    for (var i = 0; i < items.length; i++) {
+      html += '<div class="nav-item-row" style="display:flex;align-items:center;gap:0.4rem;padding:0.4rem;background:var(--surface-card);border-radius:var(--radius-sm)">';
+      html += '<span style="flex:0 0 20px;font-size:0.75rem;color:var(--muted)">'+(i+1)+'</span>';
+      html += '<input type="text" class="nav-item-label" value="'+esc(items[i].label)+'" placeholder="التسمية" style="flex:1;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem">';
+      html += '<input type="text" class="nav-item-href" value="'+esc(items[i].href)+'" placeholder="الرابط" style="flex:1;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem">';
+      html += '<label style="font-size:0.75rem;color:var(--muted);white-space:nowrap"><input type="checkbox" class="nav-item-visible" '+(items[i].visible!==false?'checked':'')+'> ظاهر</label>';
+      html += '<button class="btn-nav-remove" style="padding:0.25rem 0.5rem;font-size:0.75rem;background:none;border:1px solid var(--danger);color:var(--danger);border-radius:4px;cursor:pointer">✕</button></div>';
+    }
+    html += '</div><div style="display:flex;gap:0.5rem;margin-bottom:1rem">';
+    html += '<button id="navAddItem" class="btn btn-secondary btn-sm" style="font-size:0.78rem">➕ إضافة رابط</button>';
+    html += '<button id="navSaveBtn" class="btn btn-primary btn-sm" style="font-size:0.78rem">💾 حفظ القائمة</button></div>';
+    container.innerHTML = html;
+
+    byId('navSaveBtn').onclick = function() {
+      var items = [];
+      container.querySelectorAll('.nav-item-row').forEach(function(row) {
+        var label = row.querySelector('.nav-item-label').value.trim();
+        var href = row.querySelector('.nav-item-href').value.trim();
+        var visible = row.querySelector('.nav-item-visible').checked;
+        if (label || href) items.push({ label: label||'رابط', href: href||'#', visible: visible });
+      });
+      /* SVG icon map for mobile nav items */
+      var navIconMap = {
+        'الرئيسية': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+        'عن المشروع': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+        'الفئة المستهدفة': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        'نادي الشباب': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+        'النشاطات': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+        'الأكاديمية': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M12 6v7"/><path d="M9 9h6"/></svg>',
+        'المركز الإعلامي': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>',
+        'الشركاء': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        'DZ Leaders': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/></svg>',
+        'فريق العمل': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        'الإنجازات': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 6 9 6 9z"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C17 4 18 9 18 9z"/><path d="M4 22h16"/><path d="M10 22V2h4v20"/></svg>',
+        'تواصل': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
+      };
+      CMS.saveNavigation({ logoText: (byId('navLogoText').value.trim()||'منصة وعي الشباب BBA'), items: items, mobileItems: items.slice(0,6).map(function(m) { return { label:m.label, href:m.href, icon:navIconMap[m.label]||'🔗', visible:m.visible }; }) });
+      CMS.refreshNavigation();
+      showCMSToast('✅ تم حفظ قائمة التنقل');
+    };
+    byId('navAddItem').onclick = function() {
+      var cont = byId('navItemsContainer');
+      var div = document.createElement('div');
+      div.className = 'nav-item-row';
+      div.style.cssText = 'display:flex;align-items:center;gap:0.4rem;padding:0.4rem;background:var(--surface-card);border-radius:var(--radius-sm)';
+      div.innerHTML = '<span style="flex:0 0 20px;font-size:0.75rem;color:var(--muted)">'+(cont.children.length+1)+'</span><input type="text" class="nav-item-label" placeholder="التسمية" style="flex:1;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem"><input type="text" class="nav-item-href" placeholder="الرابط" style="flex:1;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem"><label style="font-size:0.75rem;color:var(--muted);white-space:nowrap"><input type="checkbox" class="nav-item-visible" checked> ظاهر</label><button class="btn-nav-remove" style="padding:0.25rem 0.5rem;font-size:0.75rem;background:none;border:1px solid var(--danger);color:var(--danger);border-radius:4px;cursor:pointer">✕</button>';
+      div.querySelector('.btn-nav-remove').onclick = function() { div.remove(); };
+      cont.appendChild(div);
+    };
+    container.querySelectorAll('.btn-nav-remove').forEach(function(btn) {
+      btn.onclick = function() { btn.closest('.nav-item-row').remove(); };
+    });
+  };
+
+  /* ----- Footer Form ----- */
+  CMS.renderFooterForm = function() {
+    var container = byId('cmsFooterForm');
+    if (!container) return;
+    var footer = CMS.getFooter();
+    var html = '<div class="form-group"><label>نص حقوق النشر</label><input type="text" id="footerCopyright" value="'+esc(footer.copyright)+'" class="cms-input"></div>';
+    html += '<div class="form-group"><label>نص الراعي</label><input type="text" id="footerSponsor" value="'+esc(footer.sponsor||'')+'" class="cms-input"></div>';
+    html += '<h4 style="color:var(--gold);margin:1rem 0 0.5rem;font-size:0.9rem">🔗 روابط التذييل</h4><div id="footerLinksContainer" style="display:grid;gap:0.4rem;margin-bottom:0.75rem">';
+    var links = footer.links || [];
+    for (var i = 0; i < links.length; i++) {
+      html += '<div class="footer-link-row" style="display:flex;align-items:center;gap:0.4rem;padding:0.35rem;background:var(--surface-card);border-radius:var(--radius-sm)">';
+      html += '<input type="text" class="fl-label" value="'+esc(links[i].label)+'" placeholder="التسمية" style="flex:1;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem">';
+      html += '<input type="text" class="fl-href" value="'+esc(links[i].href)+'" placeholder="الرابط" style="flex:1;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem">';
+      html += '<label style="font-size:0.75rem;color:var(--muted);white-space:nowrap"><input type="checkbox" class="fl-visible" '+(links[i].visible!==false?'checked':'')+'> ظاهر</label>';
+      html += '<button class="btn-fl-remove" style="padding:0.25rem 0.5rem;font-size:0.75rem;background:none;border:1px solid var(--danger);color:var(--danger);border-radius:4px;cursor:pointer">✕</button></div>';
+    }
+    html += '</div><div style="display:flex;gap:0.5rem"><button id="footerAddLink" class="btn btn-secondary btn-sm" style="font-size:0.78rem">➕ إضافة رابط</button>';
+    html += '<button id="footerSaveBtn" class="btn btn-primary btn-sm" style="font-size:0.78rem">💾 حفظ التذييل</button></div>';
+    container.innerHTML = html;
+    byId('footerSaveBtn').onclick = function() {
+      var links = [];
+      container.querySelectorAll('.footer-link-row').forEach(function(row) {
+        var label = row.querySelector('.fl-label').value.trim();
+        var href = row.querySelector('.fl-href').value.trim();
+        if (label||href) links.push({ label:label||'رابط', href:href||'#', visible:row.querySelector('.fl-visible').checked });
+      });
+      CMS.saveFooter({ copyright:byId('footerCopyright').value, sponsor:byId('footerSponsor').value, links:links });
+      CMS.refreshNavigation();
+      showCMSToast('✅ تم حفظ التذييل');
+    };
+    byId('footerAddLink').onclick = function() {
+      var cont = byId('footerLinksContainer');
+      var div = document.createElement('div');
+      div.className = 'footer-link-row'; div.style.cssText = 'display:flex;align-items:center;gap:0.4rem;padding:0.35rem;background:var(--surface-card);border-radius:var(--radius-sm)';
+      div.innerHTML = '<input type="text" class="fl-label" placeholder="التسمية" style="flex:1;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem"><input type="text" class="fl-href" placeholder="الرابط" style="flex:1;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,0.03);color:var(--text);font-size:0.8rem"><label style="font-size:0.75rem;color:var(--muted);white-space:nowrap"><input type="checkbox" class="fl-visible" checked> ظاهر</label><button class="btn-fl-remove" style="padding:0.25rem 0.5rem;font-size:0.75rem;background:none;border:1px solid var(--danger);color:var(--danger);border-radius:4px;cursor:pointer">✕</button>';
+      div.querySelector('.btn-fl-remove').onclick = function() { div.remove(); };
+      cont.appendChild(div);
+    };
+    container.querySelectorAll('.btn-fl-remove').forEach(function(btn) { btn.onclick = function() { btn.closest('.footer-link-row').remove(); }; });
+  };
+
+  /* ----- Social Media Form ----- */
+  CMS.renderSocialForm = function() {
+    renderSimpleForm('cmsSocialForm', CMS.getSocial, CMS.saveSocial, [
+      { key:'email', label:'📧 البريد الإلكتروني', placeholder:'contact@bba.dz' },
+      { key:'phone', label:'📞 الهاتف', placeholder:'+213 XXX XX XX XX' },
+      { key:'address', label:'📍 العنوان', placeholder:'برج بوعريريج' },
+      { key:'facebook', label:'📘 فيسبوك', placeholder:'https://facebook.com/...' },
+      { key:'instagram', label:'📸 إنستغرام', placeholder:'https://instagram.com/...' },
+      { key:'twitter', label:'🐦 تويتر', placeholder:'https://twitter.com/...' },
+      { key:'youtube', label:'🎬 يوتيوب', placeholder:'https://youtube.com/...' }
+    ]);
+  };
+
+  /* ----- Stats Form ----- */
+  CMS.renderStatsForm = function() {
+    renderListEditor('cmsStatsForm', CMS.getStats, CMS.saveStats, [
+      { key:'icon', label:'الأيقونة', flex:0.5 },
+      { key:'value', label:'القيمة', flex:0.5 },
+      { key:'label', label:'التسمية', flex:1 }
+    ], 'إحصائية');
+  };
+
+  /* ----- CTA Form ----- */
+  CMS.renderCtaForm = function() {
+    renderSimpleForm('cmsCtaForm', CMS.getCta, CMS.saveCta, [
+      { key:'title', label:'العنوان', placeholder:'انضم إلينا اليوم' },
+      { key:'subtitle', label:'النص الفرعي', placeholder:'كن جزءًا من التغيير' },
+      { key:'btnText', label:'نص الزر', placeholder:'سجل الآن' },
+      { key:'btnLink', label:'رابط الزر', placeholder:'index.html#contact' }
+    ]);
+  };
+
+  /* ----- About Form ----- */
+  CMS.renderAboutForm = function() {
+    renderSimpleForm('cmsAboutForm', CMS.getAbout, CMS.saveAbout, [
+      { key:'title', label:'العنوان', placeholder:'عن المشروع' },
+      { key:'subtitle', label:'العنوان الفرعي', placeholder:'منصة وعي الشباب BBA' },
+      { key:'content', label:'المحتوى', type:'textarea', rows:120, placeholder:'وصف المنصة...' },
+      { key:'vision', label:'الرؤية', type:'textarea', rows:60, placeholder:'الرؤية...' },
+      { key:'mission', label:'الرسالة', type:'textarea', rows:60, placeholder:'الرسالة...' },
+      { key:'image', label:'رابط الصورة', placeholder:'https://example.com/image.jpg' }
+    ]);
+  };
+
+  /* ----- Team Members Form ----- */
+  CMS.renderTeamMembersForm = function() {
+    renderListEditor('cmsTeamMembersForm', CMS.getTeamMembers, CMS.saveTeamMembers, [
+      { key:'name', label:'الاسم', flex:1 },
+      { key:'role', label:'الدور', flex:1 },
+      { key:'bio', label:'السيرة', flex:1 },
+      { key:'image', label:'الصورة', flex:0.5 }
+    ], 'عضو');
+  };
+
+  /* ----- Activities CMS Form ----- */
+  CMS.renderActivitiesCmsForm = function() {
+    renderSimpleForm('cmsActivitiesCmsForm', CMS.getActivitiesCms, CMS.saveActivitiesCms, [
+      { key:'title', label:'عنوان الصفحة', placeholder:'النشاطات والفعاليات' },
+      { key:'subtitle', label:'النص الفرعي', placeholder:'تعرف على أنشطتنا' }
+    ]);
+  };
+
+  /* ----- SEO Form ----- */
+  CMS.renderSeoForm = function() {
+    renderSimpleForm('cmsSeoForm', CMS.getSeo, CMS.saveSeo, [
+      { key:'title', label:'عنوان الموقع (Title)', placeholder:'منصة وعي الشباب BBA' },
+      { key:'description', label:'الوصف (Meta Description)', type:'textarea', rows:80, placeholder:'وصف الموقع لمحركات البحث...' },
+      { key:'keywords', label:'الكلمات المفتاحية', placeholder:'وعي, شباب, مخدرات, توعية' },
+      { key:'ogTitle', label:'OG Title (مشاركات)', placeholder:'عنوان المشاركة' },
+      { key:'ogDescription', label:'OG Description', type:'textarea', rows:60, placeholder:'وصف المشاركة' },
+      { key:'ogImage', label:'OG Image URL', placeholder:'https://.../og-image.jpg' },
+      { key:'googleAnalyticsId', label:'Google Analytics ID', placeholder:'G-XXXXXXXXXX' },
+      { key:'googleTagId', label:'Google Tag Manager ID', placeholder:'GTM-XXXXXXX' }
+    ]);
+  };
+
+  /* ----- Contact Info Form ----- */
+  CMS.renderContactInfoForm = function() {
+    renderSimpleForm('cmsContactForm', CMS.getContactInfo, CMS.saveContactInfo, [
+      { key:'address', label:'📍 العنوان', placeholder:'برج بوعريريج، الجزائر' },
+      { key:'phone', label:'📞 الهاتف', placeholder:'+213 XXX XX XX XX' },
+      { key:'email', label:'📧 البريد الإلكتروني', placeholder:'info@bba.dz' },
+      { key:'workingHours', label:'🕐 ساعات العمل', placeholder:'9:00 - 17:00' },
+      { key:'mapLat', label:'🌍 خط العرض (Latitude)', placeholder:'36.0749', type:'number' },
+      { key:'mapLng', label:'🌍 خط الطول (Longitude)', placeholder:'4.7616', type:'number' }
+    ]);
+  };
+
+  /* ----- Global Settings Form ----- */
+  CMS.renderGlobalSettingsForm = function() {
+    renderSimpleForm('cmsGlobalForm', CMS.getGlobalSettings, CMS.saveGlobalSettings, [
+      { key:'siteName', label:'اسم الموقع', placeholder:'منصة وعي الشباب BBA' },
+      { key:'siteUrl', label:'رابط الموقع', placeholder:'https://bba-wa3y.dz' },
+      { key:'primaryColor', label:'اللون الرئيسي', type:'color' },
+      { key:'secondaryColor', label:'اللون الثانوي', type:'color' },
+      { key:'language', label:'اللغة', type:'select', options:[{value:'ar',label:'العربية'},{value:'fr',label:'Français'},{value:'en',label:'English'}] },
+      { key:'direction', label:'الاتجاه', type:'select', options:[{value:'rtl',label:'RTL'},{value:'ltr',label:'LTR'}] },
+      { key:'maintenanceMode', label:'وضع الصيانة (تعطيل الموقع)', type:'checkbox' },
+      { key:'allowThemeSwitch', label:'السماح بتبديل السمة (داكن/فاتح)', type:'checkbox' }
+    ]);
+  };
 
   /* ============================================================
-   * INIT ALL CMS FORMS
+   * ADMIN INIT — Wire sidebar click listeners for ALL CMS sections
    * ============================================================ */
-  function initCMS() {
-    renderHeroForm();
-    renderNoticeBarForm();
-    renderTestimonialForm();
-    renderArticleForm();
-    renderAnnouncementForm();
-    renderGalleryForm();
-    renderVideoForm();
-    renderPartnerForm();
-    renderFaqForm();
-    renderLibraryForm();
-    renderSurveyForm();
-    renderRehabilitationForm();
-    renderCalendarView();
+  function initAdminCMS() {
+    var allSections = [
+      'cms-navigation','cms-footer','cms-social',
+      'cms-home','cms-stats','cms-cta',
+      'cms-about','cms-team-members','cms-activities-cms',
+      'cms-faq','cms-partners','cms-gallery','cms-videos',
+      'cms-library','cms-surveys','cms-rehabilitation',
+      'cms-articles','cms-announcements','cms-calendar',
+      'cms-seo','cms-global','cms-contact'
+    ];
+    var renderMap = {
+      'cms-navigation': CMS.renderNavForm,
+      'cms-footer': CMS.renderFooterForm,
+      'cms-social': CMS.renderSocialForm,
+      'cms-home': function() { CMS.renderHeroForm(); CMS.renderNoticeBarForm(); CMS.renderTestimonialForm(); },
+      'cms-stats': CMS.renderStatsForm,
+      'cms-cta': CMS.renderCtaForm,
+      'cms-about': CMS.renderAboutForm,
+      'cms-team-members': CMS.renderTeamMembersForm,
+      'cms-activities-cms': CMS.renderActivitiesCmsForm,
+      'cms-faq': CMS.renderFaqForm,
+      'cms-partners': CMS.renderPartnersForm,
+      'cms-gallery': CMS.renderGalleryForm,
+      'cms-videos': CMS.renderVideosForm,
+      'cms-library': CMS.renderLibraryForm,
+      'cms-surveys': CMS.renderSurveysForm,
+      'cms-rehabilitation': CMS.renderRehabForm,
+      'cms-articles': CMS.renderArticlesForm,
+      'cms-announcements': CMS.renderAnnouncementsForm,
+      'cms-calendar': CMS.renderCalendarForm,
+      'cms-seo': CMS.renderSeoForm,
+      'cms-global': CMS.renderGlobalSettingsForm,
+      'cms-contact': CMS.renderContactInfoForm
+    };
+
+    document.addEventListener('click', function(e) {
+      var link = e.target.closest('[data-section]');
+      if (!link) return;
+      var sectionId = link.getAttribute('data-section');
+      if (allSections.indexOf(sectionId) === -1) return;
+      setTimeout(function() {
+        if (renderMap[sectionId]) renderMap[sectionId]();
+      }, 80);
+    });
+
+    setTimeout(function() {
+      allSections.forEach(function(id) {
+        var el = byId(id);
+        if (el && el.style.display !== 'none' && renderMap[id]) renderMap[id]();
+      });
+    }, 200);
+    console.log('✅ [CMS Admin] All CMS editors initialized');
   }
 
-  /* Wait for DOM and admin auth */
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCMS);
-  } else {
-    initCMS();
-  }
-
-  /* Also re-render when section becomes active (for calendar) */
-  var observer = new MutationObserver(function() {
-    var calSection = byId('cms-calendar');
-    if (calSection && calSection.classList.contains('active')) {
-      renderCalendarView();
+  function tryInitAdmin() {
+    if (document.querySelector('.sidebar') || window.location.pathname.indexOf('sidou-da') > -1) {
+      setTimeout(initAdminCMS, 150);
     }
-  });
-  var sections = document.querySelectorAll('.admin-section');
-  for (var i = 0; i < sections.length; i++) {
-    observer.observe(sections[i], { attributes: true, attributeFilter: ['class'] });
   }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryInitAdmin);
+  else tryInitAdmin();
 
+  function showCMSToast(msg) {
+    try { if (window.showToast) window.showToast(msg, 'success'); else console.log('[CMS] ' + msg); }
+    catch(e) { console.log('[CMS] ' + msg); }
+  }
+  console.log('✅ [BBA CMS] Central CMS module loaded (22 API methods, 22 form renderers)');
 })();

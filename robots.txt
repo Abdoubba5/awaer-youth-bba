@@ -1,0 +1,47 @@
+# robots.txt - منصة وعي الشباب BBA
+# Youth Awareness Platform — Bordj Bou Arreridj
+# Under the Supervision of Dz Young Leaders Program
+
+# Allow all crawlers to access public content
+User-agent: *
+Allow: /$
+Allow: /index.html$
+Allow: /about.html$
+Allow: /target-audience.html$
+Allow: /achievements.html$
+Allow: /activities.html$
+Allow: /club.html$
+Allow: /dz-young-leaders.html$
+Allow: /media-center.html$
+Allow: /academy.html$
+Allow: /partners.html$
+Allow: /team.html$
+Allow: /verify-certificate.html$
+Allow: /css/
+Allow: /js/
+Allow: /sql/
+
+# Disallow admin, portal, and private dashboards
+Disallow: /admin.html
+Disallow: /sidou-da.html
+Disallow: /portal.html
+Disallow: /portal.html.backup
+Disallow: /mushrif-dashboard.html
+Disallow: /psychologist.html
+Disallow: /offline.html
+Disallow: /nul/
+
+# Disallow seed scripts and test data
+Disallow: /seed-admin.sql
+Disallow: /js/seed-phase4.js
+Disallow: /js/test-data.js
+
+# Disallow service worker and manifest from indexing
+Disallow: /service-worker.js
+Disallow: /manifest.json
+
+# Crawl delay for polite crawling
+Crawl-delay: 10
+
+# Sitemap location
+Sitemap: https://bba-wa3y.dz/sitemap.xml

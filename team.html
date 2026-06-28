@@ -29,52 +29,7 @@
   </style>
 </head>
 <body>
-  <nav class="nav" role="navigation" aria-label="القائمة الرئيسية">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
-        <span class="nav-logo-icon" aria-hidden="true">وعي</span>
-        <span>منصة وعي الشباب BBA</span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html">الرئيسية</a>
-        <a href="about.html">عن المشروع</a>
-        <a href="club.html">نادي الشباب</a>
-        <a href="team.html" class="active">فريق العمل</a>
-        <a href="partners.html">الشركاء</a>
-        <a href="media-center.html">المركز الإعلامي</a>
-        <a href="dz-young-leaders.html">Dz Young Leaders</a>
-        <a href="index.html#contact">تواصل</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:0.5rem">
-        <div id="teamThemeSwitcher"></div>
-      </div>
-    </div>
-  </nav>
-
-  <nav class="nav-mobile" role="navigation" aria-label="القائمة السفلية">
-    <div class="nav-mobile-inner">
-      <a href="index.html">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>الرئيسية</span>
-      </a>
-      <a href="team.html" class="active">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>فريقنا</span>
-      </a>
-      <a href="partners.html">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-        <span>الشركاء</span>
-      </a>
-      <a href="media-center.html">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-        <span>الإعلام</span>
-      </a>
-      <a href="index.html#contact">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span>تواصل</span>
-      </a>
-    </div>
-  </nav>
+<div id="navbar"></div>
 
   <section class="section" style="padding-top:calc(var(--nav-height) + 2rem)">
     <div class="container">
@@ -89,6 +44,9 @@
 
   <section class="section" style="padding-top:0">
     <div class="container">
+      <!-- CMS Team Members Grid -->
+      <div id="cmsTeamGrid" class="events-grid" style="margin-bottom:2.5rem"></div>
+
       <h3 style="color:var(--gold);margin-bottom:1.5rem;text-align:center">👥 فرق البلديات</h3>
       <div id="teamsGrid" class="events-grid">
         <div style="text-align:center;padding:3rem;color:var(--muted);grid-column:1/-1">
@@ -114,19 +72,7 @@
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <p>© 2026 <span class="footer-gold">منصة وعي الشباب BBA</span> | تحت إشراف <span class="footer-gold">برنامج Dz Young Leaders</span> | جميع الحقوق محفوظة</p>
-      <div class="footer-links">
-        <a href="about.html">📖 عن المشروع</a>
-        <a href="club.html">⭐ نادي الشباب</a>
-        <a href="activities.html">📋 النشاطات</a>
-        <a href="academy.html">🎓 الأكاديمية</a>
-        <a href="portal.html">👤 بوابة المتطوعين</a>
-        <a href="verify-certificate.html">✅ التحقق من الشهادات</a>
-      </div>
-    </div>
-  </footer>
+<div id="footer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
@@ -186,9 +132,34 @@
         grid.innerHTML = html;
       }
 
+      /* Render CMS Team Members */
+      function renderTeamMembers() {
+        var grid = document.getElementById('cmsTeamGrid');
+        if (!grid) return;
+        var members = window.CMS ? window.CMS.getTeamMembers() : [];
+        members = members.filter(function(m) { return m.published !== false && m.visible !== false; });
+        if (members.length === 0) { grid.innerHTML = ''; return; }
+        function esc(t) { if (!t) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        var html = '';
+        for (var i = 0; i < members.length; i++) {
+          var m = members[i];
+          html += '<div class="mosaic-tile" style="padding:1.25rem;text-align:center">' +
+            '<span class="mosaic-corner mosaic-corner-tl"></span><span class="mosaic-corner mosaic-corner-tr"></span>' +
+            '<span class="mosaic-corner mosaic-corner-bl"></span><span class="mosaic-corner mosaic-corner-br"></span>' +
+            (m.image ? '<img src="' + esc(m.image) + '" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 0.75rem;border:2px solid var(--gold)" onerror="this.style.display=\'none\'">' : '<div style="font-size:2.5rem;margin-bottom:0.5rem">👤</div>') +
+            '<h4 style="color:var(--gold);font-size:0.9rem;margin-bottom:0.2rem">' + esc(m.name) + '</h4>' +
+            '<div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.5rem">' + esc(m.role || '') + '</div>' +
+            (m.bio ? '<p style="font-size:0.75rem;color:var(--text-dim);line-height:1.6">' + esc(m.bio).substring(0,100) + '</p>' : '') +
+            '</div>';
+        }
+        grid.innerHTML = html;
+      }
+
       renderTeams();
       renderVolunteers();
+      renderTeamMembers();
     })();
   </script>
+<script src="js/navigation.js"></script>
 </body>
 </html>
