@@ -111,22 +111,32 @@
           return;
         }
 
-        /* Skip sync during initial pull */
-        if (IS_INITIAL_PULLING) return;
+        if (!(BBA_SYNC_KEYS[key] || key.indexOf('bba_points_') === 0 || key.indexOf('bba_cms_') === 0)) return;
 
-        if (BBA_SYNC_KEYS[key] || key.indexOf('bba_points_') === 0 || key.indexOf('bba_cms_') === 0) {
-          setTimeout(function() {
-            if (window.BBA && window.BBA.DB) {
-              if (key.indexOf('bba_points_') === 0) {
-                if (typeof pushPoints === 'function') {
-                  pushPoints();
-                }
-              } else {
-                window.BBA.DB.syncNow(key);
-              }
-            }
-          }, 10);
+        /* ⚠️ CRITICAL: During initial pull on mobile (slow network), IS_INITIAL_PULLING
+           may be true for several seconds. Previously we dropped the sync silently,
+           causing form submissions during this window to NEVER reach Supabase.
+           Now we buffer the key and flush after initialPull() completes. */
+        if (IS_INITIAL_PULLING) {
+          console.log('[SYNC DEBUG] ⏳ initialPull in progress — buffering sync for:', key);
+          if (PENDING_PULLING_SYNCS.indexOf(key) === -1) {
+            PENDING_PULLING_SYNCS.push(key);
+          }
+          return;
         }
+
+        console.log('[SYNC DEBUG] 📝 setItem trigger — queueing sync for:', key);
+        setTimeout(function() {
+          if (window.BBA && window.BBA.DB) {
+            if (key.indexOf('bba_points_') === 0) {
+              if (typeof pushPoints === 'function') {
+                pushPoints();
+              }
+            } else {
+              window.BBA.DB.syncNow(key);
+            }
+          }
+        }, 10);
       };
 
       localStorage.setItem = patched;
@@ -150,6 +160,7 @@
   var lastSyncTime = {};
   var SYNC_COOLDOWN = 2000; /* 2 seconds between syncs */
   var IS_INITIAL_PULLING = false; /* Prevents re-sync during initial pull */
+  var PENDING_PULLING_SYNCS = []; /* Keys queued during initial pull, flushed after */
 
   /* ============================================================
    * INITIALIZATION
@@ -175,9 +186,31 @@
           IS_INITIAL_PULLING = true;
           initialPull().then(function() {
             IS_INITIAL_PULLING = false;
+            /* ═══ CRITICAL FIX ═══
+               Flush any syncs that were buffered during initialPull().
+               On mobile (slow 3G/4G), initialPull takes 1-3 seconds.
+               Any form submissions during that window were buffered
+               in PENDING_PULLING_SYNCS instead of being silently dropped.
+               Now we flush them so they actually reach Supabase. */
+            if (PENDING_PULLING_SYNCS.length > 0) {
+              console.log('[SYNC DEBUG] 🔄 Flushing ' + PENDING_PULLING_SYNCS.length + ' buffered syncs from initial pull period:', PENDING_PULLING_SYNCS.join(','));
+              for (var pi = 0; pi < PENDING_PULLING_SYNCS.length; pi++) {
+                queueSync(PENDING_PULLING_SYNCS[pi]);
+              }
+              PENDING_PULLING_SYNCS = [];
+            }
             resolve(true);
-          }).catch(function() {
+          }).catch(function(err) {
             IS_INITIAL_PULLING = false;
+            console.warn('[SYNC DEBUG] ❌ initialPull failed:', err && err.message ? err.message : 'unknown error');
+            /* Still flush pending syncs even if pull failed */
+            if (PENDING_PULLING_SYNCS.length > 0) {
+              console.log('[SYNC DEBUG] 🔄 Flushing ' + PENDING_PULLING_SYNCS.length + ' buffered syncs despite pull failure');
+              for (var pi = 0; pi < PENDING_PULLING_SYNCS.length; pi++) {
+                queueSync(PENDING_PULLING_SYNCS[pi]);
+              }
+              PENDING_PULLING_SYNCS = [];
+            }
             resolve(false);
           });
         } catch (err) {
@@ -328,40 +361,75 @@
    * PUSH TO SUPABASE: Save localStorage data to Supabase
    * ============================================================ */
   async function pushTable(localKey) {
-    if (!isConnected || !supabaseClient) return;
+    console.log('[SYNC DEBUG] ===== pushTable START =====');
+    console.log('[SYNC DEBUG] localKey:', localKey, '| isConnected:', isConnected, '| hasClient:', !!supabaseClient);
+
+    if (!isConnected || !supabaseClient) {
+      console.log('[SYNC DEBUG] ❌ pushTable: Not connected — re-queueing', localKey);
+      queueSync(localKey);
+      console.log('[SYNC DEBUG] ===== pushTable END (re-queued) =====');
+      return;
+    }
 
     var tableName = CONFIG.tableMap[localKey];
-    if (!tableName) return;
+    if (!tableName) {
+      console.log('[SYNC DEBUG] ❌ pushTable: No table mapping for', localKey);
+      console.log('[SYNC DEBUG] ===== pushTable END (no mapping) =====');
+      return;
+    }
+    console.log('[SYNC DEBUG] tableName:', tableName);
 
     try {
       var raw = localStorage.getItem(localKey);
-      if (!raw) return;
+      console.log('[SYNC DEBUG] localStorage read:', localKey, '| length:', raw ? raw.length : 0);
+      if (!raw) {
+        console.log('[SYNC DEBUG] No data in localStorage for', localKey);
+        console.log('[SYNC DEBUG] ===== pushTable END (no data) =====');
+        return;
+      }
 
       var items;
       try { items = JSON.parse(raw); }
-      catch(e) { return; }
-      if (!Array.isArray(items) || items.length === 0) return;
+      catch(e) {
+        console.log('[SYNC DEBUG] ❌ JSON parse failed for', localKey, ':', e.message);
+        console.log('[SYNC DEBUG] ===== pushTable END (parse error) =====');
+        return;
+      }
+      console.log('[SYNC DEBUG] Parsed items:', items.length);
+
+      if (!Array.isArray(items) || items.length === 0) {
+        console.log('[SYNC DEBUG] Empty array for', localKey);
+        console.log('[SYNC DEBUG] ===== pushTable END (empty) =====');
+        return;
+      }
 
       /* Check if we already have data in Supabase */
+      console.log('[SYNC DEBUG] Checking existing data in Supabase:', tableName);
       var { data: existingData, error: selectError } = await supabaseClient
         .from(tableName)
         .select('id');
 
-      if (selectError) throw selectError;
+      if (selectError) {
+        console.log('[SYNC DEBUG] ❌ SELECT error:', selectError.message);
+        throw selectError;
+      }
+      console.log('[SYNC DEBUG] Existing rows in Supabase:', existingData ? existingData.length : 0);
 
       if (existingData && existingData.length > 0) {
-        /* Data exists — delete all and re-insert with proper filter */
-        /* Use `neq` with a known UUID trick to match all rows */
+        /* Data exists — delete all and re-insert */
+        console.log('[SYNC DEBUG] Deleting existing rows...');
         var { error: deleteError } = await supabaseClient
           .from(tableName)
           .delete()
           .neq('id', '00000000-0000-0000-0000-000000000000');
 
         if (deleteError) {
-          /* RLS may block delete; fall back to individual upsert */
+          console.log('[SYNC DEBUG] ❌ DELETE error (RLS?), falling back to upsert:', deleteError.message);
           await upsertItems(tableName, items);
+          console.log('[SYNC DEBUG] ===== pushTable END (upsert fallback) =====');
           return;
         }
+        console.log('[SYNC DEBUG] Delete successful');
       }
 
       /* Insert all items */
@@ -370,23 +438,39 @@
         delete row._supabase_id;
         return row;
       });
+      console.log('[SYNC DEBUG] Transformed', rows.length, 'rows for insert');
+      console.log('[SYNC DEBUG] First row keys:', rows.length > 0 ? Object.keys(rows[0]).join(',') : 'N/A');
 
+      var allInserted = true;
       /* Insert in batches of 50 */
       for (var i = 0; i < rows.length; i += 50) {
         var batch = rows.slice(i, i + 50);
+        console.log('[SYNC DEBUG] Inserting batch', (i/50)+1, ':', batch.length, 'rows');
         var { error: insertError } = await supabaseClient
           .from(tableName)
           .insert(batch);
 
         if (insertError) {
-          console.warn('[BBA DB] Insert error for ' + localKey + ':', insertError.message);
+          console.log('[SYNC DEBUG] ❌ INSERT error for batch', (i/50)+1, ':', insertError.message, insertError.details || '');
+          console.log('[SYNC DEBUG] ❌ First row in batch:', JSON.stringify(batch[0]).substring(0, 200));
+          allInserted = false;
+        } else {
+          console.log('[SYNC DEBUG] ✅ Batch', (i/50)+1, 'inserted successfully');
         }
       }
 
-      console.log('[BBA DB] Synced ' + localKey + ' to Supabase: ' + items.length + ' items');
+      if (allInserted) {
+        console.log('[SYNC DEBUG] ✅ ALL batches inserted successfully');
+        console.log('[BBA DB] Synced ' + localKey + ' to Supabase: ' + items.length + ' items');
+      } else {
+        console.log('[SYNC DEBUG] ⚠️ Some batches failed — data may be incomplete in Supabase');
+      }
     } catch (err) {
-      console.warn('[BBA DB] Failed to push ' + localKey + ':', err.message);
+      console.log('[SYNC DEBUG] ❌ pushTable threw:', err.message);
+      console.log('[SYNC DEBUG] Stack:', err.stack ? err.stack.substring(0, 300) : 'N/A');
     }
+
+    console.log('[SYNC DEBUG] ===== pushTable END =====');
   }
 
   /* Upsert items individually (fallback when delete not allowed) */
@@ -564,44 +648,76 @@
    * SYNC QUEUE: Batch sync requests with debouncing
    * ============================================================ */
   function queueSync(localKey) {
+    console.log('[SYNC DEBUG] queueSync called for:', localKey, '| queue length:', syncQueue.length);
+    console.log('[SYNC DEBUG] isConnected:', isConnected, '| isSyncing:', isSyncing, '| IS_INITIAL_PULLING:', IS_INITIAL_PULLING);
     if (syncQueue.indexOf(localKey) === -1) {
       syncQueue.push(localKey);
+      console.log('[SYNC DEBUG] Added to queue:', localKey, '| queue now:', syncQueue.join(','));
+    } else {
+      console.log('[SYNC DEBUG] Already in queue, skipping duplicate:', localKey);
     }
     scheduleSync();
   }
 
   var syncTimer = null;
   function scheduleSync() {
+    console.log('[SYNC DEBUG] scheduleSync called | pending timer:', !!syncTimer);
     if (syncTimer) clearTimeout(syncTimer);
-    syncTimer = setTimeout(processSyncQueue, 1000);
+    syncTimer = setTimeout(function() {
+      console.log('[SYNC DEBUG] ⏰ Timer fired — calling processSyncQueue');
+      processSyncQueue();
+    }, 1000);
   }
 
   async function processSyncQueue() {
-    if (isSyncing || !isConnected) return;
+    console.log('[SYNC DEBUG] ===== processSyncQueue START =====');
+    console.log('[SYNC DEBUG] isSyncing:', isSyncing, '| isConnected:', isConnected, '| queue has:', syncQueue.length, 'items');
+
+    if (isSyncing) {
+      console.log('[SYNC DEBUG] ❌ Already syncing — skipping this cycle');
+      return;
+    }
+    if (!isConnected) {
+      console.log('[SYNC DEBUG] ❌ Not connected to Supabase — deferring sync. Queue kept for retry.');
+      return;
+    }
+
     isSyncing = true;
 
     var keys = syncQueue.slice();
     syncQueue = [];
+    console.log('[SYNC DEBUG] Processing', keys.length, 'keys:', keys.join(','));
 
     for (var i = 0; i < keys.length; i++) {
       var key = keys[i];
       var now = Date.now();
 
       /* Respect cooldown per key */
-      if (lastSyncTime[key] && (now - lastSyncTime[key] < SYNC_COOLDOWN)) continue;
+      if (lastSyncTime[key] && (now - lastSyncTime[key] < SYNC_COOLDOWN)) {
+        console.log('[SYNC DEBUG] ⏸️ Cooldown active for:', key, '- skipping, re-queueing');
+        queueSync(key);
+        continue;
+      }
       lastSyncTime[key] = now;
 
+      console.log('[SYNC DEBUG] ▶️ Processing key:', key);
       if (key.indexOf('bba_cms_') === 0 || CONFIG.cmsKeys.indexOf(key) !== -1) {
+        console.log('[SYNC DEBUG] Routing to pushCmsContent');
         await pushCmsContent();
       } else if (CONFIG.tableMap[key]) {
+        console.log('[SYNC DEBUG] Routing to pushTable for:', key, '→ table:', CONFIG.tableMap[key]);
         await pushTable(key);
+      } else {
+        console.log('[SYNC DEBUG] ⚠️ Unknown key (no table mapping):', key);
       }
     }
 
     isSyncing = false;
+    console.log('[SYNC DEBUG] ===== processSyncQueue END =====');
 
     /* If more items were queued during sync, process them */
     if (syncQueue.length > 0) {
+      console.log('[SYNC DEBUG] More items queued during sync — scheduling next cycle. Queue:', syncQueue.join(','));
       scheduleSync();
     }
   }
